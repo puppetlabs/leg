@@ -26,6 +26,7 @@ package algo
 
 import (
 	"github.com/reflect/gographt"
+	"github.com/reflect/gographt/data"
 )
 
 type steinerTreeCostMetric struct {
@@ -54,32 +55,38 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 	closure := gographt.NewSimpleWeightedGraphWithFeatures(g.Features())
 
 	// We deduplicate the required vertices.
-	vertices := make(map[gographt.Vertex]interface{})
+	vertices := data.NewLinkedHashSet()
 
 	for _, vertex := range required {
 		closure.AddVertex(vertex)
-		vertices[vertex] = nil
+		vertices.Add(vertex)
 	}
 
-	for v1, _ := range vertices {
+	err := vertices.ForEach(func(v1 interface{}) error {
 		paths := BellmanFordShortestPathsOf(g, v1)
 
-		for v2, _ := range vertices {
+		return vertices.ForEach(func(v2 interface{}) error {
 			if v1 == v2 || closure.ContainsEdgeBetween(v1, v2) {
-				continue
+				return nil
 			}
 
 			// Save the edges so we can recompute them later.
 			edges, err := paths.EdgesTo(v2)
 			if err != nil {
-				return nil, err
+				return err
 			}
 
 			cost, _ := paths.CostTo(v2)
 
 			metric := &steinerTreeCostMetric{edges}
 			closure.AddEdgeWithWeight(v1, v2, metric, cost)
-		}
+
+			return nil
+		})
+	})
+
+	if err != nil {
+		return nil, err
 	}
 
 	// 3: Compute the minimum spanning tree.
@@ -91,9 +98,10 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 	// 4 & 5: Expand the minimum spanning tree into a graph.
 	t := gographt.NewUndirectedWeightedPseudographWithFeatures(g.Features())
 
-	for vertex, _ := range vertices {
+	vertices.ForEach(func(vertex interface{}) error {
 		t.AddVertex(vertex)
-	}
+		return nil
+	})
 
 	mst.Edges().ForEach(func(edge gographt.Edge) error {
 		metric := edge.(*steinerTreeCostMetric)

@@ -58,6 +58,14 @@ func NewHashSet() Set {
 	return NewMapBackedSet(NewHashMap())
 }
 
+func NewHashSetWithCapacity(capacity int) Set {
+	return NewMapBackedSet(NewHashMapWithCapacity(capacity))
+}
+
 func NewLinkedHashSet() Set {
 	return NewMapBackedSet(NewLinkedHashMap())
+}
+
+func NewLinkedHashSetWithCapacity(capacity int) Set {
+	return NewMapBackedSet(NewLinkedHashMapWithCapacity(capacity))
 }

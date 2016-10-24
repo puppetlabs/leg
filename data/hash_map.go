@@ -60,3 +60,8 @@ func NewHashMap() *HashMap {
 	m := make(HashMap)
 	return &m
 }
+
+func NewHashMapWithCapacity(capacity int) *HashMap {
+	m := make(HashMap, capacity)
+	return &m
+}

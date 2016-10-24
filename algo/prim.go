@@ -23,29 +23,34 @@ func (mst *PrimMinimumSpanningTree) Edges() gographt.EdgeSet {
 func PrimMinimumSpanningTreeOf(g gographt.UndirectedWeightedGraph) *PrimMinimumSpanningTree {
 	vs := g.Vertices()
 
-	var es gographt.MutableEdgeSet
+	var (
+		es        gographt.MutableEdgeSet
+		unspanned data.Set
+	)
+
 	if g.Features()&gographt.DeterministicIteration != 0 {
 		es = gographt.NewMutableEdgeSet(data.NewLinkedHashSet())
+		unspanned = data.NewLinkedHashSetWithCapacity(int(vs.Count()))
 	} else {
 		es = gographt.NewMutableEdgeSet(data.NewHashSet())
+		unspanned = data.NewHashSetWithCapacity(int(vs.Count()))
 	}
 
 	mst := &PrimMinimumSpanningTree{es: es}
 
-	unspanned := make(map[gographt.Vertex]interface{}, vs.Count())
 	vs.ForEach(func(vertex gographt.Vertex) error {
-		unspanned[vertex] = nil
+		unspanned.Add(vertex)
 		return nil
 	})
 
-	for len(unspanned) > 0 {
+	for !unspanned.Empty() {
 		var root gographt.Vertex
-		for vertex, _ := range unspanned {
-			root = vertex
-			break
-		}
+		unspanned.ForEach(func(element interface{}) error {
+			root = element.(gographt.Vertex)
+			return data.ErrStopIteration
+		})
 
-		delete(unspanned, root)
+		unspanned.Remove(root)
 
 		dangling := data.NewPriorityQueue()
 
@@ -60,21 +65,22 @@ func PrimMinimumSpanningTreeOf(g gographt.UndirectedWeightedGraph) *PrimMinimumS
 		var next gographt.Edge
 		for dangling.Poll(&next) {
 			target, _ := g.SourceVertexOf(next)
-			if _, found := unspanned[target]; !found {
+			if !unspanned.Contains(target) {
 				target, _ = g.TargetVertexOf(next)
-			}
-			if _, found := unspanned[target]; !found {
-				continue
+
+				if !unspanned.Contains(target) {
+					continue
+				}
 			}
 
 			mst.es.Add(next)
 
-			delete(unspanned, target)
+			unspanned.Remove(target)
 
 			edges, _ := g.EdgesOf(target)
 			edges.ForEach(func(edge gographt.Edge) error {
 				candidate, _ := gographt.OppositeVertexOf(g, edge, target)
-				if _, found := unspanned[candidate]; !found {
+				if !unspanned.Contains(candidate) {
 					return nil
 				}
 

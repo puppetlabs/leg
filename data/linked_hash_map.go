@@ -91,3 +91,10 @@ func NewLinkedHashMap() *LinkedHashMap {
 		storage:  make(map[interface{}]*list.Element),
 	}
 }
+
+func NewLinkedHashMapWithCapacity(capacity int) *LinkedHashMap {
+	return &LinkedHashMap{
+		accessor: list.New(),
+		storage:  make(map[interface{}]*list.Element, capacity),
+	}
+}
