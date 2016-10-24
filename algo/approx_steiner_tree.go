@@ -51,16 +51,51 @@ type steinerTreeCostMetric struct {
 // If this proves too slow or inaccurate, it can be further optimized:
 //   http://dl.acm.org/citation.cfm?doid=1806689.1806769
 func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Vertex) (gographt.UndirectedGraph, error) {
+	// Prerequisite: we deduplicate the required vertices.
+	vertices := data.NewHashSet()
+	for _, vertex := range required {
+		vertices.Add(vertex)
+	}
+
+	// If we are tasked with deterministic iteration, we need to have the
+	// required vertices in a specific order. Unfortunately, given that they're
+	// interface{}, the only thing we can depend on for the order is the source
+	// graph. So we have to pick them out of its vertices.
+	if g.Features()&gographt.DeterministicIteration != 0 {
+		remaining := vertices
+		vertices = data.NewLinkedHashSet()
+
+		g.Vertices().ForEach(func(candidate gographt.Vertex) error {
+			if remaining.Contains(candidate) {
+				vertices.Add(candidate)
+				remaining.Remove(candidate)
+			}
+
+			if remaining.Empty() {
+				return data.ErrStopIteration
+			}
+
+			return nil
+		})
+
+		if !remaining.Empty() {
+			var first gographt.Vertex
+			remaining.ForEach(func(element interface{}) error {
+				first = element.(gographt.Vertex)
+				return data.ErrStopIteration
+			})
+
+			return nil, &gographt.VertexNotFoundError{first}
+		}
+	}
+
 	// 1 & 2: Compute the metric closure.
 	closure := gographt.NewSimpleWeightedGraphWithFeatures(g.Features())
 
-	// We deduplicate the required vertices.
-	vertices := data.NewLinkedHashSet()
-
-	for _, vertex := range required {
+	vertices.ForEach(func(vertex interface{}) error {
 		closure.AddVertex(vertex)
-		vertices.Add(vertex)
-	}
+		return nil
+	})
 
 	err := vertices.ForEach(func(v1 interface{}) error {
 		paths := BellmanFordShortestPathsOf(g, v1)
