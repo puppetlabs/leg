@@ -6,10 +6,13 @@ import (
 
 func setValuesInto(s Set, into interface{}) {
 	p := reflect.ValueOf(into).Elem()
+	pt := p.Type().Elem()
+
 	slice := p
 
 	s.ForEach(func(element interface{}) error {
-		slice = reflect.Append(slice, reflect.ValueOf(element))
+		v := coalesceInvalidToZeroValueOf(reflect.ValueOf(element), pt)
+		slice = reflect.Append(slice, v)
 		return nil
 	})
 
@@ -18,13 +21,15 @@ func setValuesInto(s Set, into interface{}) {
 
 func setForEachInto(s Set, fn interface{}) error {
 	fnr := reflect.ValueOf(fn)
+	fnt := fnr.Type()
+
+	if fnt.NumOut() != 1 {
+		panic(ErrInvalidFuncSignature)
+	}
 
 	return s.ForEach(func(element interface{}) error {
-		if fnr.Type().NumOut() != 1 {
-			panic(ErrInvalidFuncSignature)
-		}
-
-		r := fnr.Call([]reflect.Value{reflect.ValueOf(element)})
+		p := coalesceInvalidToZeroValueOf(reflect.ValueOf(element), fnt.In(0))
+		r := fnr.Call([]reflect.Value{p})
 
 		err := r[0]
 		if err.IsNil() {

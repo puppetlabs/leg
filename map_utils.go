@@ -8,13 +8,8 @@ func mapGetInto(m Map, key, into interface{}) bool {
 	value, found := m.Get(key)
 
 	if found {
-		t := reflect.ValueOf(into).Elem()
-		rv := reflect.ValueOf(value)
-		if !rv.IsValid() {
-			rv = reflect.Zero(t.Type())
-		}
-
-		t.Set(rv)
+		target := reflect.ValueOf(into).Elem()
+		target.Set(coalesceInvalidToZeroValueOf(reflect.ValueOf(value), target.Type()))
 	}
 
 	return found
@@ -36,10 +31,13 @@ func mapKeys(m Map) []interface{} {
 
 func mapKeysInto(m Map, into interface{}) {
 	p := reflect.ValueOf(into).Elem()
+	pt := p.Type().Elem()
+
 	slice := p
 
 	m.ForEach(func(key, value interface{}) error {
-		slice = reflect.Append(slice, reflect.ValueOf(key))
+		v := coalesceInvalidToZeroValueOf(reflect.ValueOf(key), pt)
+		slice = reflect.Append(slice, v)
 		return nil
 	})
 
@@ -62,10 +60,13 @@ func mapValues(m Map) []interface{} {
 
 func mapValuesInto(m Map, into interface{}) {
 	p := reflect.ValueOf(into).Elem()
+	pt := p.Type().Elem()
+
 	slice := p
 
 	m.ForEach(func(key, value interface{}) error {
-		slice = reflect.Append(slice, reflect.ValueOf(value))
+		v := coalesceInvalidToZeroValueOf(reflect.ValueOf(value), pt)
+		slice = reflect.Append(slice, v)
 		return nil
 	})
 
@@ -74,16 +75,16 @@ func mapValuesInto(m Map, into interface{}) {
 
 func mapForEachInto(m Map, fn interface{}) error {
 	fnr := reflect.ValueOf(fn)
+	fnt := fnr.Type()
+
+	if fnt.NumOut() != 1 {
+		panic(ErrInvalidFuncSignature)
+	}
 
 	return m.ForEach(func(key, value interface{}) error {
-		if fnr.Type().NumOut() != 1 {
-			panic(ErrInvalidFuncSignature)
-		}
-
-		r := fnr.Call([]reflect.Value{
-			reflect.ValueOf(key),
-			reflect.ValueOf(value),
-		})
+		p1 := coalesceInvalidToZeroValueOf(reflect.ValueOf(key), fnt.In(0))
+		p2 := coalesceInvalidToZeroValueOf(reflect.ValueOf(value), fnt.In(1))
+		r := fnr.Call([]reflect.Value{p1, p2})
 
 		err := r[0]
 		if err.IsNil() {

@@ -94,13 +94,8 @@ func (pq *PriorityQueue) PollInto(into interface{}) bool {
 	value, found := pq.Poll()
 
 	if found {
-		t := reflect.ValueOf(into).Elem()
-		rv := reflect.ValueOf(value)
-		if !rv.IsValid() {
-			rv = reflect.Zero(t.Type())
-		}
-
-		t.Set(rv)
+		target := reflect.ValueOf(into).Elem()
+		target.Set(coalesceInvalidToZeroValueOf(reflect.ValueOf(value), target.Type()))
 	}
 
 	return found

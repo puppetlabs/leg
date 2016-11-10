@@ -146,3 +146,23 @@ func TestMapIterationReflection(t *testing.T) {
 		})
 	}
 }
+
+func TestMapIterationWithNilValues(t *testing.T) {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+		m.Put("a", nil)
+
+		assert.NotPanics(t, func() {
+			m.ForEachInto(func(key string, value *int) error {
+				assert.Equal(t, (*int)(nil), value)
+				return nil
+			})
+		})
+
+		var valuesInto []*int
+		assert.NotPanics(t, func() {
+			m.ValuesInto(&valuesInto)
+		})
+		assert.Len(t, valuesInto, 1)
+		assert.Equal(t, (*int)(nil), valuesInto[0])
+	}
+}
