@@ -25,9 +25,30 @@
 package algo
 
 import (
+	"github.com/reflect/godat"
 	"github.com/reflect/gographt"
-	"github.com/reflect/gographt/data"
 )
+
+const (
+	ApproximateSteinerTreeSupportedFeatures = gographt.DeterministicIteration
+)
+
+type ApproximateSteinerTree struct {
+	features gographt.GraphFeature
+	graph    gographt.UndirectedGraph
+}
+
+func (ast *ApproximateSteinerTree) Features() gographt.GraphFeature {
+	return ast.features
+}
+
+func (ast *ApproximateSteinerTree) Edges() gographt.EdgeSet {
+	return ast.graph.Edges()
+}
+
+func (ast *ApproximateSteinerTree) AsGraph() gographt.UndirectedGraph {
+	return ast.graph
+}
 
 type steinerTreeCostMetric struct {
 	edges []gographt.Edge
@@ -50,9 +71,9 @@ type steinerTreeCostMetric struct {
 //
 // If this proves too slow or inaccurate, it can be further optimized:
 //   http://dl.acm.org/citation.cfm?doid=1806689.1806769
-func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Vertex) (gographt.UndirectedGraph, error) {
+func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Vertex) (*ApproximateSteinerTree, error) {
 	// Prerequisite: we deduplicate the required vertices.
-	vertices := data.NewHashSet()
+	vertices := godat.NewHashSet()
 	for _, vertex := range required {
 		vertices.Add(vertex)
 	}
@@ -63,7 +84,7 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 	// graph. So we have to pick them out of its vertices.
 	if g.Features()&gographt.DeterministicIteration != 0 {
 		remaining := vertices
-		vertices = data.NewLinkedHashSet()
+		vertices = godat.NewLinkedHashSet()
 
 		g.Vertices().ForEach(func(candidate gographt.Vertex) error {
 			if remaining.Contains(candidate) {
@@ -72,7 +93,7 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 			}
 
 			if remaining.Empty() {
-				return data.ErrStopIteration
+				return godat.ErrStopIteration
 			}
 
 			return nil
@@ -80,9 +101,9 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 
 		if !remaining.Empty() {
 			var first gographt.Vertex
-			remaining.ForEach(func(element interface{}) error {
-				first = element.(gographt.Vertex)
-				return data.ErrStopIteration
+			remaining.ForEachInto(func(vertex gographt.Vertex) error {
+				first = vertex
+				return godat.ErrStopIteration
 			})
 
 			return nil, &gographt.VertexNotFoundError{first}
@@ -165,5 +186,10 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 		}
 	}
 
-	return t, nil
+	ast := &ApproximateSteinerTree{
+		features: g.Features() & ApproximateSteinerTreeSupportedFeatures,
+		graph:    t,
+	}
+
+	return ast, nil
 }

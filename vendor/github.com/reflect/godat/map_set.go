@@ -1,5 +1,6 @@
-package data
+package godat
 
+// A set that stores its elements as keys in a given map.
 type MapBackedSet struct {
 	storage Map
 }
@@ -44,28 +45,41 @@ func (s *MapBackedSet) Values() []interface{} {
 	return s.storage.Keys()
 }
 
+func (s *MapBackedSet) ValuesInto(into interface{}) {
+	setValuesInto(s, into)
+}
+
 func (s *MapBackedSet) ForEach(fn SetIterationFunc) error {
 	return s.storage.ForEach(func(key, value interface{}) error {
 		return fn(key)
 	})
 }
 
+func (s *MapBackedSet) ForEachInto(fn interface{}) error {
+	return setForEachInto(s, fn)
+}
+
+// Creates a new map-backed set with the given map for storage.
 func NewMapBackedSet(storage Map) *MapBackedSet {
 	return &MapBackedSet{storage: storage}
 }
 
+// Creates a new set backed by a HashMap.
 func NewHashSet() Set {
 	return NewMapBackedSet(NewHashMap())
 }
 
+// Creates a new set backed by a HashMap with the given initial capacity.
 func NewHashSetWithCapacity(capacity int) Set {
 	return NewMapBackedSet(NewHashMapWithCapacity(capacity))
 }
 
+// Creates a new set backed by a LinkedHashMap.
 func NewLinkedHashSet() Set {
 	return NewMapBackedSet(NewLinkedHashMap())
 }
 
+// Creates a new set backed by a LinkedHashMap with the given initial capacity.
 func NewLinkedHashSetWithCapacity(capacity int) Set {
 	return NewMapBackedSet(NewLinkedHashMapWithCapacity(capacity))
 }

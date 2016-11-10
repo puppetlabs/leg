@@ -11,6 +11,10 @@ import (
 	"math"
 )
 
+const (
+	BellmanFordSupportedFeatures = gographt.DeterministicIteration
+)
+
 type bellmanFordPathElement struct {
 	vertex gographt.Vertex
 	cost   float64
@@ -160,7 +164,12 @@ func (e *bellmanFordExecutor) savePassData(improvedVertices []gographt.Vertex) {
 }
 
 type BellmanFordShortestPaths struct {
+	features gographt.GraphFeature
 	executor *bellmanFordExecutor
+}
+
+func (bfsp *BellmanFordShortestPaths) Features() gographt.GraphFeature {
+	return bfsp.features
 }
 
 func (bfsp *BellmanFordShortestPaths) EdgesTo(end gographt.Vertex) ([]gographt.Edge, error) {
@@ -206,6 +215,7 @@ func (bfsp *BellmanFordShortestPaths) CostTo(end gographt.Vertex) (float64, erro
 
 func BellmanFordShortestPathsOf(g gographt.Graph, start gographt.Vertex) *BellmanFordShortestPaths {
 	return &BellmanFordShortestPaths{
+		features: g.Features() & BellmanFordSupportedFeatures,
 		executor: &bellmanFordExecutor{
 			graph: g,
 			start: start,

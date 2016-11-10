@@ -1,4 +1,4 @@
-package data
+package godat
 
 import (
 	"container/list"
@@ -8,6 +8,9 @@ type linkedHashMapEntry struct {
 	key, value interface{}
 }
 
+// A hash map that iterates its entries in the order they were inserted into
+// the map. Calls to Put() for a key that already exists in the map will not
+// change its insertion order.
 type LinkedHashMap struct {
 	accessor *list.List
 	storage  map[interface{}]*list.Element
@@ -20,7 +23,7 @@ func (m *LinkedHashMap) Contains(key interface{}) (found bool) {
 
 func (m *LinkedHashMap) Put(key, value interface{}) (found bool) {
 	if _, found = m.storage[key]; !found {
-		entry := &linkedHashMapEntry{key: key, value: value}
+		entry := &linkedHashMapEntry{key, value}
 
 		e := m.accessor.PushBack(entry)
 		m.storage[key] = e
@@ -40,6 +43,10 @@ func (m *LinkedHashMap) Get(key interface{}) (value interface{}, found bool) {
 	}
 
 	return
+}
+
+func (m *LinkedHashMap) GetInto(key, into interface{}) bool {
+	return mapGetInto(m, key, into)
 }
 
 func (m *LinkedHashMap) Remove(key interface{}) (found bool) {
@@ -70,8 +77,16 @@ func (m *LinkedHashMap) Keys() []interface{} {
 	return mapKeys(m)
 }
 
+func (m *LinkedHashMap) KeysInto(into interface{}) {
+	mapKeysInto(m, into)
+}
+
 func (m *LinkedHashMap) Values() []interface{} {
 	return mapValues(m)
+}
+
+func (m *LinkedHashMap) ValuesInto(into interface{}) {
+	mapValuesInto(m, into)
 }
 
 func (m *LinkedHashMap) ForEach(fn MapIterationFunc) error {
@@ -85,6 +100,12 @@ func (m *LinkedHashMap) ForEach(fn MapIterationFunc) error {
 	return nil
 }
 
+func (m *LinkedHashMap) ForEachInto(fn interface{}) error {
+	return mapForEachInto(m, fn)
+}
+
+// Creates a new linked hash map with the default initial capacity of this Go
+// implementation.
 func NewLinkedHashMap() *LinkedHashMap {
 	return &LinkedHashMap{
 		accessor: list.New(),
@@ -92,6 +113,7 @@ func NewLinkedHashMap() *LinkedHashMap {
 	}
 }
 
+// Creates a new linked hash map with the specified initial capacity.
 func NewLinkedHashMapWithCapacity(capacity int) *LinkedHashMap {
 	return &LinkedHashMap{
 		accessor: list.New(),

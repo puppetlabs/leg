@@ -6,7 +6,7 @@
 package gographt
 
 import (
-	"github.com/reflect/gographt/data"
+	"github.com/reflect/godat"
 )
 
 type IntrusiveEdge struct {
@@ -52,8 +52,8 @@ func (sev *baseEdgesView) AsSlice() []Edge {
 }
 
 func (sev *baseEdgesView) ForEach(fn EdgeSetIterationFunc) error {
-	return sev.g.edges.ForEach(func(key, value interface{}) error {
-		return fn(key.(Edge))
+	return sev.g.edges.ForEachInto(func(key Edge, value *IntrusiveEdge) error {
+		return fn(key)
 	})
 }
 
@@ -62,7 +62,7 @@ type BaseGraph struct {
 	Ops                              BaseGraphOps
 
 	features  GraphFeature
-	edges     data.Map // map[Edge]*IntrusiveEdge
+	edges     godat.Map // map[Edge]*IntrusiveEdge
 	edgesView EdgeSet
 }
 
@@ -243,11 +243,11 @@ func (g *BaseGraph) WeightOf(edge Edge) (float64, error) {
 }
 
 func NewBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseGraphOps) *BaseGraph {
-	var edges data.Map
+	var edges godat.Map
 	if features&DeterministicIteration != 0 {
-		edges = data.NewLinkedHashMap()
+		edges = godat.NewLinkedHashMap()
 	} else {
-		edges = data.NewHashMap()
+		edges = godat.NewHashMap()
 	}
 
 	return &BaseGraph{

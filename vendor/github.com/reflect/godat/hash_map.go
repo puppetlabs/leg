@@ -1,5 +1,6 @@
-package data
+package godat
 
+// A simple hash map implementation, backed by the built-in map type in Go.
 type HashMap map[interface{}]interface{}
 
 func (m HashMap) Contains(key interface{}) (found bool) {
@@ -17,6 +18,10 @@ func (m HashMap) Put(key, value interface{}) (found bool) {
 func (m HashMap) Get(key interface{}) (value interface{}, found bool) {
 	value, found = m[key]
 	return
+}
+
+func (m *HashMap) GetInto(key, into interface{}) bool {
+	return mapGetInto(m, key, into)
 }
 
 func (m HashMap) Remove(key interface{}) (found bool) {
@@ -42,8 +47,16 @@ func (m *HashMap) Keys() []interface{} {
 	return mapKeys(m)
 }
 
+func (m *HashMap) KeysInto(into interface{}) {
+	mapKeysInto(m, into)
+}
+
 func (m *HashMap) Values() []interface{} {
 	return mapValues(m)
+}
+
+func (m *HashMap) ValuesInto(into interface{}) {
+	mapValuesInto(m, into)
 }
 
 func (m HashMap) ForEach(fn MapIterationFunc) error {
@@ -56,11 +69,18 @@ func (m HashMap) ForEach(fn MapIterationFunc) error {
 	return nil
 }
 
+func (m *HashMap) ForEachInto(fn interface{}) error {
+	return mapForEachInto(m, fn)
+}
+
+// Creates a new hash map with the default initial capacity of this Go
+// implementation.
 func NewHashMap() *HashMap {
 	m := make(HashMap)
 	return &m
 }
 
+// Creates a new hash map with the specified initial capacity.
 func NewHashMapWithCapacity(capacity int) *HashMap {
 	m := make(HashMap, capacity)
 	return &m

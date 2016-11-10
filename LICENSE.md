@@ -25,17 +25,3 @@ Licensed under the
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0). A
 copy of the full license document is included in this distribution in the file
 `LICENSE-APL2`.
-
-## data/container.go, data/map.go, data/set.go
-
-Copyright (c) 2015, Emir Pasic. All rights reserved.
-
-Licensed under a two-clause BSD-style license. A copy of the full license is
-included in this distribution in the file `LICENSE-GoDS`.
-
-## data/priority_queue.go
-
-Copyright (c) 2009 The Go Authors. All rights reserved.
-
-Licensed under a three-clause BSD-style license. A copy of the full license is
-included in this distribution in the file `LICENSE-Go`.

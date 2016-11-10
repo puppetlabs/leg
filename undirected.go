@@ -6,12 +6,12 @@
 package gographt
 
 import (
-	"github.com/reflect/gographt/data"
+	"github.com/reflect/godat"
 )
 
 type undirectedVertexSet struct {
 	features GraphFeature
-	storage  data.Map // map[Vertex]MutableEdgeSet
+	storage  godat.Map // map[Vertex]MutableEdgeSet
 }
 
 func (vs *undirectedVertexSet) Contains(vertex Vertex) bool {
@@ -23,22 +23,14 @@ func (vs *undirectedVertexSet) Count() uint {
 }
 
 func (vs *undirectedVertexSet) AsSlice() []Vertex {
-	s := make([]Vertex, vs.Count())
-
-	i := 0
-	vs.ForEach(func(vertex Vertex) error {
-		s[i] = vertex
-		i++
-
-		return nil
-	})
-
+	s := make([]Vertex, 0, vs.Count())
+	vs.storage.KeysInto(&s)
 	return s
 }
 
 func (vs *undirectedVertexSet) ForEach(fn VertexSetIterationFunc) error {
-	return vs.storage.ForEach(func(key, value interface{}) error {
-		return fn(key.(Vertex))
+	return vs.storage.ForEachInto(func(key Vertex, value MutableEdgeSet) error {
+		return fn(key)
 	})
 }
 
@@ -60,13 +52,13 @@ func (vs *undirectedVertexSet) edgesOf(vertex Vertex) MutableEdgeSet {
 	}
 
 	var set MutableEdgeSet
-	if s, _ := vs.storage.Get(vertex); s != nil {
-		set = s.(MutableEdgeSet)
-	} else {
+	vs.storage.GetInto(vertex, &set)
+
+	if set == nil {
 		if vs.features&DeterministicIteration != 0 {
-			set = NewMutableEdgeSet(data.NewLinkedHashSet())
+			set = NewMutableEdgeSet(godat.NewLinkedHashSet())
 		} else {
-			set = NewMutableEdgeSet(data.NewHashSet())
+			set = NewMutableEdgeSet(godat.NewHashSet())
 		}
 
 		vs.storage.Put(vertex, set)
@@ -107,13 +99,13 @@ func (o *undirectedGraphOps) EdgeBetween(source, target Vertex) (Edge, error) {
 	err := o.vertices.edgesOf(source).ForEach(func(edge Edge) error {
 		if o.edgeHasSourceAndTarget(edge, source, target) {
 			found = edge
-			return data.ErrStopIteration
+			return godat.ErrStopIteration
 		}
 
 		return nil
 	})
 
-	if err == data.ErrStopIteration {
+	if err == godat.ErrStopIteration {
 		return found, nil
 	}
 
@@ -164,11 +156,11 @@ func (o *undirectedGraphOps) DegreeOf(vertex Vertex) uint {
 }
 
 func newUndirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *BaseUndirectedGraph {
-	var vertexStorage data.Map
+	var vertexStorage godat.Map
 	if features&DeterministicIteration != 0 {
-		vertexStorage = data.NewLinkedHashMap()
+		vertexStorage = godat.NewLinkedHashMap()
 	} else {
-		vertexStorage = data.NewHashMap()
+		vertexStorage = godat.NewHashMap()
 	}
 
 	ops := &undirectedGraphOps{

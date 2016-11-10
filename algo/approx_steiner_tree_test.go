@@ -28,7 +28,7 @@ func TestApproximateSteinerTree(t *testing.T) {
 
 	reduced, err := ApproximateSteinerTreeOf(g, []gographt.Vertex{"A", "D", "F"})
 	assert.NoError(t, err)
-	assert.Equal(t, uint(5), reduced.Vertices().Count())
+	assert.Equal(t, uint(5), reduced.AsGraph().Vertices().Count())
 
 	edges := reduced.Edges().AsSlice()
 	assert.Contains(t, edges, 1)
@@ -65,7 +65,7 @@ func TestApproximateSteinerTreeOfDeterministicGraph(t *testing.T) {
 
 		reduced, err := ApproximateSteinerTreeOf(g, shuffled)
 		assert.NoError(t, err)
-		assert.Equal(t, []gographt.Vertex{"A", "D", "F", "B", "C"}, reduced.Vertices().AsSlice())
+		assert.Equal(t, []gographt.Vertex{"A", "D", "F", "B", "C"}, reduced.AsGraph().Vertices().AsSlice())
 		assert.Equal(t, []gographt.Edge{5, 1, 2, 4}, reduced.Edges().AsSlice())
 	}
 }

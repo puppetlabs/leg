@@ -1,7 +1,7 @@
 package gographt
 
 import (
-	"github.com/reflect/gographt/data"
+	"github.com/reflect/godat"
 )
 
 type UnenforcedSliceEdgeSet []Edge
@@ -39,7 +39,7 @@ func (es *UnenforcedSliceEdgeSet) Add(edge Edge) {
 }
 
 type edgeSet struct {
-	storage data.Set
+	storage godat.Set
 }
 
 func (es *edgeSet) Contains(edge Edge) bool {
@@ -65,9 +65,7 @@ func (es *edgeSet) AsSlice() []Edge {
 }
 
 func (es *edgeSet) ForEach(fn EdgeSetIterationFunc) error {
-	return es.storage.ForEach(func(element interface{}) error {
-		return fn(element.(Edge))
-	})
+	return es.storage.ForEachInto(fn)
 }
 
 func (es *edgeSet) Add(edge Edge) {
@@ -78,6 +76,6 @@ func (es *edgeSet) Remove(edge Edge) {
 	es.storage.Remove(edge)
 }
 
-func NewMutableEdgeSet(storage data.Set) MutableEdgeSet {
+func NewMutableEdgeSet(storage godat.Set) MutableEdgeSet {
 	return &edgeSet{storage}
 }
