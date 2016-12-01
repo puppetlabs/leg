@@ -107,3 +107,37 @@ func TestSetIterationReflection(t *testing.T) {
 		})
 	}
 }
+
+func TestSetOperations(t *testing.T) {
+	for _, s := range []Set{NewHashSet(), NewLinkedHashSet()} {
+		s.Add("a", "b", "c")
+
+		u := NewHashSet()
+		u.Add("c", "d", "e")
+
+		s.AddAll(u)
+		assert.Equal(t, 5, s.Size())
+		assert.Contains(t, s.Values(), "a")
+		assert.Contains(t, s.Values(), "b")
+		assert.Contains(t, s.Values(), "c")
+		assert.Contains(t, s.Values(), "d")
+		assert.Contains(t, s.Values(), "e")
+
+		rn := NewHashSet()
+		rn.Add("a", "c", "e", "f")
+
+		s.RetainAll(rn)
+		assert.Equal(t, 3, s.Size())
+		assert.Contains(t, s.Values(), "a")
+		assert.Contains(t, s.Values(), "c")
+		assert.Contains(t, s.Values(), "e")
+
+		rm := NewHashSet()
+		rm.Add("d", "e", "f")
+
+		s.RemoveAll(rm)
+		assert.Equal(t, 2, s.Size())
+		assert.Contains(t, s.Values(), "a")
+		assert.Contains(t, s.Values(), "c")
+	}
+}
