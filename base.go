@@ -22,7 +22,6 @@ type BaseGraphOps interface {
 	AddEdge(edge Edge)
 	RemoveEdge(edge Edge)
 	Vertices() MutableVertexSet
-	DegreeOf(vertex Vertex) uint
 }
 
 type baseEdgesView struct {
@@ -262,6 +261,12 @@ func NewBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, 
 
 type BaseUndirectedGraph struct {
 	*BaseGraph
+	Ops BaseUndirectedGraphOps
+}
+
+type BaseUndirectedGraphOps interface {
+	BaseGraphOps
+	DegreeOf(vertex Vertex) uint
 }
 
 func (ug *BaseUndirectedGraph) DegreeOf(vertex Vertex) (uint, error) {
@@ -269,9 +274,58 @@ func (ug *BaseUndirectedGraph) DegreeOf(vertex Vertex) (uint, error) {
 		return 0, &VertexNotFoundError{vertex}
 	}
 
-	return ug.BaseGraph.Ops.DegreeOf(vertex), nil
+	return ug.Ops.DegreeOf(vertex), nil
 }
 
-func NewBaseUndirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseGraphOps) *BaseUndirectedGraph {
-	return &BaseUndirectedGraph{NewBaseGraph(features, allowsLoops, allowsMultipleEdges, ops)}
+func NewBaseUndirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseUndirectedGraphOps) *BaseUndirectedGraph {
+	return &BaseUndirectedGraph{NewBaseGraph(features, allowsLoops, allowsMultipleEdges, ops), ops}
+}
+
+type BaseDirectedGraph struct {
+	*BaseGraph
+	Ops BaseDirectedGraphOps
+}
+
+type BaseDirectedGraphOps interface {
+	BaseGraphOps
+	InDegreeOf(vertex Vertex) uint
+	IncomingEdgesOf(vertex Vertex) EdgeSet
+	OutDegreeOf(vertex Vertex) uint
+	OutgoingEdgesOf(vertex Vertex) EdgeSet
+}
+
+func (dg *BaseDirectedGraph) InDegreeOf(vertex Vertex) (uint, error) {
+	if !dg.ContainsVertex(vertex) {
+		return 0, &VertexNotFoundError{vertex}
+	}
+
+	return dg.Ops.InDegreeOf(vertex), nil
+}
+
+func (dg *BaseDirectedGraph) IncomingEdgesOf(vertex Vertex) (EdgeSet, error) {
+	if !dg.ContainsVertex(vertex) {
+		return nil, &VertexNotFoundError{vertex}
+	}
+
+	return dg.Ops.IncomingEdgesOf(vertex), nil
+}
+
+func (dg *BaseDirectedGraph) OutDegreeOf(vertex Vertex) (uint, error) {
+	if !dg.ContainsVertex(vertex) {
+		return 0, &VertexNotFoundError{vertex}
+	}
+
+	return dg.Ops.OutDegreeOf(vertex), nil
+}
+
+func (dg *BaseDirectedGraph) OutgoingEdgesOf(vertex Vertex) (EdgeSet, error) {
+	if !dg.ContainsVertex(vertex) {
+		return nil, &VertexNotFoundError{vertex}
+	}
+
+	return dg.Ops.OutgoingEdgesOf(vertex), nil
+}
+
+func NewBaseDirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseDirectedGraphOps) *BaseDirectedGraph {
+	return &BaseDirectedGraph{NewBaseGraph(features, allowsLoops, allowsMultipleEdges, ops), ops}
 }
