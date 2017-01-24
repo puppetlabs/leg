@@ -62,3 +62,21 @@ func TestTiernanSimpleCycles(t *testing.T) {
 		assert.Len(t, TiernanSimpleCyclesOf(g).Cycles(), count)
 	}
 }
+
+func TestTiernanSimpleCyclesInto(t *testing.T) {
+	g := gographt.NewSimpleDirectedGraphWithFeatures(gographt.DeterministicIteration)
+	g.AddVertex("a")
+	g.AddVertex("b")
+	g.AddVertex("c")
+
+	g.Connect("a", "b")
+	g.Connect("b", "c")
+	g.Connect("c", "a")
+
+	var cycles [][]string
+	assert.NotPanics(t, func() {
+		TiernanSimpleCyclesOf(g).CyclesInto(&cycles)
+	})
+
+	assert.Equal(t, [][]string{{"a", "b", "c"}}, cycles)
+}

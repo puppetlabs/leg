@@ -7,6 +7,7 @@ package algo
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/reflect/godat"
 	"github.com/reflect/gographt"
@@ -19,6 +20,30 @@ const (
 type TiernanSimpleCycles struct {
 	features gographt.GraphFeature
 	g        gographt.DirectedGraph
+}
+
+func (tsc *TiernanSimpleCycles) CyclesInto(into interface{}) {
+	p := reflect.ValueOf(into).Elem()
+	slice := p
+
+	for _, cycle := range tsc.Cycles() {
+		size := len(cycle)
+		is := reflect.MakeSlice(p.Type().Elem(), size, size)
+		ist := is.Type().Elem()
+
+		for i, vertex := range cycle {
+			v := reflect.ValueOf(vertex)
+			if !v.IsValid() {
+				v = reflect.Zero(ist)
+			}
+
+			is.Index(i).Set(v)
+		}
+
+		slice = reflect.Append(slice, is)
+	}
+
+	p.Set(slice)
 }
 
 func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
