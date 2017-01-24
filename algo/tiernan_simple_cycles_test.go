@@ -1,3 +1,8 @@
+// Portions of this file are derived from JGraphT, a free Java graph-theory
+// library.
+//
+// (C) Copyright 2013-2017, by Nikolay Ognyanov and Contributors.
+
 package algo
 
 import (
