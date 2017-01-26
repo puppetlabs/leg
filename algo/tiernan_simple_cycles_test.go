@@ -36,30 +36,32 @@ func TestTiernanSimpleCycles(t *testing.T) {
 	g.Connect(6, 6)
 	assert.Equal(t, [][]gographt.Vertex{{0, 1, 2, 3}, {0, 1}, {0}, {1}, {6}}, TiernanSimpleCyclesOf(g).Cycles())
 
-	ns := map[int]int{
-		1: 1,
-		2: 3,
-		3: 8,
-		4: 24,
-		5: 89,
-		6: 415,
-		7: 2372,
-		8: 16072,
-		9: 125673,
+	conditions := []struct {
+		ConnectedVertices, Cycles int
+	}{
+		{1, 1},
+		{2, 3},
+		{3, 8},
+		{4, 24},
+		{5, 89},
+		{6, 415},
+		{7, 2372},
+		{8, 16072},
+		{9, 125673},
 	}
 
-	for size, count := range ns {
+	for _, cond := range conditions {
 		g = gographt.NewDirectedPseudograph()
-		for i := 0; i < size; i++ {
+		for i := 0; i < cond.ConnectedVertices; i++ {
 			g.AddVertex(i)
 		}
-		for i := 0; i < size; i++ {
-			for j := 0; j < size; j++ {
+		for i := 0; i < cond.ConnectedVertices; i++ {
+			for j := 0; j < cond.ConnectedVertices; j++ {
 				g.Connect(i, j)
 			}
 		}
 
-		assert.Len(t, TiernanSimpleCyclesOf(g).Cycles(), count)
+		assert.Len(t, TiernanSimpleCyclesOf(g).Cycles(), cond.Cycles)
 	}
 }
 

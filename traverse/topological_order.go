@@ -91,7 +91,11 @@ func (t *TopologicalOrderTraverser) ForEachInto(fn interface{}) error {
 	}
 
 	return t.ForEach(func(vertex gographt.Vertex) error {
-		p := coalesceInvalidToZeroValueOf(reflect.ValueOf(vertex), fnt.In(0))
+		p := reflect.ValueOf(vertex)
+		if !p.IsValid() {
+			p = reflect.Zero(fnt.In(0))
+		}
+
 		r := fnr.Call([]reflect.Value{p})
 
 		err := r[0]
