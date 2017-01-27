@@ -6,7 +6,6 @@
 package algo
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/reflect/godat"
@@ -48,7 +47,6 @@ func (tsc *TiernanSimpleCycles) CyclesInto(into interface{}) {
 
 func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
 	if tsc.g.Vertices().Count() == 0 {
-		fmt.Printf("out: %v\n", tsc.g.Vertices().Count())
 		return
 	}
 
