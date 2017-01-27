@@ -2,13 +2,13 @@ package godat
 
 import (
 	"errors"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestSetInsertionAndRetrieval(t *testing.T) {
-	for _, s := range []Set{NewHashSet(), NewLinkedHashSet()} {
+	for _, s := range []Set{NewHashSet(), NewLinkedHashSet(), NewSynchronizedSet(NewHashSet())} {
 		assert.True(t, s.Empty())
 		assert.False(t, s.Contains("a", "b"))
 
@@ -24,7 +24,7 @@ func TestSetInsertionAndRetrieval(t *testing.T) {
 }
 
 func TestSetRemoval(t *testing.T) {
-	for _, s := range []Set{NewHashSet(), NewLinkedHashSet()} {
+	for _, s := range []Set{NewHashSet(), NewLinkedHashSet(), NewSynchronizedSet(NewHashSet())} {
 		s.Add("a", "b", "c")
 		s.Remove("a", "b")
 
@@ -38,7 +38,7 @@ func TestSetRemoval(t *testing.T) {
 }
 
 func TestSetIteration(t *testing.T) {
-	for _, s := range []Set{NewHashSet(), NewLinkedHashSet(), NewHashSetWithCapacity(1), NewLinkedHashSetWithCapacity(1)} {
+	for _, s := range []Set{NewHashSet(), NewLinkedHashSet(), NewHashSetWithCapacity(1), NewLinkedHashSetWithCapacity(1), NewSynchronizedSet(NewHashSet())} {
 		s.Add("a", "b", "c")
 
 		assert.Equal(t, 3, s.Size())
@@ -73,7 +73,7 @@ func TestLinkedHashSetIteration(t *testing.T) {
 }
 
 func TestSetIterationReflection(t *testing.T) {
-	for _, s := range []Set{NewHashSet(), NewLinkedHashSet()} {
+	for _, s := range []Set{NewHashSet(), NewLinkedHashSet(), NewSynchronizedSet(NewHashSet())} {
 		s.Add("a", "b", "c")
 
 		var valuesInto []string
@@ -109,7 +109,7 @@ func TestSetIterationReflection(t *testing.T) {
 }
 
 func TestSetOperations(t *testing.T) {
-	for _, s := range []Set{NewHashSet(), NewLinkedHashSet()} {
+	for _, s := range []Set{NewHashSet(), NewLinkedHashSet(), NewSynchronizedSet(NewHashSet())} {
 		s.Add("a", "b", "c")
 
 		u := NewHashSet()

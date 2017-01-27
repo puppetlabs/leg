@@ -2,13 +2,13 @@ package godat
 
 import (
 	"errors"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestMapInsertionAndRetrieval(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewSynchronizedMap(NewHashMap())} {
 		assert.True(t, m.Empty())
 		assert.False(t, m.Contains("a"))
 
@@ -27,7 +27,7 @@ func TestMapInsertionAndRetrieval(t *testing.T) {
 }
 
 func TestMapStoresNil(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewSynchronizedMap(NewHashMap())} {
 		m.Put("a", nil)
 
 		assert.False(t, m.Empty())
@@ -45,7 +45,7 @@ func TestMapStoresNil(t *testing.T) {
 }
 
 func TestMapGetInto(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewSynchronizedMap(NewHashMap())} {
 		m.Put("a", 1)
 
 		var value int
@@ -56,7 +56,7 @@ func TestMapGetInto(t *testing.T) {
 }
 
 func TestMapUpdate(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewSynchronizedMap(NewHashMap())} {
 		m.Put("a", 1)
 		m.Put("b", 2)
 
@@ -81,7 +81,7 @@ func TestMapUpdate(t *testing.T) {
 }
 
 func TestMapIteration(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewHashMapWithCapacity(1), NewLinkedHashMapWithCapacity(1)} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewHashMapWithCapacity(1), NewLinkedHashMapWithCapacity(1), NewSynchronizedMap(NewHashMap())} {
 		m.Put("a", 1)
 		m.Put("b", 2)
 		m.Put("c", 3)
@@ -102,7 +102,7 @@ func TestMapIteration(t *testing.T) {
 }
 
 func TestMapIterationReflection(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewSynchronizedMap(NewHashMap())} {
 		m.Put("a", 1)
 		m.Put("b", 2)
 		m.Put("c", 3)
@@ -148,7 +148,7 @@ func TestMapIterationReflection(t *testing.T) {
 }
 
 func TestMapIterationWithNilValues(t *testing.T) {
-	for _, m := range []Map{NewHashMap(), NewLinkedHashMap()} {
+	for _, m := range []Map{NewHashMap(), NewLinkedHashMap(), NewSynchronizedMap(NewHashMap())} {
 		m.Put("a", nil)
 
 		assert.NotPanics(t, func() {
