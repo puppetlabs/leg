@@ -64,6 +64,18 @@ func (sm *SynchronizedMap) Put(key, value interface{}) bool {
 	return sm.storage.Put(key, value)
 }
 
+func (sm *SynchronizedMap) CompareAndPut(key, value, expected interface{}) bool {
+	sm.storageMut.Lock()
+	defer sm.storageMut.Unlock()
+
+	if v, found := sm.storage.Get(key); found && v == expected {
+		sm.storage.Put(key, value)
+		return true
+	}
+
+	return false
+}
+
 func (sm *SynchronizedMap) Get(key interface{}) (interface{}, bool) {
 	sm.storageMut.Lock()
 	defer sm.storageMut.Unlock()
@@ -83,6 +95,18 @@ func (sm *SynchronizedMap) Remove(key interface{}) bool {
 	defer sm.storageMut.Unlock()
 
 	return sm.storage.Remove(key)
+}
+
+func (sm *SynchronizedMap) CompareAndRemove(key, expected interface{}) bool {
+	sm.storageMut.Lock()
+	defer sm.storageMut.Unlock()
+
+	if v, found := sm.storage.Get(key); found && v == expected {
+		sm.storage.Remove(key)
+		return true
+	}
+
+	return false
 }
 
 func (sm *SynchronizedMap) Keys() []interface{} {
