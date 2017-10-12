@@ -1,94 +1,49 @@
 package logging
 
 import (
-	"fmt"
-	"log"
-	"path"
-	"runtime"
+	"context"
+
+	"github.com/inconshreveable/log15"
 )
 
-type Logger struct {
-	prefix string
-	Logger *log.Logger
+type Logger interface {
+	Let(ctx ...interface{}) Logger
+	With(ctx context.Context) Logger
+	At(names ...string) Logger
+	Stack() Logger
+
+	Debug(msg string, ctx ...interface{})
+	Info(msg string, ctx ...interface{})
+	Warn(msg string, ctx ...interface{})
+	Error(msg string, ctx ...interface{})
+	Crit(msg string, ctx ...interface{})
 }
 
-func getFileAndLine() string {
-	_, file, line, ok := runtime.Caller(3)
+type Ctx log15.Ctx
 
-	if !ok {
-		return ""
+func (c Ctx) toArray() []interface{} {
+	arr := make([]interface{}, len(c)*2)
+
+	i := 0
+	for k, v := range c {
+		arr[i] = k
+		arr[i+1] = v
+		i += 2
 	}
 
-	return fmt.Sprintf("%s:%d", path.Base(file), line)
+	return arr
 }
 
-func addObject(obj interface{}, arr []interface{}) []interface{} {
-	return append([]interface{}{getFileAndLine(), obj}, arr...)
-}
+func normalize(ctx []interface{}) []interface{} {
+	if len(ctx) == 1 {
+		if m, ok := ctx[0].(Ctx); ok {
+			return m.toArray()
+		}
 
-func prefix(prefix, format string) string {
-	return getFileAndLine() + " " + prefix + " " + format
-}
+		if m, ok := ctx[0].(log15.Ctx); ok {
+			return Ctx(m).toArray()
+		}
+	}
 
-func (l *Logger) Fatal(v ...interface{}) {
-	l.Logger.Fatal(addObject(l.prefix, v)...)
-}
-
-func (l *Logger) Fatalf(format string, v ...interface{}) {
-	l.Logger.Fatalf(prefix(l.prefix, format), v...)
-}
-
-func (l *Logger) Fatalln(v ...interface{}) {
-	l.Logger.Fatalln(addObject(l.prefix, v)...)
-}
-
-func (l *Logger) Flags() int {
-	return l.Logger.Flags()
-}
-
-func (l *Logger) Output(calldepth int, s string) error {
-	return l.Logger.Output(calldepth-1, s)
-}
-
-func (l *Logger) Panic(v ...interface{}) {
-	l.Logger.Panic(addObject(l.prefix, v)...)
-}
-
-func (l *Logger) Panicf(format string, v ...interface{}) {
-	l.Logger.Panicf(prefix(l.prefix, format), v...)
-}
-
-func (l *Logger) Panicln(v ...interface{}) {
-	l.Logger.Panicln(addObject(l.prefix, v)...)
-}
-
-func (l *Logger) Prefix() string {
-	return l.prefix
-}
-
-func (l *Logger) Print(v ...interface{}) {
-	l.Logger.Print(addObject(l.prefix, v)...)
-}
-
-func (l *Logger) Printf(format string, v ...interface{}) {
-	l.Logger.Printf(prefix(l.prefix, format), v...)
-}
-
-func (l *Logger) Println(v ...interface{}) {
-	l.Logger.Println(addObject(l.prefix, v)...)
-}
-
-func (l *Logger) SetFlags(flag int) {
-	l.Logger.SetFlags(flag)
-}
-
-func (l *Logger) SetPrefix(prefix string) {
-	l.prefix = prefix
-}
-
-func NewLogger(prefix string, logger *log.Logger) *Logger {
-	lo := new(Logger)
-	lo.Logger = logger
-	lo.prefix = prefix
-	return lo
+	return ctx
 }
