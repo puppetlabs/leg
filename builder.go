@@ -7,7 +7,7 @@ type LoggerBuilder interface {
 	With(ctx context.Context) LoggerBuilder
 	At(names ...string) LoggerBuilder
 
-	Load() Logger
+	Build() Logger
 }
 
 type builder struct {
@@ -35,7 +35,7 @@ func (b builder) At(names ...string) LoggerBuilder {
 	return b.Let(packageArgs(names)...)
 }
 
-func (b builder) Load() Logger {
+func (b builder) Build() Logger {
 	return (&proxy{delegate: rootLogger}).Let(b.args...)
 }
 
