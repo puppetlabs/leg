@@ -1,37 +1,34 @@
 package logging
 
-import (
-	"io/ioutil"
-	"log"
-	"os"
-	"sync"
-)
+import "github.com/inconshreveable/log15"
 
 var (
-	Debug   *Logger
-	Info    *Logger
-	Warning *Logger
-	Error   *Logger
+	rootHandler = log15.StdoutHandler
+	rootLevel   = log15.LvlDebug
 
-	setup   sync.Once
-	base    *log.Logger
-	discard *log.Logger
+	rootLogger log15.Logger
 )
 
-func doSetup() {
-	base = log.New(os.Stderr, "", log.LstdFlags)
-	discard = log.New(ioutil.Discard, "", log.LstdFlags)
-
-	Debug = NewLogger("DEBUG", discard)
-	Info = NewLogger("INFO", base)
-	Warning = NewLogger("WARNING", base)
-	Error = NewLogger("ERROR", base)
+func init() {
+	setLogger()
 }
 
-func Setup() {
-	setup.Do(doSetup)
+func setLogger() {
+	handler := rootHandler
+	handler = log15.LvlFilterHandler(rootLevel, handler)
+
+	logger := log15.New()
+	logger.SetHandler(handler)
+
+	rootLogger = logger
 }
 
-func Debugging() {
-	Debug = NewLogger("DEBUG", base)
+func SetHandler(in log15.Handler) {
+	rootHandler = in
+	setLogger()
+}
+
+func SetLevel(in log15.Lvl) {
+	rootLevel = in
+	setLogger()
 }
