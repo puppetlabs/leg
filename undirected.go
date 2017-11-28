@@ -68,7 +68,7 @@ func (vs *undirectedVertexSet) edgesOf(vertex Vertex) MutableEdgeSet {
 }
 
 type undirectedGraphOps struct {
-	g        *BaseUndirectedGraph
+	g        *baseUndirectedGraph
 	vertices *undirectedVertexSet
 }
 
@@ -77,7 +77,7 @@ func (o *undirectedGraphOps) EdgesBetween(source, target Vertex) EdgeSet {
 		return nil
 	}
 
-	es := &UnenforcedSliceEdgeSet{}
+	es := &unenforcedSliceEdgeSet{}
 
 	o.vertices.edgesOf(source).ForEach(func(edge Edge) error {
 		if o.edgeHasSourceAndTarget(edge, source, target) {
@@ -155,7 +155,7 @@ func (o *undirectedGraphOps) DegreeOf(vertex Vertex) uint {
 	return o.vertices.edgesOf(vertex).Count()
 }
 
-func newUndirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *BaseUndirectedGraph {
+func newUndirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *baseUndirectedGraph {
 	var vertexStorage godat.Map
 	if features&DeterministicIteration != 0 {
 		vertexStorage = godat.NewLinkedHashMap()
@@ -167,7 +167,7 @@ func newUndirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bo
 		vertices: &undirectedVertexSet{features: features, storage: vertexStorage},
 	}
 
-	g := NewBaseUndirectedGraph(features, allowLoops, allowMultipleEdges, ops)
+	g := newBaseUndirectedGraph(features, allowLoops, allowMultipleEdges, ops)
 	ops.g = g
 
 	return g

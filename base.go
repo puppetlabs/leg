@@ -9,13 +9,13 @@ import (
 	"github.com/reflect/godat"
 )
 
-type IntrusiveEdge struct {
+type intrusiveEdge struct {
 	Source, Target Vertex
 	Edge           Edge
 	Weight         float64
 }
 
-type BaseGraphOps interface {
+type baseGraphOps interface {
 	EdgesBetween(source, target Vertex) EdgeSet
 	EdgeBetween(source, target Vertex) (Edge, error)
 	EdgesOf(vertex Vertex) EdgeSet
@@ -25,7 +25,7 @@ type BaseGraphOps interface {
 }
 
 type baseEdgesView struct {
-	g *BaseGraph
+	g *baseGraph
 }
 
 func (sev *baseEdgesView) Contains(edge Edge) bool {
@@ -51,45 +51,45 @@ func (sev *baseEdgesView) AsSlice() []Edge {
 }
 
 func (sev *baseEdgesView) ForEach(fn EdgeSetIterationFunc) error {
-	return sev.g.edges.ForEachInto(func(key Edge, value *IntrusiveEdge) error {
+	return sev.g.edges.ForEachInto(func(key Edge, value *intrusiveEdge) error {
 		return fn(key)
 	})
 }
 
-type BaseGraph struct {
+type baseGraph struct {
 	AllowsLoops, AllowsMultipleEdges bool
-	Ops                              BaseGraphOps
+	Ops                              baseGraphOps
 
 	features  GraphFeature
-	edges     godat.Map // map[Edge]*IntrusiveEdge
+	edges     godat.Map // map[Edge]*intrusiveEdge
 	edgesView EdgeSet
 }
 
-func (g *BaseGraph) Features() GraphFeature {
+func (g *baseGraph) Features() GraphFeature {
 	return g.features
 }
 
-func (g *BaseGraph) EdgesBetween(source, target Vertex) EdgeSet {
+func (g *baseGraph) EdgesBetween(source, target Vertex) EdgeSet {
 	return g.Ops.EdgesBetween(source, target)
 }
 
-func (g *BaseGraph) EdgeBetween(source, target Vertex) (Edge, error) {
+func (g *baseGraph) EdgeBetween(source, target Vertex) (Edge, error) {
 	return g.Ops.EdgeBetween(source, target)
 }
 
-func (g *BaseGraph) Connect(source, target Vertex) error {
+func (g *baseGraph) Connect(source, target Vertex) error {
 	return g.AddEdge(source, target, NewEdge())
 }
 
-func (g *BaseGraph) AddEdge(source, target Vertex, edge Edge) error {
+func (g *baseGraph) AddEdge(source, target Vertex, edge Edge) error {
 	return g.AddEdgeWithWeight(source, target, edge, DefaultEdgeWeight)
 }
 
-func (g *BaseGraph) ConnectWithWeight(source, target Vertex, weight float64) error {
+func (g *baseGraph) ConnectWithWeight(source, target Vertex, weight float64) error {
 	return g.AddEdgeWithWeight(source, target, NewEdge(), weight)
 }
 
-func (g *BaseGraph) AddEdgeWithWeight(source, target Vertex, edge Edge, weight float64) error {
+func (g *baseGraph) AddEdgeWithWeight(source, target Vertex, edge Edge, weight float64) error {
 	if g.ContainsEdge(edge) {
 		return ErrEdgeAlreadyInGraph
 	}
@@ -109,7 +109,7 @@ func (g *BaseGraph) AddEdgeWithWeight(source, target Vertex, edge Edge, weight f
 		return ErrWouldCreateLoop
 	}
 
-	ie := &IntrusiveEdge{
+	ie := &intrusiveEdge{
 		Source: source,
 		Target: target,
 		Edge:   edge,
@@ -122,24 +122,24 @@ func (g *BaseGraph) AddEdgeWithWeight(source, target Vertex, edge Edge, weight f
 	return nil
 }
 
-func (g *BaseGraph) AddVertex(vertex Vertex) {
+func (g *baseGraph) AddVertex(vertex Vertex) {
 	g.Ops.Vertices().Add(vertex)
 }
 
-func (g *BaseGraph) ContainsEdgeBetween(source, target Vertex) bool {
+func (g *baseGraph) ContainsEdgeBetween(source, target Vertex) bool {
 	_, err := g.EdgeBetween(source, target)
 	return err == nil
 }
 
-func (g *BaseGraph) ContainsEdge(edge Edge) bool {
+func (g *baseGraph) ContainsEdge(edge Edge) bool {
 	return g.edges.Contains(edge)
 }
 
-func (g *BaseGraph) ContainsVertex(vertex Vertex) bool {
+func (g *baseGraph) ContainsVertex(vertex Vertex) bool {
 	return g.Vertices().Contains(vertex)
 }
 
-func (g *BaseGraph) Edges() EdgeSet {
+func (g *baseGraph) Edges() EdgeSet {
 	if g.edgesView == nil {
 		g.edgesView = &baseEdgesView{g}
 	}
@@ -147,7 +147,7 @@ func (g *BaseGraph) Edges() EdgeSet {
 	return g.edgesView
 }
 
-func (g *BaseGraph) EdgesOf(vertex Vertex) (EdgeSet, error) {
+func (g *baseGraph) EdgesOf(vertex Vertex) (EdgeSet, error) {
 	if !g.ContainsVertex(vertex) {
 		return nil, &VertexNotFoundError{vertex}
 	}
@@ -155,7 +155,7 @@ func (g *BaseGraph) EdgesOf(vertex Vertex) (EdgeSet, error) {
 	return g.Ops.EdgesOf(vertex), nil
 }
 
-func (g *BaseGraph) RemoveEdges(edges []Edge) (modified bool) {
+func (g *baseGraph) RemoveEdges(edges []Edge) (modified bool) {
 	for _, edge := range edges {
 		modified = modified || g.RemoveEdge(edge)
 	}
@@ -163,14 +163,14 @@ func (g *BaseGraph) RemoveEdges(edges []Edge) (modified bool) {
 	return
 }
 
-func (g *BaseGraph) RemoveEdgesBetween(source, target Vertex) EdgeSet {
+func (g *baseGraph) RemoveEdgesBetween(source, target Vertex) EdgeSet {
 	edges := g.EdgesBetween(source, target)
 	g.RemoveEdges(edges.AsSlice())
 
 	return edges
 }
 
-func (g *BaseGraph) RemoveEdge(edge Edge) bool {
+func (g *baseGraph) RemoveEdge(edge Edge) bool {
 	if !g.ContainsEdge(edge) {
 		return false
 	}
@@ -181,7 +181,7 @@ func (g *BaseGraph) RemoveEdge(edge Edge) bool {
 	return true
 }
 
-func (g *BaseGraph) RemoveEdgeBetween(source, target Vertex) (Edge, error) {
+func (g *baseGraph) RemoveEdgeBetween(source, target Vertex) (Edge, error) {
 	edge, err := g.EdgeBetween(source, target)
 	if err != nil {
 		return nil, err
@@ -191,7 +191,7 @@ func (g *BaseGraph) RemoveEdgeBetween(source, target Vertex) (Edge, error) {
 	return edge, nil
 }
 
-func (g *BaseGraph) RemoveVertices(vertices []Vertex) (modified bool) {
+func (g *baseGraph) RemoveVertices(vertices []Vertex) (modified bool) {
 	for _, vertex := range vertices {
 		modified = modified || g.RemoveVertex(vertex)
 	}
@@ -199,7 +199,7 @@ func (g *BaseGraph) RemoveVertices(vertices []Vertex) (modified bool) {
 	return
 }
 
-func (g *BaseGraph) RemoveVertex(vertex Vertex) bool {
+func (g *baseGraph) RemoveVertex(vertex Vertex) bool {
 	if !g.ContainsVertex(vertex) {
 		return false
 	}
@@ -210,38 +210,38 @@ func (g *BaseGraph) RemoveVertex(vertex Vertex) bool {
 	return true
 }
 
-func (g *BaseGraph) Vertices() VertexSet {
+func (g *baseGraph) Vertices() VertexSet {
 	return g.Ops.Vertices()
 }
 
-func (g *BaseGraph) SourceVertexOf(edge Edge) (Vertex, error) {
+func (g *baseGraph) SourceVertexOf(edge Edge) (Vertex, error) {
 	ie, found := g.edges.Get(edge)
 	if !found {
 		return nil, ErrEdgeNotFound
 	}
 
-	return ie.(*IntrusiveEdge).Source, nil
+	return ie.(*intrusiveEdge).Source, nil
 }
 
-func (g *BaseGraph) TargetVertexOf(edge Edge) (Vertex, error) {
+func (g *baseGraph) TargetVertexOf(edge Edge) (Vertex, error) {
 	ie, found := g.edges.Get(edge)
 	if !found {
 		return nil, ErrEdgeNotFound
 	}
 
-	return ie.(*IntrusiveEdge).Target, nil
+	return ie.(*intrusiveEdge).Target, nil
 }
 
-func (g *BaseGraph) WeightOf(edge Edge) (float64, error) {
+func (g *baseGraph) WeightOf(edge Edge) (float64, error) {
 	ie, found := g.edges.Get(edge)
 	if !found {
 		return DefaultEdgeWeight, ErrEdgeNotFound
 	}
 
-	return ie.(*IntrusiveEdge).Weight, nil
+	return ie.(*intrusiveEdge).Weight, nil
 }
 
-func NewBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseGraphOps) *BaseGraph {
+func newBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops baseGraphOps) *baseGraph {
 	var edges godat.Map
 	if features&DeterministicIteration != 0 {
 		edges = godat.NewLinkedHashMap()
@@ -249,7 +249,7 @@ func NewBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, 
 		edges = godat.NewHashMap()
 	}
 
-	return &BaseGraph{
+	return &baseGraph{
 		AllowsLoops:         allowsLoops,
 		AllowsMultipleEdges: allowsMultipleEdges,
 		Ops:                 ops,
@@ -259,17 +259,17 @@ func NewBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, 
 	}
 }
 
-type BaseUndirectedGraph struct {
-	*BaseGraph
-	Ops BaseUndirectedGraphOps
+type baseUndirectedGraph struct {
+	*baseGraph
+	Ops baseUndirectedGraphOps
 }
 
-type BaseUndirectedGraphOps interface {
-	BaseGraphOps
+type baseUndirectedGraphOps interface {
+	baseGraphOps
 	DegreeOf(vertex Vertex) uint
 }
 
-func (ug *BaseUndirectedGraph) DegreeOf(vertex Vertex) (uint, error) {
+func (ug *baseUndirectedGraph) DegreeOf(vertex Vertex) (uint, error) {
 	if !ug.ContainsVertex(vertex) {
 		return 0, &VertexNotFoundError{vertex}
 	}
@@ -277,24 +277,24 @@ func (ug *BaseUndirectedGraph) DegreeOf(vertex Vertex) (uint, error) {
 	return ug.Ops.DegreeOf(vertex), nil
 }
 
-func NewBaseUndirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseUndirectedGraphOps) *BaseUndirectedGraph {
-	return &BaseUndirectedGraph{NewBaseGraph(features, allowsLoops, allowsMultipleEdges, ops), ops}
+func newBaseUndirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops baseUndirectedGraphOps) *baseUndirectedGraph {
+	return &baseUndirectedGraph{newBaseGraph(features, allowsLoops, allowsMultipleEdges, ops), ops}
 }
 
-type BaseDirectedGraph struct {
-	*BaseGraph
-	Ops BaseDirectedGraphOps
+type baseDirectedGraph struct {
+	*baseGraph
+	Ops baseDirectedGraphOps
 }
 
-type BaseDirectedGraphOps interface {
-	BaseGraphOps
+type baseDirectedGraphOps interface {
+	baseGraphOps
 	InDegreeOf(vertex Vertex) uint
 	IncomingEdgesOf(vertex Vertex) EdgeSet
 	OutDegreeOf(vertex Vertex) uint
 	OutgoingEdgesOf(vertex Vertex) EdgeSet
 }
 
-func (dg *BaseDirectedGraph) InDegreeOf(vertex Vertex) (uint, error) {
+func (dg *baseDirectedGraph) InDegreeOf(vertex Vertex) (uint, error) {
 	if !dg.ContainsVertex(vertex) {
 		return 0, &VertexNotFoundError{vertex}
 	}
@@ -302,7 +302,7 @@ func (dg *BaseDirectedGraph) InDegreeOf(vertex Vertex) (uint, error) {
 	return dg.Ops.InDegreeOf(vertex), nil
 }
 
-func (dg *BaseDirectedGraph) IncomingEdgesOf(vertex Vertex) (EdgeSet, error) {
+func (dg *baseDirectedGraph) IncomingEdgesOf(vertex Vertex) (EdgeSet, error) {
 	if !dg.ContainsVertex(vertex) {
 		return nil, &VertexNotFoundError{vertex}
 	}
@@ -310,7 +310,7 @@ func (dg *BaseDirectedGraph) IncomingEdgesOf(vertex Vertex) (EdgeSet, error) {
 	return dg.Ops.IncomingEdgesOf(vertex), nil
 }
 
-func (dg *BaseDirectedGraph) OutDegreeOf(vertex Vertex) (uint, error) {
+func (dg *baseDirectedGraph) OutDegreeOf(vertex Vertex) (uint, error) {
 	if !dg.ContainsVertex(vertex) {
 		return 0, &VertexNotFoundError{vertex}
 	}
@@ -318,7 +318,7 @@ func (dg *BaseDirectedGraph) OutDegreeOf(vertex Vertex) (uint, error) {
 	return dg.Ops.OutDegreeOf(vertex), nil
 }
 
-func (dg *BaseDirectedGraph) OutgoingEdgesOf(vertex Vertex) (EdgeSet, error) {
+func (dg *baseDirectedGraph) OutgoingEdgesOf(vertex Vertex) (EdgeSet, error) {
 	if !dg.ContainsVertex(vertex) {
 		return nil, &VertexNotFoundError{vertex}
 	}
@@ -326,6 +326,6 @@ func (dg *BaseDirectedGraph) OutgoingEdgesOf(vertex Vertex) (EdgeSet, error) {
 	return dg.Ops.OutgoingEdgesOf(vertex), nil
 }
 
-func NewBaseDirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops BaseDirectedGraphOps) *BaseDirectedGraph {
-	return &BaseDirectedGraph{NewBaseGraph(features, allowsLoops, allowsMultipleEdges, ops), ops}
+func newBaseDirectedGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops baseDirectedGraphOps) *baseDirectedGraph {
+	return &baseDirectedGraph{newBaseGraph(features, allowsLoops, allowsMultipleEdges, ops), ops}
 }

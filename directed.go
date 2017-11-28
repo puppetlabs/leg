@@ -102,7 +102,7 @@ func (vs *directedVertexSet) outgoingEdgesOf(vertex Vertex) MutableEdgeSet {
 }
 
 type directedGraphOps struct {
-	g        *BaseDirectedGraph
+	g        *baseDirectedGraph
 	vertices *directedVertexSet
 }
 
@@ -111,7 +111,7 @@ func (o *directedGraphOps) EdgesBetween(source, target Vertex) EdgeSet {
 		return nil
 	}
 
-	es := &UnenforcedSliceEdgeSet{}
+	es := &unenforcedSliceEdgeSet{}
 
 	o.vertices.outgoingEdgesOf(source).ForEach(func(edge Edge) error {
 		tt, _ := o.g.TargetVertexOf(edge)
@@ -224,7 +224,7 @@ func (o *directedGraphOps) OutgoingEdgesOf(vertex Vertex) EdgeSet {
 	return o.vertices.outgoingEdgesOf(vertex)
 }
 
-func newDirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *BaseDirectedGraph {
+func newDirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *baseDirectedGraph {
 	var vertexStorage godat.Map
 	if features&DeterministicIteration != 0 {
 		vertexStorage = godat.NewLinkedHashMap()
@@ -236,7 +236,7 @@ func newDirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool
 		vertices: &directedVertexSet{features: features, storage: vertexStorage},
 	}
 
-	g := NewBaseDirectedGraph(features, allowLoops, allowMultipleEdges, ops)
+	g := newBaseDirectedGraph(features, allowLoops, allowMultipleEdges, ops)
 	ops.g = g
 
 	return g

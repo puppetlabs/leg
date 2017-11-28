@@ -4,9 +4,9 @@ import (
 	"github.com/reflect/godat"
 )
 
-type UnenforcedSliceEdgeSet []Edge
+type unenforcedSliceEdgeSet []Edge
 
-func (es UnenforcedSliceEdgeSet) Contains(edge Edge) bool {
+func (es unenforcedSliceEdgeSet) Contains(edge Edge) bool {
 	for _, e := range es {
 		if e == edge {
 			return true
@@ -16,15 +16,15 @@ func (es UnenforcedSliceEdgeSet) Contains(edge Edge) bool {
 	return false
 }
 
-func (es UnenforcedSliceEdgeSet) Count() uint {
+func (es unenforcedSliceEdgeSet) Count() uint {
 	return uint(len(es))
 }
 
-func (es UnenforcedSliceEdgeSet) AsSlice() []Edge {
+func (es unenforcedSliceEdgeSet) AsSlice() []Edge {
 	return es
 }
 
-func (es UnenforcedSliceEdgeSet) ForEach(fn EdgeSetIterationFunc) error {
+func (es unenforcedSliceEdgeSet) ForEach(fn EdgeSetIterationFunc) error {
 	for _, edge := range es {
 		if err := fn(edge); err != nil {
 			return err
@@ -34,7 +34,7 @@ func (es UnenforcedSliceEdgeSet) ForEach(fn EdgeSetIterationFunc) error {
 	return nil
 }
 
-func (es *UnenforcedSliceEdgeSet) Add(edge Edge) {
+func (es *unenforcedSliceEdgeSet) Add(edge Edge) {
 	*es = append(*es, edge)
 }
 
