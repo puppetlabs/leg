@@ -23,9 +23,29 @@ func (s *MapBackedSet) Add(elements ...interface{}) {
 	}
 }
 
+func (s *MapBackedSet) AddAll(other Container) {
+	s.Add(other.Values()...)
+}
+
 func (s *MapBackedSet) Remove(elements ...interface{}) {
 	for _, element := range elements {
 		s.storage.Remove(element)
+	}
+}
+
+func (s *MapBackedSet) RemoveAll(other Set) {
+	var remove []interface{}
+
+	s.ForEach(func(element interface{}) error {
+		if other.Contains(element) {
+			remove = append(remove, element)
+		}
+
+		return nil
+	})
+
+	for _, element := range remove {
+		s.Remove(element)
 	}
 }
 
@@ -57,6 +77,22 @@ func (s *MapBackedSet) ForEach(fn SetIterationFunc) error {
 
 func (s *MapBackedSet) ForEachInto(fn interface{}) error {
 	return setForEachInto(s, fn)
+}
+
+func (s *MapBackedSet) RetainAll(other Set) {
+	var remove []interface{}
+
+	s.ForEach(func(element interface{}) error {
+		if !other.Contains(element) {
+			remove = append(remove, element)
+		}
+
+		return nil
+	})
+
+	for _, element := range remove {
+		s.Remove(element)
+	}
 }
 
 // Creates a new map-backed set with the given map for storage.

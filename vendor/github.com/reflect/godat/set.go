@@ -21,8 +21,17 @@ type Set interface {
 	// exists in the set, it will not be duplicated.
 	Add(elements ...interface{})
 
+	// Adds the values from the given container to this set. If an element
+	// already exists in the set, it will not be duplicated. Equivalent to a
+	// set union operation.
+	AddAll(other Container)
+
 	// Removes all of the elements specified from the set.
 	Remove(elements ...interface{})
+
+	// Removes the elements from the given set from this set. Equivalent to a
+	// set difference operation.
+	RemoveAll(other Set)
 
 	// Iterates each element in the set and executes the given callback
 	// function. If the callback function returns an error, this function will
@@ -39,4 +48,8 @@ type Set interface {
 	// If the requirements for the fn parameter are not met, this function will
 	// panic.
 	ForEachInto(fn interface{}) error
+
+	// Removes any elements that are not shared between this set and the given
+	// set. Equivalent to a set intersection operation.
+	RetainAll(other Set)
 }

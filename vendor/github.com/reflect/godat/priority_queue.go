@@ -22,6 +22,10 @@ func (pqi priorityQueueImpl) Len() int {
 }
 
 func (pqi priorityQueueImpl) Less(i, j int) bool {
+	if pqi[i].priority == pqi[j].priority {
+		return i < j
+	}
+
 	return pqi[i].priority > pqi[j].priority
 }
 
