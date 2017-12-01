@@ -29,23 +29,31 @@ import (
 	"github.com/reflect/gographt"
 )
 
-const (
-	ApproximateSteinerTreeSupportedFeatures = gographt.DeterministicIteration
-)
+// ApproximateSteinerTreeSupportedFeatures are the graph features supported by
+// the Steiner tree approximation algorithm.
+const ApproximateSteinerTreeSupportedFeatures = gographt.DeterministicIteration
 
+// An ApproximateSteinerTree is an approximation of the Steiner tree of a graph
+// G for a set of vertices Vr. A Steiner tree is a subset of G such that all Vr
+// are present in the subset and the weights of the edges connecting Vr are
+// minimized.
 type ApproximateSteinerTree struct {
 	features gographt.GraphFeature
 	graph    gographt.UndirectedGraph
 }
 
+// Features returns the graph features being used for this algorithm.
 func (ast *ApproximateSteinerTree) Features() gographt.GraphFeature {
 	return ast.features
 }
 
+// Edges returns the set of edges computed as the approximation of the tree.
 func (ast *ApproximateSteinerTree) Edges() gographt.EdgeSet {
 	return ast.graph.Edges()
 }
 
+// AsGraph returns a graph representation of the subset of vertices and edges
+// represented by this tree.
 func (ast *ApproximateSteinerTree) AsGraph() gographt.UndirectedGraph {
 	return ast.graph
 }
@@ -54,13 +62,14 @@ type steinerTreeCostMetric struct {
 	edges []gographt.Edge
 }
 
-// Compute an approximation of the Steiner tree for a given graph.
+// ApproximateSteinerTreeOf computes an approximation of the Steiner tree for a
+// given graph.
 //
 // Steiner trees are known to be NP-complete, but an approximation can be found
 // by the following algorithm:
 //   1. Compute the metric closure of the given graph. This forms a complete
-//      graph with edge weights corresponding to the distances between
-//      vertices; this specialization is computable in polynomial time.
+//      graph with edge weights corresponding to the distances between vertices;
+//      this specialization is computable in polynomial time.
 //   2. Remove all vertices not in the desired subset.
 //   3. Compute the minimum spanning tree of the metric closure.
 //   4. Expand the minimized edges into a graph.
@@ -69,8 +78,12 @@ type steinerTreeCostMetric struct {
 //   6. Compute the minimum spanning tree of the expanded graph.
 //   7. Prepare a graph with only the edges contained in the tree.
 //
-// If this proves too slow or inaccurate, it can be further optimized:
-//   http://dl.acm.org/citation.cfm?doid=1806689.1806769
+// If this proves too slow or inaccurate, it can be further optimized. See
+// http://dl.acm.org/citation.cfm?doid=1806689.1806769 for more information.
+//
+// If any of the given vertices do not exist in this graph, an error of type
+// VertexNotFoundError is returned. If no path exists between any two of the
+// given vertices, an error of type NotConnectedError is returned.
 func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Vertex) (*ApproximateSteinerTree, error) {
 	// Prerequisite: we deduplicate the required vertices.
 	vertices := godat.NewHashSet()
@@ -106,7 +119,7 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 				return godat.ErrStopIteration
 			})
 
-			return nil, &gographt.VertexNotFoundError{first}
+			return nil, &gographt.VertexNotFoundError{Vertex: first}
 		}
 	}
 
@@ -140,7 +153,6 @@ func ApproximateSteinerTreeOf(g gographt.UndirectedGraph, required []gographt.Ve
 			return nil
 		})
 	})
-
 	if err != nil {
 		return nil, err
 	}

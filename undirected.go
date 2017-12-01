@@ -9,6 +9,10 @@ import (
 	"github.com/reflect/godat"
 )
 
+// UndirectedGraphSupportedFeatures are the features supported by all undirected
+// graphs.
+const UndirectedGraphSupportedFeatures = DeterministicIteration
+
 type undirectedVertexSet struct {
 	features GraphFeature
 	storage  godat.Map // map[Vertex]MutableEdgeSet
@@ -177,100 +181,112 @@ func newUndirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bo
 // Simple graphs
 //
 
+// A SimpleGraph is an undirected graph that does not permit loops or multiple
+// edges between vertices.
 type SimpleGraph struct {
-	UndirectedGraph
+	MutableUndirectedGraph
 }
 
-// Creates a new simple graph.
-//
-// A simple graph is an undirected graph that does not permit loops or multiple
-// edges between vertices.
+// NewSimpleGraph creates a new simple graph.
 func NewSimpleGraph() *SimpleGraph {
 	return NewSimpleGraphWithFeatures(0)
 }
 
+// NewSimpleGraphWithFeatures creates a new simple graph with the specified
+// graph features.
 func NewSimpleGraphWithFeatures(features GraphFeature) *SimpleGraph {
-	return &SimpleGraph{newUndirectedGraph(features, false, false)}
+	return &SimpleGraph{newUndirectedGraph(features&UndirectedGraphSupportedFeatures, false, false)}
 }
 
+// A SimpleWeightedGraph is a simple graph for which edges are assigned weights.
 type SimpleWeightedGraph struct {
-	UndirectedWeightedGraph
+	MutableUndirectedWeightedGraph
 }
 
-// Creates a new simple weighted graph.
-//
-// A simple weighted graph is a simple graph for which edges are assigned
-// weights.
+// NewSimpleWeightedGraph creates a new simple weighted graph.
 func NewSimpleWeightedGraph() *SimpleWeightedGraph {
 	return NewSimpleWeightedGraphWithFeatures(0)
 }
 
+// NewSimpleWeightedGraphWithFeatures creates a new simple weighted graph with
+// the specified graph features.
 func NewSimpleWeightedGraphWithFeatures(features GraphFeature) *SimpleWeightedGraph {
-	return &SimpleWeightedGraph{UndirectedWeightedGraph(newUndirectedGraph(features, false, false))}
-}
-
-type UndirectedMultigraph struct {
-	UndirectedGraph
+	return &SimpleWeightedGraph{newUndirectedGraph(features&UndirectedGraphSupportedFeatures, false, false)}
 }
 
 //
 // Multigraphs
 //
 
-// Creates a new multigraph.
-//
-// A multigraph is an undirected graph that does not permit loops, but does
-// permit multiple edges between any two vertices.
+// An UndirectedMultigraph is an undirected graph that does not permit loops,
+// but does permit multiple edges between any two vertices.
+type UndirectedMultigraph struct {
+	MutableUndirectedGraph
+}
+
+// NewUndirectedMultigraph creates a new undirected multigraph.
 func NewUndirectedMultigraph() *UndirectedMultigraph {
 	return NewUndirectedMultigraphWithFeatures(0)
 }
 
+// NewUndirectedMultigraphWithFeatures creates a new undirected multigraph with
+// the specified graph features.
 func NewUndirectedMultigraphWithFeatures(features GraphFeature) *UndirectedMultigraph {
-	return &UndirectedMultigraph{newUndirectedGraph(features, false, true)}
+	return &UndirectedMultigraph{newUndirectedGraph(features&UndirectedGraphSupportedFeatures, false, true)}
 }
 
+// An UndirectedWeightedMultigraph is an undirected multigraph for which edges
+// are assigned weights.
 type UndirectedWeightedMultigraph struct {
-	UndirectedWeightedGraph
+	MutableUndirectedWeightedGraph
 }
 
-// Creates a new weighted multigraph.
+// NewUndirectedWeightedMultigraph creates a new undirected weighted multigraph.
 func NewUndirectedWeightedMultigraph() *UndirectedWeightedMultigraph {
 	return NewUndirectedWeightedMultigraphWithFeatures(0)
 }
 
+// NewUndirectedWeightedMultigraphWithFeatures creates a new undirected weighted
+// multigraph with the specified graph features.
 func NewUndirectedWeightedMultigraphWithFeatures(features GraphFeature) *UndirectedWeightedMultigraph {
-	return &UndirectedWeightedMultigraph{UndirectedWeightedGraph(newUndirectedGraph(features, false, true))}
+	return &UndirectedWeightedMultigraph{newUndirectedGraph(features&UndirectedGraphSupportedFeatures, false, true)}
 }
 
 //
 // Pseudographs
 //
 
+// An UndirectedPseudograph is an undirected graph that permits both loops and
+// multiple edges between vertices.
 type UndirectedPseudograph struct {
-	UndirectedGraph
+	MutableUndirectedGraph
 }
 
-// Creates a new pseudograph.
-//
-// A pseudograph is an undirected graph that permits both loops and multiple
-// edges between vertices.
+// NewUndirectedPseudograph creates a new undirected pseudograph.
 func NewUndirectedPseudograph() *UndirectedPseudograph {
 	return NewUndirectedPseudographWithFeatures(0)
 }
 
+// NewUndirectedPseudographWithFeatures creates a new undirected pseudograph
+// with the specified graph features.
 func NewUndirectedPseudographWithFeatures(features GraphFeature) *UndirectedPseudograph {
-	return &UndirectedPseudograph{newUndirectedGraph(features, true, true)}
+	return &UndirectedPseudograph{newUndirectedGraph(features&UndirectedGraphSupportedFeatures, true, true)}
 }
 
+// An UndirectedWeightedPseudograph is an undirected pseudograph for which edges
+// are assigned weights.
 type UndirectedWeightedPseudograph struct {
-	UndirectedWeightedGraph
+	MutableUndirectedWeightedGraph
 }
 
-// Creates a new weighted pseudograph.
+// NewUndirectedWeightedPseudograph creates a new undirected weighted
+// pseudograph.
 func NewUndirectedWeightedPseudograph() *UndirectedWeightedPseudograph {
 	return NewUndirectedWeightedPseudographWithFeatures(0)
 }
 
+// NewUndirectedWeightedPseudographWithFeatures creates a new undirected
+// weighted pseudograph with the specified graph features.
 func NewUndirectedWeightedPseudographWithFeatures(features GraphFeature) *UndirectedWeightedPseudograph {
-	return &UndirectedWeightedPseudograph{UndirectedWeightedGraph(newUndirectedGraph(features, true, true))}
+	return &UndirectedWeightedPseudograph{newUndirectedGraph(features&UndirectedGraphSupportedFeatures, true, true)}
 }

@@ -9,6 +9,10 @@ import (
 	"github.com/reflect/godat"
 )
 
+// DirectedGraphSupportedFeatures are the features supported by all directed
+// graphs.
+const DirectedGraphSupportedFeatures = DeterministicIteration
+
 type directedEdgeContainer struct {
 	incoming MutableEdgeSet
 	outgoing MutableEdgeSet
@@ -246,100 +250,112 @@ func newDirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool
 // Simple graphs
 //
 
+// A SimpleDirectedGraph is a directed graph that does not permit loops or
+// multiple edges between vertices.
 type SimpleDirectedGraph struct {
-	DirectedGraph
+	MutableDirectedGraph
 }
 
-// Creates a new simple graph.
-//
-// A simple graph is an directed graph that does not permit loops or multiple
-// edges between vertices.
+// NewSimpleDirectedGraph creates a new simple directed graph.
 func NewSimpleDirectedGraph() *SimpleDirectedGraph {
 	return NewSimpleDirectedGraphWithFeatures(0)
 }
 
+// NewSimpleDirectedGraphWithFeatures creates a new simple directed graph with
+// the specified graph features.
 func NewSimpleDirectedGraphWithFeatures(features GraphFeature) *SimpleDirectedGraph {
-	return &SimpleDirectedGraph{newDirectedGraph(features, false, false)}
+	return &SimpleDirectedGraph{newDirectedGraph(features&DirectedGraphSupportedFeatures, false, false)}
 }
 
+// A SimpleDirectedWeightedGraph is a simple directed graph for which edges are
+// assigned weights.
 type SimpleDirectedWeightedGraph struct {
-	DirectedWeightedGraph
+	MutableDirectedWeightedGraph
 }
 
-// Creates a new simple weighted graph.
-//
-// A simple weighted graph is a simple graph for which edges are assigned
-// weights.
+// NewSimpleDirectedWeightedGraph creates a new simple directed weighted graph.
 func NewSimpleDirectedWeightedGraph() *SimpleDirectedWeightedGraph {
 	return NewSimpleDirectedWeightedGraphWithFeatures(0)
 }
 
+// NewSimpleDirectedWeightedGraphWithFeatures creates a new simple directed
+// weighted graph with the specified graph features.
 func NewSimpleDirectedWeightedGraphWithFeatures(features GraphFeature) *SimpleDirectedWeightedGraph {
-	return &SimpleDirectedWeightedGraph{DirectedWeightedGraph(newDirectedGraph(features, false, false))}
-}
-
-type DirectedMultigraph struct {
-	DirectedGraph
+	return &SimpleDirectedWeightedGraph{newDirectedGraph(features&DirectedGraphSupportedFeatures, false, false)}
 }
 
 //
 // Multigraphs
 //
 
-// Creates a new multigraph.
-//
-// A multigraph is an directed graph that does not permit loops, but does
+// A DirectedMultigraph is a directed graph that does not permit loops, but does
 // permit multiple edges between any two vertices.
+type DirectedMultigraph struct {
+	MutableDirectedGraph
+}
+
+// NewDirectedMultigraph creates a new directed multigraph.
 func NewDirectedMultigraph() *DirectedMultigraph {
 	return NewDirectedMultigraphWithFeatures(0)
 }
 
+// NewDirectedMultigraphWithFeatures creates a new directed multigraph with the
+// specified graph features.
 func NewDirectedMultigraphWithFeatures(features GraphFeature) *DirectedMultigraph {
-	return &DirectedMultigraph{newDirectedGraph(features, false, true)}
+	return &DirectedMultigraph{newDirectedGraph(features&DirectedGraphSupportedFeatures, false, true)}
 }
 
+// A DirectedWeightedMultigraph is a directed multigraph for which edges are
+// assigned weights.
 type DirectedWeightedMultigraph struct {
-	DirectedWeightedGraph
+	MutableDirectedWeightedGraph
 }
 
-// Creates a new weighted multigraph.
+// NewDirectedWeightedMultigraph creates a new directed weighted multigraph.
 func NewDirectedWeightedMultigraph() *DirectedWeightedMultigraph {
 	return NewDirectedWeightedMultigraphWithFeatures(0)
 }
 
+// NewDirectedWeightedMultigraphWithFeatures creates a new directed weighted
+// multigraph with the specified graph features.
 func NewDirectedWeightedMultigraphWithFeatures(features GraphFeature) *DirectedWeightedMultigraph {
-	return &DirectedWeightedMultigraph{DirectedWeightedGraph(newDirectedGraph(features, false, true))}
+	return &DirectedWeightedMultigraph{newDirectedGraph(features&DirectedGraphSupportedFeatures, false, true)}
 }
 
 //
 // Pseudographs
 //
 
+// A DirectedPseudograph is a directed graph that permits both loops and
+// multiple edges between vertices.
 type DirectedPseudograph struct {
-	DirectedGraph
+	MutableDirectedGraph
 }
 
-// Creates a new pseudograph.
-//
-// A pseudograph is an directed graph that permits both loops and multiple
-// edges between vertices.
+// NewDirectedPseudograph creates a new directed pseudograph.
 func NewDirectedPseudograph() *DirectedPseudograph {
 	return NewDirectedPseudographWithFeatures(0)
 }
 
+// NewDirectedPseudographWithFeatures a new directed pseudograph with the given
+// graph features.
 func NewDirectedPseudographWithFeatures(features GraphFeature) *DirectedPseudograph {
-	return &DirectedPseudograph{newDirectedGraph(features, true, true)}
+	return &DirectedPseudograph{newDirectedGraph(features&DirectedGraphSupportedFeatures, true, true)}
 }
 
+// A DirectedWeightedPseudograph is a directed pseudograph for which the edges
+// are assigned weights.
 type DirectedWeightedPseudograph struct {
-	DirectedWeightedGraph
+	MutableDirectedWeightedGraph
 }
 
-// Creates a new weighted pseudograph.
+// NewDirectedWeightedPseudograph creates a new directed weighted pseudograph.
 func NewDirectedWeightedPseudograph() *DirectedWeightedPseudograph {
 	return NewDirectedWeightedPseudographWithFeatures(0)
 }
 
+// NewDirectedWeightedPseudographWithFeatures creates a new directed weighted
+// pseudograph with the given graph features.
 func NewDirectedWeightedPseudographWithFeatures(features GraphFeature) *DirectedWeightedPseudograph {
-	return &DirectedWeightedPseudograph{DirectedWeightedGraph(newDirectedGraph(features, true, true))}
+	return &DirectedWeightedPseudograph{newDirectedGraph(features&DirectedGraphSupportedFeatures, true, true)}
 }

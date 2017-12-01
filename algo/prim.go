@@ -29,7 +29,7 @@ func (mst *PrimMinimumSpanningTree) Edges() gographt.EdgeSet {
 	return mst.es
 }
 
-func PrimMinimumSpanningTreeOf(g gographt.UndirectedWeightedGraph) *PrimMinimumSpanningTree {
+func PrimMinimumSpanningTreeOf(g gographt.UndirectedGraph) *PrimMinimumSpanningTree {
 	vs := g.Vertices()
 
 	var (

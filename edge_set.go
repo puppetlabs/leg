@@ -76,6 +76,8 @@ func (es *edgeSet) Remove(edge Edge) {
 	es.storage.Remove(edge)
 }
 
+// NewMutableEdgeSet creates a new mutable edge set using the given underlying
+// set to store the edges.
 func NewMutableEdgeSet(storage godat.Set) MutableEdgeSet {
 	return &edgeSet{storage}
 }

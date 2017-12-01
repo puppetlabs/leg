@@ -174,7 +174,7 @@ func (bfsp *BellmanFordShortestPaths) Features() gographt.GraphFeature {
 
 func (bfsp *BellmanFordShortestPaths) EdgesTo(end gographt.Vertex) ([]gographt.Edge, error) {
 	if !bfsp.executor.graph.ContainsVertex(end) {
-		return nil, &gographt.VertexNotFoundError{end}
+		return nil, &gographt.VertexNotFoundError{Vertex: end}
 	}
 
 	bfsp.executor.calculate()
@@ -200,7 +200,7 @@ func (bfsp *BellmanFordShortestPaths) EdgesTo(end gographt.Vertex) ([]gographt.E
 
 func (bfsp *BellmanFordShortestPaths) CostTo(end gographt.Vertex) (float64, error) {
 	if !bfsp.executor.graph.ContainsVertex(end) {
-		return math.Inf(1), &gographt.VertexNotFoundError{end}
+		return math.Inf(1), &gographt.VertexNotFoundError{Vertex: end}
 	}
 
 	bfsp.executor.calculate()
