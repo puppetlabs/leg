@@ -29,21 +29,21 @@ func (p proxy) Stack() Logger {
 }
 
 func (p proxy) Debug(msg string, ctx ...interface{}) {
-	p.delegate.Debug(msg, ctx...)
+	p.delegate.Debug(msg, normalize(ctx)...)
 }
 
 func (p proxy) Info(msg string, ctx ...interface{}) {
-	p.delegate.Info(msg, ctx...)
+	p.delegate.Info(msg, normalize(ctx)...)
 }
 
 func (p proxy) Warn(msg string, ctx ...interface{}) {
-	p.delegate.Warn(msg, ctx...)
+	p.delegate.Warn(msg, normalize(ctx)...)
 }
 
 func (p proxy) Error(msg string, ctx ...interface{}) {
-	p.delegate.Error(msg, ctx...)
+	p.delegate.Error(msg, normalize(ctx)...)
 }
 
 func (p proxy) Crit(msg string, ctx ...interface{}) {
-	p.delegate.Crit(msg, ctx...)
+	p.delegate.Crit(msg, normalize(ctx)...)
 }
