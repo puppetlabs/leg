@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/puppetlabs/insights-metrics/metrics"
-	"github.com/puppetlabs/insights-metrics/metrics/collectors"
-	"github.com/puppetlabs/insights-metrics/metrics/delegates"
-	"github.com/puppetlabs/insights-metrics/metrics/server"
+	"github.com/puppetlabs/insights-instrumentation/metrics"
+	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
+	"github.com/puppetlabs/insights-instrumentation/metrics/delegates"
+	"github.com/puppetlabs/insights-instrumentation/metrics/server"
 )
 
 func main() {
