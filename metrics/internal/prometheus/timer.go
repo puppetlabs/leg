@@ -4,14 +4,31 @@ import (
 	"sync"
 
 	prom "github.com/prometheus/client_golang/prometheus"
+	"github.com/puppetlabs/insights-instrumentation/errors"
 	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
 )
 
 type Timer struct {
-	observer prom.Observer
+	vector   prom.ObserverVec
+	delegate prom.Observer
 	timers   map[*collectors.TimerHandle]*prom.Timer
+	labels   []collectors.Label
 
 	sync.Mutex
+}
+
+func (t *Timer) WithLabels(labels []collectors.Label) (collectors.Timer, error) {
+	delegate, err := t.vector.GetMetricWith(convertLabels(labels))
+	if err != nil {
+		return nil, errors.NewMetricsUnknownError("prometheus").WithCause(err)
+	}
+
+	return &Timer{
+		vector:   t.vector,
+		delegate: delegate,
+		timers:   make(map[*collectors.TimerHandle]*prom.Timer),
+		labels:   labels,
+	}, nil
 }
 
 func (t *Timer) Start() *collectors.TimerHandle {
@@ -19,7 +36,9 @@ func (t *Timer) Start() *collectors.TimerHandle {
 	defer t.Unlock()
 
 	h := &collectors.TimerHandle{}
-	promt := prom.NewTimer(t.observer)
+	promt := prom.NewTimer(prom.ObserverFunc(func(v float64) {
+		t.delegate.Observe(v)
+	}))
 
 	t.timers[h] = promt
 
@@ -32,9 +51,9 @@ func (t *Timer) ObserveDuration(h *collectors.TimerHandle) {
 	}
 }
 
-func NewTimer(observer prom.Observer) *Timer {
+func NewTimer(vector prom.ObserverVec) *Timer {
 	return &Timer{
-		observer: observer,
-		timers:   make(map[*collectors.TimerHandle]*prom.Timer),
+		vector: vector,
+		timers: make(map[*collectors.TimerHandle]*prom.Timer),
 	}
 }

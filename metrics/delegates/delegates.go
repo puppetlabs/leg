@@ -10,7 +10,7 @@ import (
 
 // Delegate is an interface metrics collectors implement (i.e. prometheus)
 type Delegate interface {
-	NewCounter(name string) (collectors.Counter, error)
+	NewCounter(name string, opts collectors.CounterOptions) (collectors.Counter, error)
 	NewTimer(name string, opts collectors.TimerOptions) (collectors.Timer, error)
 	NewHandler() http.Handler
 }
