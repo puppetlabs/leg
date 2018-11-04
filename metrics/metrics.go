@@ -32,12 +32,13 @@ type Options struct {
 
 // Metrics provides a wrapper for a collector delegate to report metrics to.
 type Metrics struct {
-	Namespace     string
-	counters      map[string]collectors.Counter
-	timers        map[string]collectors.Timer
-	delegate      delegates.Delegate
-	errorBehavior errorBehavior
-	logger        logging.Logger
+	Namespace          string
+	counters           map[string]collectors.Counter
+	timers             map[string]collectors.Timer
+	durationMiddleware map[string]collectors.DurationMiddleware
+	delegate           delegates.Delegate
+	errorBehavior      errorBehavior
+	logger             logging.Logger
 
 	sync.Mutex
 }
@@ -157,6 +158,57 @@ func (m *Metrics) MustCounter(name string, labels ...collectors.Label) collector
 	return c
 }
 
+func (m *Metrics) RegisterDurationMiddleware(name string, opts collectors.DurationMiddlewareOptions) error {
+	m.Lock()
+	defer m.Unlock()
+
+	if _, ok := m.durationMiddleware[name]; !ok {
+		c, err := m.delegate.NewDurationMiddleware(name, opts)
+		if err != nil {
+			return err
+		}
+
+		m.durationMiddleware[name] = c
+	}
+
+	return nil
+}
+
+func (m *Metrics) MustRegisterDurationMiddleware(name string, opts collectors.DurationMiddlewareOptions) {
+	if err := m.RegisterDurationMiddleware(name, opts); err != nil {
+		m.handleError(err)
+	}
+}
+
+func (m *Metrics) DurationMiddleware(name string) (collectors.DurationMiddleware, error) {
+	m.Lock()
+	defer m.Unlock()
+
+	if _, ok := m.durationMiddleware[name]; !ok {
+		return nil, errors.NewMetricsNotFoundError(name, "duration middleware")
+	}
+
+	return m.durationMiddleware[name], nil
+}
+
+func (m *Metrics) MustDurationMiddleware(name string, labels ...collectors.Label) collectors.DurationMiddleware {
+	d, err := m.DurationMiddleware(name)
+	if err != nil {
+		m.handleError(err)
+
+		return noop.DurationMiddleware{}
+	}
+
+	d, err = d.WithLabels(labels)
+	if err != nil {
+		m.handleError(err)
+
+		return noop.DurationMiddleware{}
+	}
+
+	return d
+}
+
 // Handler returns the http handler from the delegate if there is one
 func (m *Metrics) Handler() http.Handler {
 	return m.delegate.NewHandler()
@@ -183,12 +235,13 @@ func NewNamespace(namespace string, opts Options) (*Metrics, error) {
 	}
 
 	return &Metrics{
-		Namespace:     namespace,
-		delegate:      delegate,
-		counters:      make(map[string]collectors.Counter),
-		timers:        make(map[string]collectors.Timer),
-		errorBehavior: opts.ErrorBehavior,
-		logger:        logger,
+		Namespace:          namespace,
+		delegate:           delegate,
+		counters:           make(map[string]collectors.Counter),
+		timers:             make(map[string]collectors.Timer),
+		durationMiddleware: make(map[string]collectors.DurationMiddleware),
+		errorBehavior:      opts.ErrorBehavior,
+		logger:             logger,
 	}, nil
 }
 

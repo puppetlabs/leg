@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	namespace          = "example"
-	storageBackendCall = "storage_backend_call"
-	taskCount          = "task_count"
-	requestCount       = "request_count"
+	namespace           = "example"
+	storageBackendCall  = "storage_backend_call"
+	taskCount           = "task_count"
+	requestCount        = "request_count"
+	httpRequestDuration = "http_handler_duration"
 )
 
 type testApp struct {
@@ -79,6 +80,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	hopts := collectors.DurationMiddlewareOptions{
+		Description: "http request duration middleware",
+		Labels:      []string{"handler", "code", "method"},
+	}
+	if err := m.RegisterDurationMiddleware(httpRequestDuration, hopts); err != nil {
+		log.Fatal(err)
+	}
+
 	failedTasks := m.MustCounter(taskCount, metrics.NewLabel("status", "failed"))
 	failedTasks.Add(5)
 
@@ -86,8 +95,9 @@ func main() {
 	succeededTasks.Add(1)
 	succeededTasks.Inc()
 
+	mw := m.MustDurationMiddleware(httpRequestDuration, metrics.NewLabel("handler", "test_handler"))
 	mux := http.NewServeMux()
-	mux.Handle("/", testApp{m})
+	mux.Handle("/", mw.Wrap(testApp{m}))
 
 	go http.ListenAndServe("localhost:2399", mux)
 

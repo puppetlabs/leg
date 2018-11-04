@@ -12,7 +12,6 @@ type Timer struct {
 	vector   prom.ObserverVec
 	delegate prom.Observer
 	timers   map[*collectors.TimerHandle]*prom.Timer
-	labels   []collectors.Label
 
 	sync.Mutex
 }
@@ -27,7 +26,6 @@ func (t *Timer) WithLabels(labels []collectors.Label) (collectors.Timer, error) 
 		vector:   t.vector,
 		delegate: delegate,
 		timers:   make(map[*collectors.TimerHandle]*prom.Timer),
-		labels:   labels,
 	}, nil
 }
 

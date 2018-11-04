@@ -12,6 +12,7 @@ import (
 type Delegate interface {
 	NewCounter(name string, opts collectors.CounterOptions) (collectors.Counter, error)
 	NewTimer(name string, opts collectors.TimerOptions) (collectors.Timer, error)
+	NewDurationMiddleware(name string, opts collectors.DurationMiddlewareOptions) (collectors.DurationMiddleware, error)
 	NewHandler() http.Handler
 }
 

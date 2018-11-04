@@ -44,6 +44,23 @@ func (p *Prometheus) NewTimer(name string, opts collectors.TimerOptions) (collec
 	return t, nil
 }
 
+func (p *Prometheus) NewDurationMiddleware(name string, opts collectors.DurationMiddlewareOptions) (collectors.DurationMiddleware, error) {
+	observer := prom.NewHistogramVec(prom.HistogramOpts{
+		Namespace: p.namespace,
+		Name:      name,
+		Help:      opts.Description,
+		Buckets:   opts.HistogramBoundaries,
+	}, opts.Labels)
+
+	if err := prom.Register(observer); err != nil {
+		return nil, errors.NewMetricsUnknownError("prometheus").WithCause(err)
+	}
+
+	d := &DurationMiddleware{vector: observer}
+
+	return d, nil
+}
+
 func (p *Prometheus) NewHandler() http.Handler {
 	return promhttp.Handler()
 }
