@@ -16,13 +16,15 @@ type Delegate interface {
 	NewHandler() http.Handler
 }
 
-type DelegateType int
+// DelegateType is a string representation of all the available metric backend delegates
+type DelegateType string
 
 const (
 	// PrometheusDelegate is a const that represents the prometheus backend
-	PrometheusDelegate DelegateType = iota
+	PrometheusDelegate DelegateType = "prometheus"
 )
 
+// New looks up t and returns a new Delegate matching that type
 func New(namespace string, t DelegateType) (Delegate, error) {
 	switch t {
 	case PrometheusDelegate:

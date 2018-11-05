@@ -25,9 +25,11 @@ const (
 // Options are configuration options used in creating a new Metrics
 type Options struct {
 	// DelegateType is the delegate to create for use in Metrics
-	DelegateType  delegates.DelegateType
+	DelegateType delegates.DelegateType
+	// ErrorBehavior is how we should react to errors occuring inside Must* functions
 	ErrorBehavior errorBehavior
-	Logger        logging.Logger
+	// Logger is the logger to use. Default value is defaultLogger configured in logging.go
+	Logger logging.Logger
 }
 
 // Metrics provides a wrapper for a collector delegate to report metrics to.
@@ -245,6 +247,7 @@ func NewNamespace(namespace string, opts Options) (*Metrics, error) {
 	}, nil
 }
 
+// NewLabel is a helper method for instantiating a new collectors.Label
 func NewLabel(name, value string) collectors.Label {
 	return collectors.Label{Name: name, Value: value}
 }
