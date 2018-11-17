@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/puppetlabs/insights-stdlib/lifecycle"
 )
 
 type CancelableFunc func(ctx context.Context) error
@@ -14,36 +16,37 @@ func TrapAndWait(ctx context.Context, cancelables ...CancelableFunc) int {
 	defer cancel()
 
 	sigch := make(chan os.Signal, 1)
-	errch := make(chan error)
-
 	signal.Notify(sigch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, os.Interrupt)
 
-	for _, c := range cancelables {
-		go func(c CancelableFunc) {
-			errch <- c(ctx)
-		}(c)
+	cb := lifecycle.NewCloserBuilder().
+		When(func(ctx context.Context) error {
+			for {
+				select {
+				case sig := <-sigch:
+					switch sig {
+					case syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, os.Interrupt:
+						return nil
+					}
+				case <-ctx.Done():
+					return nil
+				}
+			}
+		})
+	for _, fn := range cancelables {
+		cb.When(lifecycle.CloserWhenFunc(fn))
 	}
 
-	var rv, rets int
-	for {
-		select {
-		case sig := <-sigch:
-			switch sig {
-			case syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, os.Interrupt:
-				cancel()
-			}
-		case err := <-errch:
-			cancel()
+	closer := cb.Build()
 
-			if err != nil {
-				log(ctx).Error("process ended with error", "error", err)
-				rv = 1
-			}
-
-			rets++
-			if rets == len(cancelables) {
-				return rv
-			}
-		}
+	select {
+	case <-closer.Done():
+	case <-ctx.Done():
 	}
+
+	if err := closer.Do(ctx); err != nil {
+		log(ctx).Error("process ended with error", "error", err)
+		return 1
+	}
+
+	return 0
 }

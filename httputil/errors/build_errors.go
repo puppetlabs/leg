@@ -13,6 +13,12 @@ type Error interface {
 	errawrgo.Error
 }
 
+// External contains methods that can be used externally to help consume errors from this package.
+type External struct{}
+
+// API is a singleton instance of the External type.
+var API External
+
 // Domain is the general domain in which all errors in this package belong.
 var Domain = &impl.ErrorDomain{
 	Key:   "lih",
@@ -28,6 +34,16 @@ var APISection = &impl.ErrorSection{
 
 // APICachedResourceNotAvailableErrorCode is the code for an instance of "cached_resource_not_available_error".
 const APICachedResourceNotAvailableErrorCode = "lih_api_cached_resource_not_available_error"
+
+// IsAPICachedResourceNotAvailableError tests whether a given error is an instance of "cached_resource_not_available_error".
+func IsAPICachedResourceNotAvailableError(err errawrgo.Error) bool {
+	return err != nil && err.Is(APICachedResourceNotAvailableErrorCode)
+}
+
+// IsAPICachedResourceNotAvailableError tests whether a given error is an instance of "cached_resource_not_available_error".
+func (External) IsAPICachedResourceNotAvailableError(err errawrgo.Error) bool {
+	return IsAPICachedResourceNotAvailableError(err)
+}
 
 // APICachedResourceNotAvailableErrorBuilder is a builder for "cached_resource_not_available_error" errors.
 type APICachedResourceNotAvailableErrorBuilder struct {
@@ -70,6 +86,16 @@ func NewAPICachedResourceNotAvailableError() Error {
 // APIResourceModifiedErrorCode is the code for an instance of "resource_modified_error".
 const APIResourceModifiedErrorCode = "lih_api_resource_modified_error"
 
+// IsAPIResourceModifiedError tests whether a given error is an instance of "resource_modified_error".
+func IsAPIResourceModifiedError(err errawrgo.Error) bool {
+	return err != nil && err.Is(APIResourceModifiedErrorCode)
+}
+
+// IsAPIResourceModifiedError tests whether a given error is an instance of "resource_modified_error".
+func (External) IsAPIResourceModifiedError(err errawrgo.Error) bool {
+	return IsAPIResourceModifiedError(err)
+}
+
 // APIResourceModifiedErrorBuilder is a builder for "resource_modified_error" errors.
 type APIResourceModifiedErrorBuilder struct {
 	arguments impl.ErrorArguments
@@ -110,6 +136,16 @@ func NewAPIResourceModifiedError() Error {
 
 // APIResourceSerializationErrorCode is the code for an instance of "resource_serialization_error".
 const APIResourceSerializationErrorCode = "lih_api_resource_serialization_error"
+
+// IsAPIResourceSerializationError tests whether a given error is an instance of "resource_serialization_error".
+func IsAPIResourceSerializationError(err errawrgo.Error) bool {
+	return err != nil && err.Is(APIResourceSerializationErrorCode)
+}
+
+// IsAPIResourceSerializationError tests whether a given error is an instance of "resource_serialization_error".
+func (External) IsAPIResourceSerializationError(err errawrgo.Error) bool {
+	return IsAPIResourceSerializationError(err)
+}
 
 // APIResourceSerializationErrorBuilder is a builder for "resource_serialization_error" errors.
 type APIResourceSerializationErrorBuilder struct {
