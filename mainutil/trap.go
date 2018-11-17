@@ -2,7 +2,6 @@ package mainutil
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -34,8 +33,10 @@ func TrapAndWait(ctx context.Context, cancelables ...CancelableFunc) int {
 				cancel()
 			}
 		case err := <-errch:
+			cancel()
+
 			if err != nil {
-				log.Println(err)
+				log(ctx).Error("process ended with error", "error", err)
 				rv = 1
 			}
 
