@@ -2,9 +2,11 @@ package server
 
 import (
 	"context"
+	"net"
 	"net/http"
 
 	"github.com/puppetlabs/insights-instrumentation/metrics"
+	"github.com/puppetlabs/insights-stdlib/netutil"
 )
 
 // Options are the Server configuration options
@@ -37,18 +39,18 @@ func (s Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) Run(ctx context.Context) error {
-	hs := &http.Server{Addr: s.bindAddr, Handler: s}
-
-	go func() {
-		<-ctx.Done()
-		hs.Shutdown(ctx)
-	}()
-
-	if err := hs.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	ln, err := net.Listen("tcp", s.bindAddr)
+	if err != nil {
 		return err
 	}
 
-	return nil
+	ln = netutil.NewTCPKeepAliveListener(ln.(*net.TCPListener))
+	ln = netutil.NewContextListener(ctx, ln)
+
+	hs := &http.Server{Handler: s}
+	err = hs.Serve(ln)
+	hs.Shutdown(ctx)
+	return err
 }
 
 // New returns a new Server

@@ -66,7 +66,7 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:20a8a18488bdef471795af0413d9a3c9c35dc24ca93342329b884ba3c15cbaab"
+  digest = "1:67b8103d8e747afe0c4bd9bf141b189f129f160e57f5a9266ea23638f2b93265"
   name = "github.com/prometheus/client_golang"
   packages = [
     "prometheus",
@@ -79,7 +79,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2d5cd61daa5565187e1d96bae64dbbc6080dacf741448e9629c64fd93203b0d4"
+  digest = "1:0f37e09b3e92aaeda5991581311f8dbf38944b36a3edec61cc2d1991f527554a"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
   pruneopts = "UT"
@@ -87,7 +87,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:db712fde5d12d6cdbdf14b777f0c230f4ff5ab0be8e35b239fc319953ed577a4"
+  digest = "1:7fceb50b560fede33fe9f87e29721d350d1a092909e813e26686c1ca5d7fe5c3"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
@@ -99,7 +99,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ef74914912f99c79434d9c09658274678bc85080ebe3ab32bec3940ebce5e1fc"
+  digest = "1:4f63dbf446cdeef6226bffe9bbc5fc8b93e13378f84833fb4306514411a76963"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -112,7 +112,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:483e77f194109bdcded301a126e2b1b4361e0e3d9af5b7f996b3da70105c0f50"
+  digest = "1:3f7c2af57e790ef6307097683bb00ad512f1ae789fa1945fa0d99603759ecb5e"
   name = "github.com/puppetlabs/errawr-gen"
   packages = [
     "doc",
@@ -124,11 +124,44 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:a1ba7db092d1ff6bc6788c1cb5a0c88d279a8c3f4e76c892509e500285f5cbdd"
+  name = "github.com/puppetlabs/errawr-go"
+  packages = [
+    ".",
+    "golang",
+    "impl",
+  ]
+  pruneopts = "UT"
+  revision = "4918d38243797092420621d950614247b81614d7"
+
+[[projects]]
+  branch = "master"
   digest = "1:2d574e1ee801f5490cf6f52af5e8b81f31c0e2245f09bb4f6830938b75db5ce1"
   name = "github.com/puppetlabs/insights-logging"
   packages = ["."]
   pruneopts = "UT"
   revision = "3b7d3d14cd5b2cedaffb60f9c33402e248beac0c"
+
+[[projects]]
+  branch = "master"
+  digest = "1:071f6138ec1ad80198e163c6846b4e7bce53dbb21ed467fe33ca8f92c795a6da"
+  name = "github.com/puppetlabs/insights-stdlib"
+  packages = ["netutil"]
+  pruneopts = "UT"
+  revision = "25e7d949d32501f11013a22804dfa597d6e9e0d3"
+
+[[projects]]
+  branch = "master"
+  digest = "1:2a9f20865e6699e4a9283f4d34bbc5180206f0b8414ca457435f71dc36533e96"
+  name = "github.com/reflect/raymond"
+  packages = [
+    ".",
+    "ast",
+    "lexer",
+    "parser",
+  ]
+  pruneopts = "UT"
+  revision = "c9bbd5eb5acf01bc4f2a9a8b3570834fd1f58c74"
 
 [[projects]]
   branch = "master"
@@ -185,7 +218,10 @@
     "github.com/prometheus/client_golang/prometheus",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/puppetlabs/errawr-gen/generator",
+    "github.com/puppetlabs/errawr-go",
+    "github.com/puppetlabs/errawr-go/impl",
     "github.com/puppetlabs/insights-logging",
+    "github.com/puppetlabs/insights-stdlib/netutil",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
