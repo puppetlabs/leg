@@ -175,33 +175,39 @@ func (cb CloserBuilder) Build() *Closer {
 		timeout: cb.timeout,
 		doneCh:  make(chan struct{}),
 	}
-	for i, when := range cb.whens {
-		c.whens[i] = make(chan error)
-		go func(i int, when CloserWhenFunc) {
-			var err error
-			defer func() {
-				c.whens[i] <- err
-			}()
 
-			// Cancel must happen before emission as the waiter process may not
-			// be aligned with this iteration.
-			defer cancel()
+	if len(cb.whens) > 0 {
+		for i, when := range cb.whens {
+			c.whens[i] = make(chan error)
+			go func(i int, when CloserWhenFunc) {
+				var err error
+				defer func() {
+					c.whens[i] <- err
+				}()
 
-			defer func() {
-				if r := recover(); r != nil {
-					perr, ok := r.(error)
-					if !ok {
-						perr = fmt.Errorf("%+v", r)
+				// Cancel must happen before emission as the waiter process may not
+				// be aligned with this iteration.
+				defer cancel()
+
+				defer func() {
+					if r := recover(); r != nil {
+						perr, ok := r.(error)
+						if !ok {
+							perr = fmt.Errorf("%+v", r)
+						}
+
+						err = errors.NewCloserPanicError().WithCause(perr)
 					}
+				}()
 
-					err = errors.NewCloserPanicError().WithCause(perr)
-				}
-			}()
-
-			err = when(ctx)
-		}(i, when)
+				err = when(ctx)
+			}(i, when)
+		}
+		go c.wait()
+	} else {
+		// For whenever this gets picked up.
+		c.whenCh <- nil
 	}
-	go c.wait()
 
 	return c
 }

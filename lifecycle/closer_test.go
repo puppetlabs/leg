@@ -10,6 +10,29 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestCloserWithoutTrigger(t *testing.T) {
+	var i int
+
+	c := lifecycle.NewCloserBuilder().
+		Require(func() error {
+			i++
+			return nil
+		}).
+		Build()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	select {
+	case <-c.Done():
+		assert.Fail(t, "closer spuriously terminated")
+	case <-time.After(20 * time.Millisecond):
+	}
+
+	assert.NoError(t, c.Do(ctx))
+	assert.Equal(t, 1, i)
+}
+
 func TestCloserInvokesOnTrigger(t *testing.T) {
 	ich := make(chan struct{})
 
