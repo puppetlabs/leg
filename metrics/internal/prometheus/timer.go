@@ -13,7 +13,7 @@ type Timer struct {
 	delegate prom.Observer
 	timers   map[*collectors.TimerHandle]*prom.Timer
 
-	sync.Mutex
+	sync.RWMutex
 }
 
 func (t *Timer) WithLabels(labels []collectors.Label) (collectors.Timer, error) {
@@ -44,6 +44,9 @@ func (t *Timer) Start() *collectors.TimerHandle {
 }
 
 func (t *Timer) ObserveDuration(h *collectors.TimerHandle) {
+	t.RLock()
+	defer t.RUnlock()
+
 	if promt, ok := t.timers[h]; ok {
 		promt.ObserveDuration()
 	}
