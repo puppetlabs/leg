@@ -71,8 +71,6 @@ func (r Reporter) Report(ctx context.Context) <-chan error {
 	p.AddTags(tagsToSentryTags(r.c.tags))
 	p.Level = r.level
 
-	var ifs []raven.Interface
-
 	if r.trace {
 		var frames []*raven.StacktraceFrame
 
@@ -106,11 +104,15 @@ func (r Reporter) Report(ctx context.Context) <-chan error {
 			st = &raven.Stacktrace{Frames: frames}
 		}
 
-		ifs = append(ifs, raven.NewException(r.err, st))
+		p.Interfaces = append(p.Interfaces, raven.NewException(r.err, st))
 	}
 
 	if r.c.user != nil {
-		ifs = append(ifs, &raven.User{ID: r.c.user.ID, Email: r.c.user.Email})
+		p.Interfaces = append(p.Interfaces, &raven.User{ID: r.c.user.ID, Email: r.c.user.Email})
+	}
+
+	if r.c.http != nil {
+		p.Interfaces = append(p.Interfaces, r.c.http)
 	}
 
 	_, ch := r.c.client.Capture(p, tagsToSentryTags(r.tags))

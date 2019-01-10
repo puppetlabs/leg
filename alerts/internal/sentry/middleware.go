@@ -25,6 +25,9 @@ func (m Middleware) WithUser(u trackers.User) trackers.Middleware {
 
 func (m Middleware) Wrap(target http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c := m.c.withHTTP(r)
+		r = r.WithContext(trackers.NewContextWithCapturer(r.Context(), c))
+
 		defer func() {
 			var reporter trackers.Reporter
 
@@ -33,15 +36,14 @@ func (m Middleware) Wrap(target http.Handler) http.Handler {
 			case nil:
 				return
 			case error:
-				reporter = m.c.withHTTP(r).Capture(rvt)
+				reporter = c.Capture(rvt)
 			default:
-				reporter = m.c.withHTTP(r).CaptureMessage(fmt.Sprint(rvt))
+				reporter = c.CaptureMessage(fmt.Sprint(rvt))
 			}
 
 			reporter.Report(r.Context())
 		}()
 
-		r = r.WithContext(trackers.NewContextWithCapturer(r.Context(), m.c))
 		target.ServeHTTP(w, r)
 	})
 }
