@@ -20,3 +20,11 @@ sections:
             description: the type of metric
           name:
             description: the name of the metric
+
+  alerts:
+    title: Alerting errors
+    errors:
+      sentry_initialization_error:
+        title: Sentry initialization error
+        description: >
+          The Sentry alerting service could not be configured.
