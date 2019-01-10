@@ -25,6 +25,61 @@ var Domain = &impl.ErrorDomain{
 	Title: "Insights Instrumentation",
 }
 
+// AlertsSection defines a section of errors with the following scope:
+// Alerting errors
+var AlertsSection = &impl.ErrorSection{
+	Key:   "alerts",
+	Title: "Alerting errors",
+}
+
+// AlertsSentryInitializationErrorCode is the code for an instance of "sentry_initialization_error".
+const AlertsSentryInitializationErrorCode = "ii_alerts_sentry_initialization_error"
+
+// IsAlertsSentryInitializationError tests whether a given error is an instance of "sentry_initialization_error".
+func IsAlertsSentryInitializationError(err errawrgo.Error) bool {
+	return err != nil && err.Is(AlertsSentryInitializationErrorCode)
+}
+
+// IsAlertsSentryInitializationError tests whether a given error is an instance of "sentry_initialization_error".
+func (External) IsAlertsSentryInitializationError(err errawrgo.Error) bool {
+	return IsAlertsSentryInitializationError(err)
+}
+
+// AlertsSentryInitializationErrorBuilder is a builder for "sentry_initialization_error" errors.
+type AlertsSentryInitializationErrorBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "sentry_initialization_error" from this builder.
+func (b *AlertsSentryInitializationErrorBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "The Sentry alerting service could not be configured.",
+		Technical: "The Sentry alerting service could not be configured.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "sentry_initialization_error",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     AlertsSection,
+		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
+		ErrorTitle:       "Sentry initialization error",
+		Version:          1,
+	}
+}
+
+// NewAlertsSentryInitializationErrorBuilder creates a new error builder for the code "sentry_initialization_error".
+func NewAlertsSentryInitializationErrorBuilder() *AlertsSentryInitializationErrorBuilder {
+	return &AlertsSentryInitializationErrorBuilder{arguments: impl.ErrorArguments{}}
+}
+
+// NewAlertsSentryInitializationError creates a new error with the code "sentry_initialization_error".
+func NewAlertsSentryInitializationError() Error {
+	return NewAlertsSentryInitializationErrorBuilder().Build()
+}
+
 // MetricsSection defines a section of errors with the following scope:
 // Metrics errors
 var MetricsSection = &impl.ErrorSection{

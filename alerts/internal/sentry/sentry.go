@@ -45,7 +45,7 @@ func (b *Builder) Build() *Sentry {
 func NewBuilder(dsn string) (*Builder, errors.Error) {
 	client, err := raven.New(dsn)
 	if err != nil {
-		// XXX: FIXME
+		return nil, errors.NewAlertsSentryInitializationError().WithCause(err)
 	}
 
 	b := &Builder{
