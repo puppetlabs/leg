@@ -100,6 +100,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:fc608f11295c808322b1934250610e1ae6037ac256c4d17e31a7ede6cfe6d32e"
+  name = "github.com/puppetlabs/insights-instrumentation"
+  packages = ["alerts/trackers"]
+  pruneopts = "UT"
+  revision = "2b65deb0339b42b526b5cd9ae83edce7cf099072"
+
+[[projects]]
+  branch = "master"
   digest = "1:2d574e1ee801f5490cf6f52af5e8b81f31c0e2245f09bb4f6830938b75db5ce1"
   name = "github.com/puppetlabs/insights-logging"
   packages = ["."]
@@ -203,6 +211,7 @@
     "github.com/puppetlabs/errawr-go",
     "github.com/puppetlabs/errawr-go/encoding",
     "github.com/puppetlabs/errawr-go/impl",
+    "github.com/puppetlabs/insights-instrumentation/alerts/trackers",
     "github.com/puppetlabs/insights-logging",
     "github.com/reflect/xparse/xtime",
     "github.com/stretchr/testify/assert",
