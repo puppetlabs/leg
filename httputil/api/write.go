@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/puppetlabs/errawr-go/encoding"
+	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
 	"github.com/puppetlabs/insights-stdlib/httputil/errors"
 )
 
@@ -70,6 +71,12 @@ func WriteError(ctx context.Context, w http.ResponseWriter, err errors.Error) {
 
 	if status == http.StatusInternalServerError || err.IsBug() {
 		log(ctx).Error("internal error", "error", err)
+
+		if a, ok := trackers.CapturerFromContext(ctx); ok {
+			// OK for this to be async. If this fails, we'll still get it in the
+			// logs.
+			a.Capture(err).Report(ctx)
+		}
 	}
 
 	w.Header().Set("content-type", "application/json")

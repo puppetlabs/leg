@@ -99,6 +99,14 @@
   revision = "2d0119e892e85bb61f41598b6aa96fc9ab6b7ee1"
 
 [[projects]]
+  branch = "tasks/pi-532-sentry-support"
+  digest = "1:ea9ade569f8ee1eee31a740ac51f7e8af0ee661b4dfa39e6bfa9cf5ed7868f78"
+  name = "github.com/puppetlabs/insights-instrumentation"
+  packages = ["alerts/trackers"]
+  pruneopts = "UT"
+  revision = "875ad8b4d752e1abb094e14a9839635ee0525add"
+
+[[projects]]
   branch = "master"
   digest = "1:2d574e1ee801f5490cf6f52af5e8b81f31c0e2245f09bb4f6830938b75db5ce1"
   name = "github.com/puppetlabs/insights-logging"
@@ -203,6 +211,7 @@
     "github.com/puppetlabs/errawr-go",
     "github.com/puppetlabs/errawr-go/encoding",
     "github.com/puppetlabs/errawr-go/impl",
+    "github.com/puppetlabs/insights-instrumentation/alerts/trackers",
     "github.com/puppetlabs/insights-logging",
     "github.com/reflect/xparse/xtime",
     "github.com/stretchr/testify/assert",
