@@ -41,6 +41,7 @@ func (m Middleware) Wrap(target http.Handler) http.Handler {
 			reporter.Report(r.Context())
 		}()
 
+		r = r.WithContext(trackers.NewContextWithCapturer(r.Context(), m.c))
 		target.ServeHTTP(w, r)
 	})
 }
