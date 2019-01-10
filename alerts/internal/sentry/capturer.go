@@ -20,6 +20,7 @@ type Capturer struct {
 
 func (c Capturer) WithNewTrace() trackers.Capturer {
 	return &Capturer{
+		client:      c.client,
 		newTrace:    true,
 		appPackages: append([]string{}, c.appPackages...),
 		user:        c.user,
@@ -30,6 +31,7 @@ func (c Capturer) WithNewTrace() trackers.Capturer {
 
 func (c Capturer) WithAppPackages(packages []string) trackers.Capturer {
 	return &Capturer{
+		client:      c.client,
 		newTrace:    c.newTrace,
 		appPackages: append(append([]string{}, c.appPackages...), packages...),
 		user:        c.user,
@@ -40,6 +42,7 @@ func (c Capturer) WithAppPackages(packages []string) trackers.Capturer {
 
 func (c Capturer) withUser(u trackers.User) *Capturer {
 	return &Capturer{
+		client:      c.client,
 		newTrace:    c.newTrace,
 		appPackages: append([]string{}, c.appPackages...),
 		user:        &u,
@@ -54,6 +57,7 @@ func (c Capturer) WithUser(u trackers.User) trackers.Capturer {
 
 func (c Capturer) withTags(tags []trackers.Tag) *Capturer {
 	return &Capturer{
+		client:      c.client,
 		newTrace:    c.newTrace,
 		appPackages: append([]string{}, c.appPackages...),
 		user:        c.user,
@@ -68,6 +72,7 @@ func (c Capturer) WithTags(tags ...trackers.Tag) trackers.Capturer {
 
 func (c Capturer) withHTTP(r *http.Request) *Capturer {
 	return &Capturer{
+		client:      c.client,
 		newTrace:    c.newTrace,
 		appPackages: append([]string{}, c.appPackages...),
 		user:        c.user,
