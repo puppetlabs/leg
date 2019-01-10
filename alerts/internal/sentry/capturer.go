@@ -81,7 +81,9 @@ func (c Capturer) withHTTP(r *http.Request) *Capturer {
 	}
 }
 
-func (c Capturer) Try(ctx context.Context, fn func()) (rv interface{}) {
+func (c *Capturer) Try(ctx context.Context, fn func(ctx context.Context)) (rv interface{}) {
+	ctx = trackers.NewContextWithCapturer(ctx, c)
+
 	defer func() {
 		var reporter trackers.Reporter
 
@@ -98,7 +100,7 @@ func (c Capturer) Try(ctx context.Context, fn func()) (rv interface{}) {
 		reporter.Report(ctx)
 	}()
 
-	fn()
+	fn(ctx)
 	return
 }
 

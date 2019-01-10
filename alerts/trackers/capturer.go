@@ -22,7 +22,9 @@ type Capturer interface {
 	// Try runs the given function, and if a panic occurs, captures and reports
 	// it. It returns the recovered value of the panic, or nil if no panic
 	// occurred.
-	Try(ctx context.Context, fn func()) interface{}
+	//
+	// The context received by the callback will have this capturer bound to it.
+	Try(ctx context.Context, fn func(ctx context.Context)) interface{}
 
 	// Capture captures the given error for reporting.
 	Capture(err error) Reporter

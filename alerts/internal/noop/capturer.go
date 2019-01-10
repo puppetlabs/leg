@@ -25,8 +25,8 @@ func (c Capturer) WithTags(tags ...trackers.Tag) trackers.Capturer {
 	return c
 }
 
-func (c Capturer) Try(ctx context.Context, fn func()) interface{} {
-	fn()
+func (c Capturer) Try(ctx context.Context, fn func(ctx context.Context)) interface{} {
+	fn(ctx)
 	return nil
 }
 
