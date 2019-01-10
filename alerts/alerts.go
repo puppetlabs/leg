@@ -12,19 +12,24 @@ type Options struct {
 	Version     string
 }
 
-type DelegateFunc func(opts Options) (Delegate, errors.Error)
+type DelegateFunc func(opts Options) Delegate
 
-func NoDelegate(opts Options) (Delegate, errors.Error) {
-	return &noop.NoOp{}, nil
+func NoDelegate(opts Options) Delegate {
+	return &noop.NoOp{}
 }
 
-func DelegateToSentry(dsn string) DelegateFunc {
-	return func(opts Options) (Delegate, errors.Error) {
-		return sentry.NewSentry(dsn, sentry.Options{
-			Environment: opts.Environment,
-			Release:     opts.Version,
-		})
+func DelegateToSentry(dsn string) (DelegateFunc, errors.Error) {
+	b, err := sentry.NewBuilder(dsn)
+	if err != nil {
+		return nil, err
 	}
+
+	fn := func(opts Options) Delegate {
+		return b.WithEnvironment(opts.Environment).
+			WithRelease(opts.Version).
+			Build()
+	}
+	return fn, nil
 }
 
 type Alerts struct {
@@ -35,14 +40,8 @@ func (a *Alerts) NewCapturer() trackers.Capturer {
 	return a.delegate.NewCapturer()
 }
 
-func NewAlerts(fn DelegateFunc, opts Options) (*Alerts, errors.Error) {
-	delegate, err := fn(opts)
-	if err != nil {
-		return nil, err
+func NewAlerts(fn DelegateFunc, opts Options) *Alerts {
+	return &Alerts{
+		delegate: fn(opts),
 	}
-
-	a := &Alerts{
-		delegate: delegate,
-	}
-	return a, nil
 }

@@ -6,11 +6,6 @@ import (
 	"github.com/puppetlabs/insights-instrumentation/errors"
 )
 
-type Options struct {
-	Environment string
-	Release     string
-}
-
 type Sentry struct {
 	client *raven.Client
 }
@@ -21,22 +16,40 @@ func (s Sentry) NewCapturer() trackers.Capturer {
 	}
 }
 
-func NewSentry(dsn string, opts Options) (*Sentry, errors.Error) {
+type Builder struct {
+	client *raven.Client
+}
+
+func (b *Builder) WithEnvironment(environment string) *Builder {
+	if environment != "" {
+		b.client.SetEnvironment(environment)
+	}
+
+	return b
+}
+
+func (b *Builder) WithRelease(release string) *Builder {
+	if release != "" {
+		b.client.SetRelease(release)
+	}
+
+	return b
+}
+
+func (b *Builder) Build() *Sentry {
+	return &Sentry{
+		client: b.client,
+	}
+}
+
+func NewBuilder(dsn string) (*Builder, errors.Error) {
 	client, err := raven.New(dsn)
 	if err != nil {
 		// XXX: FIXME
 	}
 
-	if opts.Environment != "" {
-		client.SetEnvironment(opts.Environment)
-	}
-
-	if opts.Release != "" {
-		client.SetRelease(opts.Release)
-	}
-
-	s := &Sentry{
+	b := &Builder{
 		client: client,
 	}
-	return s, nil
+	return b, nil
 }
