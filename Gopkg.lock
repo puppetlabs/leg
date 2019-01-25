@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:fed1f537c2f1269fe475a8556c393fe466641682d73ef8fd0491cd3aa1e47bad"
+  name = "github.com/certifi/gocertifi"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "deb3ae2ef2610fde3330947281941c562861188b"
+  version = "2018.01.18"
+
+[[projects]]
   digest = "1:12bc53a794bd3f5169f71e87c18e15df70c51324e51d84a6b83dbdadf366d2c7"
   name = "github.com/dave/jennifer"
   packages = ["jen"]
@@ -16,6 +24,14 @@
   pruneopts = "UT"
   revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
   version = "v1.1.1"
+
+[[projects]]
+  digest = "1:d18f6f088d7d8365df47f49dfa24b6ff6701a941118ffda30c589d1bd954074b"
+  name = "github.com/getsentry/raven-go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f04e7487e9a6b9d9837d52743fb5f40576c56411"
+  version = "v0.2.0"
 
 [[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
@@ -66,6 +82,14 @@
   version = "v1.2"
 
 [[projects]]
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -100,9 +124,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:fc608f11295c808322b1934250610e1ae6037ac256c4d17e31a7ede6cfe6d32e"
+  digest = "1:39f7fd242b7be419e56988ff3d8c6f2657838cd91b2ce661f22adcf2633618f5"
   name = "github.com/puppetlabs/insights-instrumentation"
-  packages = ["alerts/trackers"]
+  packages = [
+    "alerts",
+    "alerts/internal/noop",
+    "alerts/internal/sentry",
+    "alerts/trackers",
+    "errors",
+  ]
   pruneopts = "UT"
   revision = "2b65deb0339b42b526b5cd9ae83edce7cf099072"
 
@@ -211,6 +241,7 @@
     "github.com/puppetlabs/errawr-go",
     "github.com/puppetlabs/errawr-go/encoding",
     "github.com/puppetlabs/errawr-go/impl",
+    "github.com/puppetlabs/insights-instrumentation/alerts",
     "github.com/puppetlabs/insights-instrumentation/alerts/trackers",
     "github.com/puppetlabs/insights-logging",
     "github.com/reflect/xparse/xtime",
