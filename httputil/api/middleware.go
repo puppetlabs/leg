@@ -130,12 +130,6 @@ func LogMiddleware(next http.Handler) http.Handler {
 
 func AccessControlMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodOptions {
-			// OPTIONS requests do not get resource-oriented CORS responses.
-			next.ServeHTTP(w, r)
-			return
-		}
-
 		origin := r.Header.Get("origin")
 
 		switch origin {
