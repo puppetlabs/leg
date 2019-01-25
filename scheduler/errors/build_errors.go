@@ -79,3 +79,51 @@ func NewLifecycleCloseErrorBuilder() *LifecycleCloseErrorBuilder {
 func NewLifecycleCloseError() Error {
 	return NewLifecycleCloseErrorBuilder().Build()
 }
+
+// LifecycleTimeoutErrorCode is the code for an instance of "timeout_error".
+const LifecycleTimeoutErrorCode = "lis_lifecycle_timeout_error"
+
+// IsLifecycleTimeoutError tests whether a given error is an instance of "timeout_error".
+func IsLifecycleTimeoutError(err errawrgo.Error) bool {
+	return err != nil && err.Is(LifecycleTimeoutErrorCode)
+}
+
+// IsLifecycleTimeoutError tests whether a given error is an instance of "timeout_error".
+func (External) IsLifecycleTimeoutError(err errawrgo.Error) bool {
+	return IsLifecycleTimeoutError(err)
+}
+
+// LifecycleTimeoutErrorBuilder is a builder for "timeout_error" errors.
+type LifecycleTimeoutErrorBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "timeout_error" from this builder.
+func (b *LifecycleTimeoutErrorBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "The operation timed out while waiting for tasks to complete.",
+		Technical: "The operation timed out while waiting for tasks to complete.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "timeout_error",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     LifecycleSection,
+		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
+		ErrorTitle:       "timeout",
+		Version:          1,
+	}
+}
+
+// NewLifecycleTimeoutErrorBuilder creates a new error builder for the code "timeout_error".
+func NewLifecycleTimeoutErrorBuilder() *LifecycleTimeoutErrorBuilder {
+	return &LifecycleTimeoutErrorBuilder{arguments: impl.ErrorArguments{}}
+}
+
+// NewLifecycleTimeoutError creates a new error with the code "timeout_error".
+func NewLifecycleTimeoutError() Error {
+	return NewLifecycleTimeoutErrorBuilder().Build()
+}

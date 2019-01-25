@@ -10,6 +10,22 @@ type StartedParent struct {
 	delegates []StartedLifecycle
 }
 
+func (sp *StartedParent) Wait(ctx context.Context) errors.Error {
+	for _, d := range sp.delegates {
+		select {
+		case <-ctx.Done():
+			return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
+		default:
+		}
+
+		if err := d.Wait(ctx); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (sp *StartedParent) Close(ctx context.Context) errors.Error {
 	err := errors.NewLifecycleCloseError()
 

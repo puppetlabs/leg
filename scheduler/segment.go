@@ -2,6 +2,7 @@ package scheduler
 
 import (
 	"context"
+	"sync"
 
 	"github.com/puppetlabs/insights-instrumentation/alerts"
 	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
@@ -15,6 +16,14 @@ type StartedSegment struct {
 	cancel   context.CancelFunc
 	pc       chan Process
 	capturer trackers.Capturer
+
+	// Used to execute a close of the Process channel exactly once.
+	done sync.Once
+
+	// These channels are used to track whether descriptor and supervisor
+	// goroutines have exited.
+	descriptors []chan struct{}
+	supervisors []chan struct{}
 }
 
 func (ss *StartedSegment) run(process Process) {
@@ -38,27 +47,66 @@ func (ss *StartedSegment) run(process Process) {
 	}
 }
 
-func (ss *StartedSegment) describe(desc Descriptor) {
+func (ss *StartedSegment) describe(i int, desc Descriptor) {
+	defer func() {
+		close(ss.descriptors[i])
+	}()
+
 	if err := desc.Run(ss.ctx, ss.pc); err != nil {
 		log(ss.ctx).Warn("descriptor ended with error", "error", err)
 	}
 }
 
-func (ss *StartedSegment) supervise() {
+func (ss *StartedSegment) supervise(i int) {
+	defer func() {
+		close(ss.supervisors[i])
+	}()
+
 	for {
-		select {
-		case <-ss.ctx.Done():
+		process, ok := <-ss.pc
+		if !ok {
 			return
-		case process := <-ss.pc:
-			ss.run(process)
 		}
+
+		ss.run(process)
 	}
 }
 
+func (ss *StartedSegment) Wait(ctx context.Context) errors.Error {
+	for _, ch := range ss.descriptors {
+		select {
+		case <-ctx.Done():
+			return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
+		case <-ch:
+		}
+	}
+
+	// At this point, all descriptors have exited, so we can close the process
+	// channel. Then we will wait for supervisors to clean up and exit.
+	ss.done.Do(func() { close(ss.pc) })
+
+	for _, ch := range ss.supervisors {
+		select {
+		case <-ctx.Done():
+			return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
+		case <-ch:
+		}
+	}
+
+	return nil
+}
+
 func (ss *StartedSegment) Close(ctx context.Context) errors.Error {
+	// The important bit: cancel the context used by everything under this
+	// segment.
 	ss.cancel()
 
-	// TODO: Wait for processes to terminate?
+	// The supervise code above is simply waiting for the contex to cancel. The
+	// descriptors need to respond to the context and exit on their own.
+	if err := ss.Wait(ctx); err != nil {
+		return errors.NewLifecycleCloseError().WithCause(err)
+	}
+
 	return nil
 }
 
@@ -85,16 +133,24 @@ func (s *Segment) Start() StartedLifecycle {
 	ctx = trackers.NewContextWithCapturer(ctx, capturer)
 
 	ss := &StartedSegment{
-		ctx:      ctx,
-		cancel:   cancel,
-		pc:       pc,
-		capturer: capturer,
+		ctx:         ctx,
+		cancel:      cancel,
+		pc:          pc,
+		capturer:    capturer,
+		descriptors: make([]chan struct{}, len(s.descriptors)),
+		supervisors: make([]chan struct{}, s.concurrency),
 	}
-	for _, desc := range s.descriptors {
-		go ss.describe(desc)
+
+	for i, desc := range s.descriptors {
+		ss.descriptors[i] = make(chan struct{})
+
+		go ss.describe(i, desc)
 	}
+
 	for i := 0; i < s.concurrency; i++ {
-		go ss.supervise()
+		ss.supervisors[i] = make(chan struct{})
+
+		go ss.supervise(i)
 	}
 
 	return ss
