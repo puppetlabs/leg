@@ -1,0 +1,19 @@
+version: 1
+domain:
+  key: lis
+  title: Insights Scheduler Library
+sections:
+  #
+  # Lifecycle errors
+  #
+  lifecycle:
+    title: Lifecycle errors
+    errors:
+      close_error:
+        title: Close error
+        description: >
+          The scheduled tasks failed to terminate.
+      timeout_error:
+        title: timeout
+        description: >
+          The operation timed out while waiting for tasks to complete.
