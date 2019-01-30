@@ -39,5 +39,5 @@ func (c Capturer) CaptureMessage(message string) trackers.Reporter {
 }
 
 func (c Capturer) Middleware() trackers.Middleware {
-	return &Middleware{}
+	return &Middleware{c: &c}
 }
