@@ -14,6 +14,31 @@ sections:
         description: >
           The scheduled tasks failed to terminate.
       timeout_error:
-        title: timeout
+        title: Timeout
         description: >
           The operation timed out while waiting for tasks to complete.
+      process_error:
+        title: Process error
+        description: >
+          The process {{quote description}} running under request
+          {{pre request_id}} encountered an unrecoverable error.
+        arguments:
+          request_id:
+            description: the request identifier generated for the process
+          description:
+            description: the process's description
+      descriptor_error:
+        title: Descriptor error
+        description: >
+          Descriptor \#{{i}} of type {{pre type}} terminated unexpectedly.
+        arguments:
+          i:
+            type: integer
+            description: >
+              the offset into the descriptor list of this descriptor
+          type:
+            description: the type of this descriptor
+      execution_error:
+        title: Execution error
+        description: >
+          The scheduled processes failed to execute.

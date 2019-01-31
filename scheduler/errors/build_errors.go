@@ -80,6 +80,156 @@ func NewLifecycleCloseError() Error {
 	return NewLifecycleCloseErrorBuilder().Build()
 }
 
+// LifecycleDescriptorErrorCode is the code for an instance of "descriptor_error".
+const LifecycleDescriptorErrorCode = "lis_lifecycle_descriptor_error"
+
+// IsLifecycleDescriptorError tests whether a given error is an instance of "descriptor_error".
+func IsLifecycleDescriptorError(err errawrgo.Error) bool {
+	return err != nil && err.Is(LifecycleDescriptorErrorCode)
+}
+
+// IsLifecycleDescriptorError tests whether a given error is an instance of "descriptor_error".
+func (External) IsLifecycleDescriptorError(err errawrgo.Error) bool {
+	return IsLifecycleDescriptorError(err)
+}
+
+// LifecycleDescriptorErrorBuilder is a builder for "descriptor_error" errors.
+type LifecycleDescriptorErrorBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "descriptor_error" from this builder.
+func (b *LifecycleDescriptorErrorBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "Descriptor \\#{{i}} of type {{pre type}} terminated unexpectedly.",
+		Technical: "Descriptor \\#{{i}} of type {{pre type}} terminated unexpectedly.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "descriptor_error",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     LifecycleSection,
+		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
+		ErrorTitle:       "Descriptor error",
+		Version:          1,
+	}
+}
+
+// NewLifecycleDescriptorErrorBuilder creates a new error builder for the code "descriptor_error".
+func NewLifecycleDescriptorErrorBuilder(i int64, type_ string) *LifecycleDescriptorErrorBuilder {
+	return &LifecycleDescriptorErrorBuilder{arguments: impl.ErrorArguments{
+		"i":    impl.NewErrorArgument(i, "the offset into the descriptor list of this descriptor\n"),
+		"type": impl.NewErrorArgument(type_, "the type of this descriptor"),
+	}}
+}
+
+// NewLifecycleDescriptorError creates a new error with the code "descriptor_error".
+func NewLifecycleDescriptorError(i int64, type_ string) Error {
+	return NewLifecycleDescriptorErrorBuilder(i, type_).Build()
+}
+
+// LifecycleExecutionErrorCode is the code for an instance of "execution_error".
+const LifecycleExecutionErrorCode = "lis_lifecycle_execution_error"
+
+// IsLifecycleExecutionError tests whether a given error is an instance of "execution_error".
+func IsLifecycleExecutionError(err errawrgo.Error) bool {
+	return err != nil && err.Is(LifecycleExecutionErrorCode)
+}
+
+// IsLifecycleExecutionError tests whether a given error is an instance of "execution_error".
+func (External) IsLifecycleExecutionError(err errawrgo.Error) bool {
+	return IsLifecycleExecutionError(err)
+}
+
+// LifecycleExecutionErrorBuilder is a builder for "execution_error" errors.
+type LifecycleExecutionErrorBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "execution_error" from this builder.
+func (b *LifecycleExecutionErrorBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "The scheduled processes failed to execute.",
+		Technical: "The scheduled processes failed to execute.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "execution_error",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     LifecycleSection,
+		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
+		ErrorTitle:       "Execution error",
+		Version:          1,
+	}
+}
+
+// NewLifecycleExecutionErrorBuilder creates a new error builder for the code "execution_error".
+func NewLifecycleExecutionErrorBuilder() *LifecycleExecutionErrorBuilder {
+	return &LifecycleExecutionErrorBuilder{arguments: impl.ErrorArguments{}}
+}
+
+// NewLifecycleExecutionError creates a new error with the code "execution_error".
+func NewLifecycleExecutionError() Error {
+	return NewLifecycleExecutionErrorBuilder().Build()
+}
+
+// LifecycleProcessErrorCode is the code for an instance of "process_error".
+const LifecycleProcessErrorCode = "lis_lifecycle_process_error"
+
+// IsLifecycleProcessError tests whether a given error is an instance of "process_error".
+func IsLifecycleProcessError(err errawrgo.Error) bool {
+	return err != nil && err.Is(LifecycleProcessErrorCode)
+}
+
+// IsLifecycleProcessError tests whether a given error is an instance of "process_error".
+func (External) IsLifecycleProcessError(err errawrgo.Error) bool {
+	return IsLifecycleProcessError(err)
+}
+
+// LifecycleProcessErrorBuilder is a builder for "process_error" errors.
+type LifecycleProcessErrorBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "process_error" from this builder.
+func (b *LifecycleProcessErrorBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "The process {{quote description}} running under request {{pre request_id}} encountered an unrecoverable error.",
+		Technical: "The process {{quote description}} running under request {{pre request_id}} encountered an unrecoverable error.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "process_error",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     LifecycleSection,
+		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
+		ErrorTitle:       "Process error",
+		Version:          1,
+	}
+}
+
+// NewLifecycleProcessErrorBuilder creates a new error builder for the code "process_error".
+func NewLifecycleProcessErrorBuilder(requestID string, description string) *LifecycleProcessErrorBuilder {
+	return &LifecycleProcessErrorBuilder{arguments: impl.ErrorArguments{
+		"description": impl.NewErrorArgument(description, "the process's description"),
+		"request_id":  impl.NewErrorArgument(requestID, "the request identifier generated for the process"),
+	}}
+}
+
+// NewLifecycleProcessError creates a new error with the code "process_error".
+func NewLifecycleProcessError(requestID string, description string) Error {
+	return NewLifecycleProcessErrorBuilder(requestID, description).Build()
+}
+
 // LifecycleTimeoutErrorCode is the code for an instance of "timeout_error".
 const LifecycleTimeoutErrorCode = "lis_lifecycle_timeout_error"
 
@@ -113,7 +263,7 @@ func (b *LifecycleTimeoutErrorBuilder) Build() Error {
 		ErrorMetadata:    &impl.ErrorMetadata{},
 		ErrorSection:     LifecycleSection,
 		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
-		ErrorTitle:       "timeout",
+		ErrorTitle:       "Timeout",
 		Version:          1,
 	}
 }

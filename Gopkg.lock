@@ -111,16 +111,17 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ec85aee6d00222b7dafe76d9bb5718918b00545e7c3deee0b877e0930bc3db1f"
+  digest = "1:a77f5ba4d2dfca6d98d0bf1e281c8b111584675277e85f9f4ff161eefaae6bd3"
   name = "github.com/puppetlabs/errawr-go"
   packages = [
     ".",
     "encoding",
     "golang",
     "impl",
+    "testutil",
   ]
   pruneopts = "UT"
-  revision = "2d0119e892e85bb61f41598b6aa96fc9ab6b7ee1"
+  revision = "65d245f230b4e52f6ff327888176cb4bb3155f66"
 
 [[projects]]
   branch = "master"
@@ -241,6 +242,7 @@
     "github.com/puppetlabs/errawr-go",
     "github.com/puppetlabs/errawr-go/encoding",
     "github.com/puppetlabs/errawr-go/impl",
+    "github.com/puppetlabs/errawr-go/testutil",
     "github.com/puppetlabs/insights-instrumentation/alerts",
     "github.com/puppetlabs/insights-instrumentation/alerts/trackers",
     "github.com/puppetlabs/insights-logging",
