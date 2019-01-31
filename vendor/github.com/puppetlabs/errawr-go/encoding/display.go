@@ -34,6 +34,12 @@ func (ede ErrorDisplayEnvelope) AsError() errawr.Error {
 	prefix := fmt.Sprintf(`%s_%s_`, ede.Domain, ede.Section)
 	code := strings.TrimPrefix(ede.Code, prefix)
 
+	description := &impl.ErrorDescription{}
+	if ede.Description != nil {
+		description.Friendly = ede.Description.Friendly
+		description.Technical = ede.Description.Technical
+	}
+
 	var e errawr.Error = &impl.Error{
 		Version: errawr.Version,
 		ErrorDomain: &impl.ErrorDomain{
@@ -42,12 +48,9 @@ func (ede ErrorDisplayEnvelope) AsError() errawr.Error {
 		ErrorSection: &impl.ErrorSection{
 			Key: ede.Section,
 		},
-		ErrorCode:  code,
-		ErrorTitle: ede.Title,
-		ErrorDescription: &impl.ErrorDescription{
-			Friendly:  ede.Description.Friendly,
-			Technical: ede.Description.Technical,
-		},
+		ErrorCode:        code,
+		ErrorTitle:       ede.Title,
+		ErrorDescription: description,
 		ErrorArguments:   arguments,
 		ErrorMetadata:    &impl.ErrorMetadata{},
 		ErrorSensitivity: errawr.ErrorSensitivityEdge,

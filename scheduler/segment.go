@@ -12,10 +12,13 @@ import (
 )
 
 type StartedSegment struct {
-	ctx      context.Context
-	cancel   context.CancelFunc
-	pc       chan Process
-	capturer trackers.Capturer
+	ctx    context.Context
+	cancel context.CancelFunc
+	pc     chan Process
+
+	// Error handling and reporting.
+	errorHandler segmentErrorHandler
+	capturer     trackers.Capturer
 
 	// Used to execute a close of the Process channel exactly once.
 	done sync.Once
@@ -37,6 +40,8 @@ func (ss *StartedSegment) run(process Process) {
 	err := ss.capturer.Try(ctx, func(ctx context.Context) {
 		if err := process.Run(ctx); err != nil {
 			log(ctx).Warn("process failed", "error", err)
+
+			ss.errorHandler.ForProcess(req, process, err)
 			ss.capturer.Capture(err).AsWarning().Report(ctx)
 		} else {
 			log(ctx).Debug("process complete")
@@ -54,6 +59,8 @@ func (ss *StartedSegment) describe(i int, desc Descriptor) {
 
 	if err := desc.Run(ss.ctx, ss.pc); err != nil {
 		log(ss.ctx).Warn("descriptor ended with error", "error", err)
+
+		ss.errorHandler.ForDescriptor(i, desc, err)
 	}
 }
 
@@ -69,6 +76,16 @@ func (ss *StartedSegment) supervise(i int) {
 		}
 
 		ss.run(process)
+	}
+}
+
+func (ss *StartedSegment) waitErrorHandler() {
+	// If we have a potentially terminating error handler, we will force
+	// ourselves to close if it returns.
+	select {
+	case <-ss.ctx.Done():
+	case <-ss.errorHandler.Ch():
+		ss.cancel()
 	}
 }
 
@@ -93,6 +110,18 @@ func (ss *StartedSegment) Wait(ctx context.Context) errors.Error {
 		}
 	}
 
+	// Now we will have collected all errors from running processes. If our
+	// error handler recorded any errors, let's return them now.
+	if errs := ss.errorHandler.Errors(); len(errs) > 0 {
+		rerr := errors.NewLifecycleExecutionError()
+
+		for _, err := range errs {
+			rerr = rerr.WithCause(err)
+		}
+
+		return rerr
+	}
+
 	return nil
 }
 
@@ -111,9 +140,15 @@ func (ss *StartedSegment) Close(ctx context.Context) errors.Error {
 }
 
 type Segment struct {
-	concurrency int
-	descriptors []Descriptor
-	capturer    trackers.Capturer
+	concurrency   int
+	descriptors   []Descriptor
+	errorBehavior SegmentErrorBehavior
+	capturer      trackers.Capturer
+}
+
+func (s *Segment) WithErrorBehavior(errorBehavior SegmentErrorBehavior) *Segment {
+	s.errorBehavior = errorBehavior
+	return s
 }
 
 func (s *Segment) WithCapturer(capturer trackers.Capturer) *Segment {
@@ -133,10 +168,13 @@ func (s *Segment) Start() StartedLifecycle {
 	ctx = trackers.NewContextWithCapturer(ctx, capturer)
 
 	ss := &StartedSegment{
-		ctx:         ctx,
-		cancel:      cancel,
-		pc:          pc,
-		capturer:    capturer,
+		ctx:    ctx,
+		cancel: cancel,
+		pc:     pc,
+
+		errorHandler: s.errorBehavior.handler(),
+		capturer:     capturer,
+
 		descriptors: make([]chan struct{}, len(s.descriptors)),
 		supervisors: make([]chan struct{}, s.concurrency),
 	}
@@ -153,12 +191,15 @@ func (s *Segment) Start() StartedLifecycle {
 		go ss.supervise(i)
 	}
 
+	go ss.waitErrorHandler()
+
 	return ss
 }
 
 func NewSegment(concurrency int, descriptors []Descriptor) *Segment {
 	return &Segment{
-		concurrency: concurrency,
-		descriptors: descriptors,
+		concurrency:   concurrency,
+		descriptors:   descriptors,
+		errorBehavior: SegmentErrorBehaviorCollect,
 	}
 }
