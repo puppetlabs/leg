@@ -25,7 +25,11 @@ func (c Capturer) WithTags(tags ...trackers.Tag) trackers.Capturer {
 	return c
 }
 
-func (c Capturer) Try(ctx context.Context, fn func(ctx context.Context)) interface{} {
+func (c Capturer) Try(ctx context.Context, fn func(ctx context.Context)) (rv interface{}) {
+	defer func() {
+		rv = recover()
+	}()
+
 	fn(ctx)
 	return nil
 }
@@ -39,5 +43,5 @@ func (c Capturer) CaptureMessage(message string) trackers.Reporter {
 }
 
 func (c Capturer) Middleware() trackers.Middleware {
-	return &Middleware{}
+	return &Middleware{c: &c}
 }

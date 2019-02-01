@@ -89,6 +89,29 @@ func TestSegmentErrorBehaviorTerminate(t *testing.T) {
 	assert.True(t, errors.IsLifecycleExecutionError(slc.Wait(ctx)))
 }
 
+func TestSegmentErrorBehaviorPanic(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+			panic("no")
+		})),
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+			select {
+			case <-ctx.Done():
+			case <-time.After(2 * time.Second):
+				t.Fatal("terminating error behavior did not terminate segment")
+			}
+
+			return nil
+		})),
+	}).WithErrorBehavior(scheduler.SegmentErrorBehaviorTerminate)
+
+	slc := lc.Start()
+	assert.True(t, errors.IsLifecycleExecutionError(slc.Wait(ctx)))
+}
+
 func TestSegmentErrorBehaviorDrop(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

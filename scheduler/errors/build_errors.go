@@ -277,3 +277,58 @@ func NewLifecycleTimeoutErrorBuilder() *LifecycleTimeoutErrorBuilder {
 func NewLifecycleTimeoutError() Error {
 	return NewLifecycleTimeoutErrorBuilder().Build()
 }
+
+// ProcessSection defines a section of errors with the following scope:
+// Process errors
+var ProcessSection = &impl.ErrorSection{
+	Key:   "process",
+	Title: "Process errors",
+}
+
+// ProcessPanicErrorCode is the code for an instance of "panic_error".
+const ProcessPanicErrorCode = "lis_process_panic_error"
+
+// IsProcessPanicError tests whether a given error is an instance of "panic_error".
+func IsProcessPanicError(err errawrgo.Error) bool {
+	return err != nil && err.Is(ProcessPanicErrorCode)
+}
+
+// IsProcessPanicError tests whether a given error is an instance of "panic_error".
+func (External) IsProcessPanicError(err errawrgo.Error) bool {
+	return IsProcessPanicError(err)
+}
+
+// ProcessPanicErrorBuilder is a builder for "panic_error" errors.
+type ProcessPanicErrorBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "panic_error" from this builder.
+func (b *ProcessPanicErrorBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "The process panic()ed.",
+		Technical: "The process panic()ed.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "panic_error",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     ProcessSection,
+		ErrorSensitivity: errawrgo.ErrorSensitivityNone,
+		ErrorTitle:       "Panic",
+		Version:          1,
+	}
+}
+
+// NewProcessPanicErrorBuilder creates a new error builder for the code "panic_error".
+func NewProcessPanicErrorBuilder() *ProcessPanicErrorBuilder {
+	return &ProcessPanicErrorBuilder{arguments: impl.ErrorArguments{}}
+}
+
+// NewProcessPanicError creates a new error with the code "panic_error".
+func NewProcessPanicError() Error {
+	return NewProcessPanicErrorBuilder().Build()
+}

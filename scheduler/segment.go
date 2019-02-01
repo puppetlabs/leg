@@ -2,6 +2,7 @@ package scheduler
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/puppetlabs/insights-instrumentation/alerts"
@@ -49,6 +50,15 @@ func (ss *StartedSegment) run(process Process) {
 	})
 	if err != nil {
 		log(ctx).Crit("process panic()!", "error", err)
+
+		switch et := err.(type) {
+		case errors.Error:
+			ss.errorHandler.ForProcess(req, process, et)
+		case error:
+			ss.errorHandler.ForProcess(req, process, errors.NewProcessPanicError().WithCause(et))
+		default:
+			ss.errorHandler.ForProcess(req, process, errors.NewProcessPanicError().WithCause(fmt.Errorf("panic: %+v", et)))
+		}
 	}
 }
 

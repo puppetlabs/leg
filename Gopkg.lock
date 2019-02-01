@@ -125,17 +125,18 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:39f7fd242b7be419e56988ff3d8c6f2657838cd91b2ce661f22adcf2633618f5"
+  digest = "1:3929de0bc037c2c5035b8200ab7d8490ea91e3c9efc16832477852a3de4e549d"
   name = "github.com/puppetlabs/insights-instrumentation"
   packages = [
     "alerts",
+    "alerts/internal/httputil",
     "alerts/internal/noop",
     "alerts/internal/sentry",
     "alerts/trackers",
     "errors",
   ]
   pruneopts = "UT"
-  revision = "2b65deb0339b42b526b5cd9ae83edce7cf099072"
+  revision = "25a3532380c155af6ba254886ac810d5fd73a473"
 
 [[projects]]
   branch = "master"

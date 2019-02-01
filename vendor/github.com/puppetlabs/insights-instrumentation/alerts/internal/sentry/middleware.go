@@ -1,9 +1,9 @@
 package sentry
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/puppetlabs/insights-instrumentation/alerts/internal/httputil"
 	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
 )
 
@@ -24,26 +24,7 @@ func (m Middleware) WithUser(u trackers.User) trackers.Middleware {
 }
 
 func (m Middleware) Wrap(target http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c := m.c.withHTTP(r)
-		r = r.WithContext(trackers.NewContextWithCapturer(r.Context(), c))
-
-		defer func() {
-			var reporter trackers.Reporter
-
-			rv := recover()
-			switch rvt := rv.(type) {
-			case nil:
-				return
-			case error:
-				reporter = c.Capture(rvt)
-			default:
-				reporter = c.CaptureMessage(fmt.Sprint(rvt))
-			}
-
-			reporter.Report(r.Context())
-		}()
-
-		target.ServeHTTP(w, r)
+	return httputil.Wrap(target, func(r *http.Request) trackers.Capturer {
+		return m.c.withHTTP(r)
 	})
 }

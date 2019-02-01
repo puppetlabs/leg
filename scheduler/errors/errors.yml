@@ -42,3 +42,14 @@ sections:
         title: Execution error
         description: >
           The scheduled processes failed to execute.
+
+  #
+  # Process errors
+  #
+  process:
+    title: Process errors
+    errors:
+      panic_error:
+        title: Panic
+        description: >
+          The process panic()ed.
