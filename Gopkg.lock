@@ -50,6 +50,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:e96640e5b9ce93e2d7ee18f48048483080fd23e72e3c38bc17e9c8b77062031a"
   name = "github.com/inconshreveable/log15"
   packages = ["."]
@@ -238,6 +246,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/gorilla/websocket",
     "github.com/pborman/uuid",
     "github.com/puppetlabs/errawr-gen/generator",
     "github.com/puppetlabs/errawr-go",
