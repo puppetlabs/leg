@@ -10,4 +10,4 @@ jobs:
       deploy:
         provider: script
         skip_cleanup: true
-        script: npx semantic-release
+        script: sh -c 'npm install && npx semantic-release'
