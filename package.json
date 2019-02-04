@@ -1,0 +1,19 @@
+{
+  "description": "Extensions to the Go standard library for Puppet Insights",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/puppetlabs/insights-stdlib.git"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^3.0.2",
+    "conventional-changelog-eslint": "^3.0.1",
+    "cz-adapter-eslint": "^0.2.0",
+    "semantic-release": "^15.13.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-adapter-eslint"
+    }
+  }
+}
