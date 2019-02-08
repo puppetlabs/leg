@@ -18,7 +18,6 @@ const (
 )
 
 var (
-	contentDispositionDiacriticRemover     = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
 	contentDispositionASCIIPrintableFilter = regexp.MustCompile(`[^\w\.-]+`)
 )
 
@@ -38,12 +37,16 @@ func SetContentDispositionHeader(w http.ResponseWriter, filename string) {
 		filename = DefaultAttachmentFilename + ext
 	}
 
+	// transform.Chain transformers are not thread safe. Do not move this to a
+	// global.
+	diacriticRemover := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+
 	// Remove diacritics before sanitizing to ASCII.
-	if tr, _, err := transform.String(contentDispositionDiacriticRemover, filename); err != nil {
+	if tr, _, err := transform.String(diacriticRemover, filename); err != nil {
 		// Bad filename. We'll try to save the extension and just return a
 		// generic filename.
 		ext := path.Ext(filename)
-		ext, _, _ = transform.String(contentDispositionDiacriticRemover, ext)
+		ext, _, _ = transform.String(diacriticRemover, ext)
 
 		filename = DefaultAttachmentFilename + ext
 	} else {
