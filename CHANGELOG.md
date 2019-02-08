@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/puppetlabs/insights-stdlib/compare/v1.1.0...v1.1.1) (2019-02-08)
+
+
+### Fix
+
+* Make api.SetContentDispositionHeader thread-safe ([4982868e2b1c9cfcb072ef649af35463495b424d](https://github.com/puppetlabs/insights-stdlib/commit/4982868e2b1c9cfcb072ef649af35463495b424d))
+
 # [1.1.0](https://github.com/puppetlabs/insights-stdlib/compare/v1.0.1...v1.1.0) (2019-02-05)
 
 
