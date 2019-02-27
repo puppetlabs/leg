@@ -1,10 +1,17 @@
 package logging
 
-import "github.com/inconshreveable/log15"
+import (
+	"os"
+
+	"github.com/puppetlabs/insights-logging/handler"
+
+	"github.com/inconshreveable/log15"
+)
 
 var (
-	rootHandler = log15.StdoutHandler
-	rootLevel   = log15.LvlDebug
+	rootFormatter = handler.StandardFormatter
+	rootHandler   = log15.StreamHandler(os.Stdout, rootFormatter)
+	rootLevel     = log15.LvlDebug
 
 	rootLogger log15.Logger
 )
