@@ -1,4 +1,4 @@
-module puppet/insights-logging
+module github.com/puppetlabs/insights-logging
 
 go 1.12
 

@@ -2,7 +2,8 @@ package logging
 
 import (
 	"os"
-	"puppet/insights-logging/handler"
+
+	"github.com/puppetlabs/insights-logging/handler"
 
 	"github.com/inconshreveable/log15"
 )
