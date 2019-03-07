@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:c84a587136cb69cecc11f3dbe9f9001444044c0dba74997b07f7e4c150b07cda"
+  name = "github.com/DATA-DOG/go-sqlmock"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3f9954f6f6697845b082ca57995849ddf614f450"
+  version = "v1.3.3"
+
+[[projects]]
   digest = "1:fed1f537c2f1269fe475a8556c393fe466641682d73ef8fd0491cd3aa1e47bad"
   name = "github.com/certifi/gocertifi"
   packages = ["."]
@@ -107,7 +115,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3f7c2af57e790ef6307097683bb00ad512f1ae789fa1945fa0d99603759ecb5e"
+  digest = "1:483e77f194109bdcded301a126e2b1b4361e0e3d9af5b7f996b3da70105c0f50"
   name = "github.com/puppetlabs/errawr-gen"
   packages = [
     "doc",
@@ -119,7 +127,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a77f5ba4d2dfca6d98d0bf1e281c8b111584675277e85f9f4ff161eefaae6bd3"
+  digest = "1:fdabda9b64310ef4eeb6be62d07682c6d2a764409fef78713025ddbf98c334b4"
   name = "github.com/puppetlabs/errawr-go"
   packages = [
     ".",
@@ -133,7 +141,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3929de0bc037c2c5035b8200ab7d8490ea91e3c9efc16832477852a3de4e549d"
+  digest = "1:6f32e2e3835e38143ed6959dfaf41190b3d87914777797706f251980f38a0b14"
   name = "github.com/puppetlabs/insights-instrumentation"
   packages = [
     "alerts",
@@ -156,7 +164,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2a9f20865e6699e4a9283f4d34bbc5180206f0b8414ca457435f71dc36533e96"
+  digest = "1:9f066e9c0306079016fe1911e7ca880041391267cfb5524e20e3a47c73dc6c43"
   name = "github.com/reflect/raymond"
   packages = [
     ".",
@@ -192,7 +200,7 @@
   revision = "a683aaf2d516deecd70cad0c72e3ca773ecfcef0"
 
 [[projects]]
-  digest = "1:befd7181c2f92c9f05abf17cd7e15538919f19cf7871d794cacc45a4fb99c135"
+  digest = "1:c40d65817cdd41fac9aa7af8bed56927bb2d6d47e4fea566a74880f5c2b1c41e"
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
@@ -235,6 +243,22 @@
   revision = "9b800f95dbbc54abff0acf7ee32d88ba4e328c89"
 
 [[projects]]
+  digest = "1:12398479544afc106c52628ec45900189ab8cbffd4f90afde4c28679d71fc3b9"
+  name = "golang.org/x/text"
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "runes",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm",
+  ]
+  pruneopts = "UT"
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
+
+[[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -246,6 +270,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/DATA-DOG/go-sqlmock",
     "github.com/gorilla/websocket",
     "github.com/pborman/uuid",
     "github.com/puppetlabs/errawr-gen/generator",
@@ -259,6 +284,9 @@
     "github.com/reflect/xparse/xtime",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
+    "golang.org/x/text/runes",
+    "golang.org/x/text/transform",
+    "golang.org/x/text/unicode/norm",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
