@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/puppetlabs/insights-stdlib/httputil/api"
+	"github.com/puppetlabs/horsehead/httputil/api"
 	"github.com/stretchr/testify/assert"
 )
 

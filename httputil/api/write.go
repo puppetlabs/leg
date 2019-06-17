@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/puppetlabs/errawr-go/encoding"
+	"github.com/puppetlabs/errawr-go/v2/pkg/encoding"
 	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
-	"github.com/puppetlabs/insights-stdlib/httputil/errors"
+	"github.com/puppetlabs/horsehead/httputil/errors"
 )
 
 func WriteObjectWithStatus(ctx context.Context, w http.ResponseWriter, status int, object interface{}) {

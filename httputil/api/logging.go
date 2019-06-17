@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	logger = logging.Builder().At("insights-stdlib", "httputil", "api")
+	logger = logging.Builder().At("horsehead", "httputil", "api")
 )
 
 func log(ctx context.Context) logging.Logger {

@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/puppetlabs/insights-stdlib/request"
-	"github.com/puppetlabs/insights-stdlib/scheduler/errors"
+	"github.com/puppetlabs/horsehead/request"
+	"github.com/puppetlabs/horsehead/scheduler/errors"
 )
 
 var (

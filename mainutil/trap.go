@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/puppetlabs/insights-stdlib/lifecycle"
+	"github.com/puppetlabs/horsehead/lifecycle"
 )
 
 type CancelableFunc func(ctx context.Context) error

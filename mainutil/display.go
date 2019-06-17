@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	errawr "github.com/puppetlabs/errawr-go"
+	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
 )
 
 func ExitWithCLIError(w io.Writer, code int, err errawr.Error) {

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/puppetlabs/insights-stdlib/httputil/fs"
+	"github.com/puppetlabs/horsehead/httputil/fs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

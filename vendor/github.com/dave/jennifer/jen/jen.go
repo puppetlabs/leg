@@ -37,8 +37,8 @@ func (f *File) Render(w io.Writer) error {
 		return err
 	}
 	source := &bytes.Buffer{}
-	if len(f.headers) > 0 {
-		for _, c := range f.headers {
+	if f.comments != nil {
+		for _, c := range f.comments {
 			if err := Comment(c).render(f, source, nil); err != nil {
 				return err
 			}
@@ -46,29 +46,8 @@ func (f *File) Render(w io.Writer) error {
 				return err
 			}
 		}
-		// Append an extra newline so that header comments don't get lumped in
-		// with package comments.
-		if _, err := fmt.Fprint(source, "\n"); err != nil {
-			return err
-		}
 	}
-	for _, c := range f.comments {
-		if err := Comment(c).render(f, source, nil); err != nil {
-			return err
-		}
-		if _, err := fmt.Fprint(source, "\n"); err != nil {
-			return err
-		}
-	}
-	if _, err := fmt.Fprintf(source, "package %s", f.name); err != nil {
-		return err
-	}
-	if f.CanonicalPath != "" {
-		if _, err := fmt.Fprintf(source, " // import %q", f.CanonicalPath); err != nil {
-			return err
-		}
-	}
-	if _, err := fmt.Fprint(source, "\n\n"); err != nil {
+	if _, err := fmt.Fprintf(source, "package %s\n\n", f.name); err != nil {
 		return err
 	}
 	if err := f.renderImports(source); err != nil {
@@ -88,81 +67,31 @@ func (f *File) Render(w io.Writer) error {
 }
 
 func (f *File) renderImports(source io.Writer) error {
-
-	// Render the "C" import if it's been used in a `Qual`, `Anon` or if there's a preamble comment
-	hasCgo := f.imports["C"].name != "" || len(f.cgoPreamble) > 0
-
-	// Only separate the import from the main imports block if there's a preamble
-	separateCgo := hasCgo && len(f.cgoPreamble) > 0
-
-	filtered := map[string]importdef{}
-	for path, def := range f.imports {
-		// filter out the "C" pseudo-package so it's not rendered in a block with the other
-		// imports, but only if it is accompanied by a preamble comment
-		if path == "C" && separateCgo {
-			continue
-		}
-		filtered[path] = def
-	}
-
-	if len(filtered) == 1 {
-		for path, def := range filtered {
-			if def.alias && path != "C" {
-				// "C" package should be rendered without alias even when used as an anonymous import
-				// (e.g. should never have an underscore).
-				if _, err := fmt.Fprintf(source, "import %s %s\n\n", def.name, strconv.Quote(path)); err != nil {
-					return err
-				}
-			} else {
-				if _, err := fmt.Fprintf(source, "import %s\n\n", strconv.Quote(path)); err != nil {
-					return err
-				}
+	if len(f.imports) == 1 {
+		for path, alias := range f.imports {
+			if _, err := fmt.Fprintf(source, "import %s %s\n\n", alias, strconv.Quote(path)); err != nil {
+				return err
 			}
 		}
-	} else if len(filtered) > 1 {
+	} else if len(f.imports) > 1 {
 		if _, err := fmt.Fprint(source, "import (\n"); err != nil {
 			return err
 		}
 		// We must sort the imports to ensure repeatable
 		// source.
 		paths := []string{}
-		for path := range filtered {
+		for path := range f.imports {
 			paths = append(paths, path)
 		}
 		sort.Strings(paths)
 		for _, path := range paths {
-			def := filtered[path]
-			if def.alias && path != "C" {
-				// "C" package should be rendered without alias even when used as an anonymous import
-				// (e.g. should never have an underscore).
-				if _, err := fmt.Fprintf(source, "%s %s\n", def.name, strconv.Quote(path)); err != nil {
-					return err
-				}
-
-			} else {
-				if _, err := fmt.Fprintf(source, "%s\n", strconv.Quote(path)); err != nil {
-					return err
-				}
+			if _, err := fmt.Fprintf(source, "%s %s\n", f.imports[path], strconv.Quote(path)); err != nil {
+				return err
 			}
 		}
 		if _, err := fmt.Fprint(source, ")\n\n"); err != nil {
 			return err
 		}
 	}
-
-	if separateCgo {
-		for _, c := range f.cgoPreamble {
-			if err := Comment(c).render(f, source, nil); err != nil {
-				return err
-			}
-			if _, err := fmt.Fprint(source, "\n"); err != nil {
-				return err
-			}
-		}
-		if _, err := fmt.Fprint(source, "import \"C\"\n\n"); err != nil {
-			return err
-		}
-	}
-
 	return nil
 }

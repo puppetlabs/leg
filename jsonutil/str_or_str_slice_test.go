@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/puppetlabs/insights-stdlib/jsonutil"
+	"github.com/puppetlabs/horsehead/jsonutil"
 	"github.com/stretchr/testify/assert"
 )
 

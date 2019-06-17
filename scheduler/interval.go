@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	errawr "github.com/puppetlabs/errawr-go"
+	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
 )
 
 type IntervalDescriptor struct {

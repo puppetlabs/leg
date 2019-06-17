@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 
-	"github.com/puppetlabs/insights-stdlib/scheduler/errors"
+	"github.com/puppetlabs/horsehead/scheduler/errors"
 )
 
 // StartedLifecycle represents a fully configured, operating scheduler.

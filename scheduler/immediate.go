@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 
-	errawr "github.com/puppetlabs/errawr-go"
+	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
 )
 
 type ImmediateDescriptor struct {

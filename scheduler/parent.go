@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 
-	"github.com/puppetlabs/insights-stdlib/scheduler/errors"
+	"github.com/puppetlabs/horsehead/scheduler/errors"
 )
 
 type StartedParent struct {

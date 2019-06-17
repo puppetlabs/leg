@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/puppetlabs/insights-stdlib/lifecycle"
+	"github.com/puppetlabs/horsehead/lifecycle"
 )
 
 type txContextKey uintptr

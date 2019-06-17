@@ -4,7 +4,7 @@ import (
 	"context"
 	"reflect"
 
-	errawr "github.com/puppetlabs/errawr-go"
+	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
 )
 
 // RecoveryDescriptor wraps a given descriptor so that it restarts if the

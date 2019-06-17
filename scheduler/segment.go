@@ -8,8 +8,8 @@ import (
 	"github.com/puppetlabs/insights-instrumentation/alerts"
 	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
 	logging "github.com/puppetlabs/insights-logging"
-	"github.com/puppetlabs/insights-stdlib/request"
-	"github.com/puppetlabs/insights-stdlib/scheduler/errors"
+	"github.com/puppetlabs/horsehead/request"
+	"github.com/puppetlabs/horsehead/scheduler/errors"
 )
 
 type StartedSegment struct {

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	logging "github.com/puppetlabs/insights-logging"
-	"github.com/puppetlabs/insights-stdlib/request"
+	"github.com/puppetlabs/horsehead/request"
 )
 
 func RequestMiddleware(next http.Handler) http.Handler {

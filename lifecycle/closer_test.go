@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/insights-stdlib/lifecycle"
+	"github.com/puppetlabs/horsehead/lifecycle"
 	"github.com/stretchr/testify/assert"
 )
 

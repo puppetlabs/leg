@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	errawr "github.com/puppetlabs/errawr-go"
-	"github.com/puppetlabs/errawr-go/testutil"
-	"github.com/puppetlabs/insights-stdlib/scheduler"
-	"github.com/puppetlabs/insights-stdlib/scheduler/errors"
+	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
+	"github.com/puppetlabs/errawr-go/v2/pkg/testutil"
+	"github.com/puppetlabs/horsehead/scheduler"
+	"github.com/puppetlabs/horsehead/scheduler/errors"
 	"github.com/stretchr/testify/assert"
 )
 
