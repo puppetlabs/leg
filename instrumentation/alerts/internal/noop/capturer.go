@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 )
 
 type Capturer struct{}

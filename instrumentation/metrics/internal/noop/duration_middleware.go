@@ -3,7 +3,7 @@ package noop
 import (
 	"net/http"
 
-	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
 )
 
 type DurationMiddleware struct{}

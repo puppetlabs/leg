@@ -7,8 +7,8 @@ import (
 	"net/url"
 
 	"github.com/puppetlabs/errawr-go/v2/pkg/encoding"
-	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
 	"github.com/puppetlabs/horsehead/httputil/errors"
+	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 )
 
 func WriteObjectWithStatus(ctx context.Context, w http.ResponseWriter, status int, object interface{}) {

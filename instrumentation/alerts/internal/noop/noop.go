@@ -1,6 +1,6 @@
 package noop
 
-import "github.com/puppetlabs/insights-instrumentation/alerts/trackers"
+import "github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 
 type NoOp struct{}
 

@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/puppetlabs/insights-instrumentation/metrics"
-	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
-	"github.com/puppetlabs/insights-instrumentation/metrics/delegates"
-	"github.com/puppetlabs/insights-instrumentation/metrics/server"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/delegates"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/server"
 )
 
 const (

@@ -3,8 +3,8 @@ package sentry
 import (
 	"net/http"
 
-	"github.com/puppetlabs/insights-instrumentation/alerts/internal/httputil"
-	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/instrumentation/alerts/internal/httputil"
+	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 )
 
 type Middleware struct {

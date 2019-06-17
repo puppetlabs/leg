@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
-	"github.com/puppetlabs/insights-instrumentation/metrics/internal/prometheus"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/internal/prometheus"
 )
 
 // Delegate is an interface metrics collectors implement (i.e. prometheus)

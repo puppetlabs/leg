@@ -5,8 +5,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/puppetlabs/insights-instrumentation/metrics"
-	"github.com/puppetlabs/insights-stdlib/netutil"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics"
+	"github.com/puppetlabs/horsehead/netutil"
 )
 
 // Options are the Server configuration options

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/puppetlabs/insights-instrumentation/alerts"
-	"github.com/puppetlabs/insights-instrumentation/alerts/trackers"
-	logging "github.com/puppetlabs/insights-logging"
+	"github.com/puppetlabs/horsehead/instrumentation/alerts"
+	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 	"github.com/puppetlabs/horsehead/request"
 	"github.com/puppetlabs/horsehead/scheduler/errors"
+	logging "github.com/puppetlabs/insights-logging"
 )
 
 type StartedSegment struct {

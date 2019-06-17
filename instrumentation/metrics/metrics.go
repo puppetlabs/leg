@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/puppetlabs/insights-instrumentation/errors"
-	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
-	"github.com/puppetlabs/insights-instrumentation/metrics/delegates"
-	"github.com/puppetlabs/insights-instrumentation/metrics/internal/noop"
+	"github.com/puppetlabs/horsehead/instrumentation/errors"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/delegates"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/internal/noop"
 	logging "github.com/puppetlabs/insights-logging"
 )
 

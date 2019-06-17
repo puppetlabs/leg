@@ -1,7 +1,6 @@
-# Insights instrumentation
+# Instrumentation
 
-This package holds instrumentation packages for the services and applications
-that run insights.
+This package holds instrumentation packages (Sentry for alerting and Prometheus for metrics).
 
 ## Metrics
 

@@ -1,6 +1,6 @@
 package sentry
 
-import "github.com/puppetlabs/insights-instrumentation/alerts/trackers"
+import "github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 
 func tagsToSentryTags(tags []trackers.Tag) map[string]string {
 	tm := make(map[string]string, len(tags))

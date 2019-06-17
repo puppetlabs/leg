@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	defaultLogger = logging.Builder().At("insights-instrumentation", "metrics")
+	defaultLogger = logging.Builder().At("horsehead", "instrumentation", "metrics")
 )
 
 func log(ctx context.Context) logging.Logger {

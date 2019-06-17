@@ -1,6 +1,6 @@
 package noop
 
-import "github.com/puppetlabs/insights-instrumentation/metrics/collectors"
+import "github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
 
 type Counter struct{}
 

@@ -2,8 +2,8 @@ package prometheus
 
 import (
 	prom "github.com/prometheus/client_golang/prometheus"
-	"github.com/puppetlabs/insights-instrumentation/errors"
-	"github.com/puppetlabs/insights-instrumentation/metrics/collectors"
+	"github.com/puppetlabs/horsehead/instrumentation/errors"
+	"github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
 )
 
 type Counter struct {
