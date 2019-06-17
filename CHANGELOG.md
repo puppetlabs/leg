@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/puppetlabs/insights-stdlib/compare/v1.1.1...v1.2.0) (2019-06-17)
+
+
+### New
+
+* Add sqlutil.WithTx() for handling nested SQL transactions ([b15b3871dbe1ab34add8cdaaa53b996aa3f7441e](https://github.com/puppetlabs/insights-stdlib/commit/b15b3871dbe1ab34add8cdaaa53b996aa3f7441e))
+
 ## [1.1.1](https://github.com/puppetlabs/insights-stdlib/compare/v1.1.0...v1.1.1) (2019-02-08)
 
 
