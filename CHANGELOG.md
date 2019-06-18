@@ -1,3 +1,14 @@
+# [1.1.0](https://github.com/puppetlabs/horsehead/compare/v1.0.0...v1.1.0) (2019-06-18)
+
+
+### New
+
+* Import insights-instrumentation ([7d469842c310e447b7f70fb2b65eab9e10e0d686](https://github.com/puppetlabs/horsehead/commit/7d469842c310e447b7f70fb2b65eab9e10e0d686))
+
+### Trivial
+
+* align noop capturer with Sentry (again) ([25a3532380c155af6ba254886ac810d5fd73a473](https://github.com/puppetlabs/horsehead/commit/25a3532380c155af6ba254886ac810d5fd73a473))
+
 # 1.0.0 (2019-06-17)
 
 
