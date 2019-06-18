@@ -1,3 +1,21 @@
+# [1.3.0](https://github.com/puppetlabs/horsehead/compare/v1.2.0...v1.3.0) (2019-06-18)
+
+
+### Chore
+
+* Import from insights-stdlib ([5c3eea2dcc0b8a51b0bffba30b80909dac928d4b](https://github.com/puppetlabs/horsehead/commit/5c3eea2dcc0b8a51b0bffba30b80909dac928d4b))
+* Release 1.0.0 ([c75017ad0897652de4aa9d33490be398c8a1a1a7](https://github.com/puppetlabs/horsehead/commit/c75017ad0897652de4aa9d33490be398c8a1a1a7))
+* Release 1.1.0 ([5678ee08ab0548a9cf3592b02bb081c77231df27](https://github.com/puppetlabs/horsehead/commit/5678ee08ab0548a9cf3592b02bb081c77231df27))
+* Reset CHANGELOG to fix tagging ([94cef6fe804cc441f6def6c408e434b0eb3a9a16](https://github.com/puppetlabs/horsehead/commit/94cef6fe804cc441f6def6c408e434b0eb3a9a16))
+
+### New
+
+* Import insights-instrumentation ([7d469842c310e447b7f70fb2b65eab9e10e0d686](https://github.com/puppetlabs/horsehead/commit/7d469842c310e447b7f70fb2b65eab9e10e0d686))
+
+### Trivial
+
+* align noop capturer with Sentry (again) ([25a3532380c155af6ba254886ac810d5fd73a473](https://github.com/puppetlabs/horsehead/commit/25a3532380c155af6ba254886ac810d5fd73a473))
+
 # [1.2.0](https://github.com/puppetlabs/horsehead/compare/v1.1.1...v1.2.0) (2019-06-17)
 
 
