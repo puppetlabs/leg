@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 
-	logging "github.com/puppetlabs/insights-logging"
+	logging "github.com/puppetlabs/horsehead/logging"
 )
 
 var (

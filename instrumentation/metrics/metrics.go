@@ -10,7 +10,7 @@ import (
 	"github.com/puppetlabs/horsehead/instrumentation/metrics/collectors"
 	"github.com/puppetlabs/horsehead/instrumentation/metrics/delegates"
 	"github.com/puppetlabs/horsehead/instrumentation/metrics/internal/noop"
-	logging "github.com/puppetlabs/insights-logging"
+	"github.com/puppetlabs/horsehead/logging"
 )
 
 type errorBehavior int

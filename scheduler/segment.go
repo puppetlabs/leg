@@ -7,9 +7,9 @@ import (
 
 	"github.com/puppetlabs/horsehead/instrumentation/alerts"
 	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/logging"
 	"github.com/puppetlabs/horsehead/request"
 	"github.com/puppetlabs/horsehead/scheduler/errors"
-	logging "github.com/puppetlabs/insights-logging"
 )
 
 type StartedSegment struct {

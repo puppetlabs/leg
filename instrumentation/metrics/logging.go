@@ -3,7 +3,7 @@ package metrics
 import (
 	"context"
 
-	logging "github.com/puppetlabs/insights-logging"
+	"github.com/puppetlabs/horsehead/logging"
 )
 
 var (
