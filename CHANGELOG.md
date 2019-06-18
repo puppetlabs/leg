@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/puppetlabs/horsehead/compare/v1.3.0...v1.4.0) (2019-06-18)
+
+
+### New
+
+* Import insights-logging ([594b93c7eeb169878416ccb0d8513e974d8d64f7](https://github.com/puppetlabs/horsehead/commit/594b93c7eeb169878416ccb0d8513e974d8d64f7))
+
 # [1.3.0](https://github.com/puppetlabs/horsehead/compare/v1.2.0...v1.3.0) (2019-06-18)
 
 
