@@ -3,9 +3,8 @@ package logging
 import (
 	"os"
 
-	"github.com/puppetlabs/insights-logging/handler"
-
 	"github.com/inconshreveable/log15"
+	"github.com/puppetlabs/horsehead/logging/handler"
 )
 
 var (

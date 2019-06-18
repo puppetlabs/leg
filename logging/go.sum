@@ -1,9 +1,0 @@
-github.com/go-stack/stack v1.6.0 h1:MmJCxYVKTJ0SplGKqFVX3SBnmaUhODHZrrFF6jMbpZk=
-github.com/go-stack/stack v1.6.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
-github.com/inconshreveable/log15 v0.0.0-20171002153753-0f77f5243b7d h1:6wxq4atVOiBr+U/x2DShuoE3a9WPBhqiX4STkHFjD0Q=
-github.com/inconshreveable/log15 v0.0.0-20171002153753-0f77f5243b7d/go.mod h1:cOaXtrgN4ScfRrD9Bre7U1thNq5RtJ8ZoP4iXVGRj6o=
-github.com/mattn/go-colorable v0.0.0-20170816031813-ad5389df28cd h1:eYiiP5pgdf+n78BU5JFWt7yI2bpxW31L/R5Rrk8vLgs=
-github.com/mattn/go-colorable v0.0.0-20170816031813-ad5389df28cd/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
-github.com/mattn/go-isatty v0.0.0-20170925054904-a5cdd64afdee h1:tUyoJR5V1TdXnTh9v8c1YAHvDdut2+zkuyUX3gAY/wI=
-github.com/mattn/go-isatty v0.0.0-20170925054904-a5cdd64afdee/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
-golang.org/x/sys v0.0.0-20180828065106-d99a578cf41b/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
