@@ -1,11 +1,30 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"regexp"
 	"strconv"
 )
+
+type RangeErrorCode string
+const (
+	InvalidRangeHeader RangeErrorCode = "InvalidRangeHeader"
+	UnsupportedRangeUnit RangeErrorCode = "UnsupportedRangeUnit"
+	UnsatisfiableRange RangeErrorCode = "UnsatisfiableRange"
+)
+
+type RangeError struct {
+	Code RangeErrorCode
+	Message string
+}
+
+func (e *RangeError) Error() string {
+	return e.Message
+}
+
+var ErrRangeHeaderInvalid = errors.New("Invalid Range header")
 
 type RangeSpec struct {
 	First        *int64
@@ -27,18 +46,28 @@ func ScanRangeHeader(header string) (*RangeHeader, error) {
 	}
 	eq := strings.Index(header, "=")
 	if eq < 1 {
-		return nil, fmt.Errorf("Invalid Range header")
+		return nil, &RangeError {
+			Code: InvalidRangeHeader,
+			Message: "Expected Range header to begin with `bytes=`",
+		}
 	}
 	unit := strings.TrimSpace(header[0:eq])
 	if "bytes" != unit {
-		return nil, fmt.Errorf("Unsupported Range header unit=%s", unit)
+		return nil, &RangeError {
+			Code:    UnsupportedRangeUnit,
+			Message: fmt.Sprintf("Unsupported Range header unit=%s", unit),
+		}
 	}
 	specStrs := strings.Split(header[eq+1:], ",")
-	var specs []RangeSpec
-	for _, specStr := range specStrs {
+	specs := make([]RangeSpec, len(specStrs))
+	for i, specStr := range specStrs {
 		matches := rangeSpecRegex.FindStringSubmatch(specStr)
 		if len(matches) <= 0 {
-			return nil, fmt.Errorf("Invalid Range header, expected %s to be digits followed by '-' followed by digits", specStr)
+			return nil, &RangeError {
+				Code:    InvalidRangeHeader,
+				Message: fmt.Sprintf(
+					"Invalid Range header, expected %s to be digits followed by '-' followed by digits", specStr),
+			}
 		}
 		var first, last, suffixLength *int64
 		if len(matches[1]) > 0 {
@@ -47,8 +76,11 @@ func ScanRangeHeader(header string) (*RangeHeader, error) {
 			if len(matches[2]) > 0 {
 				v2, _ := strconv.ParseInt(matches[2], 10, 64)
 				if v2 < *first {
-					return nil, fmt.Errorf(
-						`Unsatisfiable byte range %s`, specStr)
+					return nil, &RangeError {
+						Code:    UnsatisfiableRange,
+						Message: fmt.Sprintf(
+							`Unsatisfiable byte range %s`, specStr),
+					}
 				}
 				last = &v2
 			}
@@ -56,13 +88,16 @@ func ScanRangeHeader(header string) (*RangeHeader, error) {
 			v, _ := strconv.ParseInt(matches[2], 10, 64)
 			suffixLength = &v
 		} else {
-			return nil, fmt.Errorf("Invalid Range header, expected more than just a '-'")
+			return nil, &RangeError {
+				Code:    InvalidRangeHeader,
+				Message: "Invalid Range header, expected more than just a '-'",
+			}
 		}
-		specs = append(specs, RangeSpec {
+		specs[i] = RangeSpec {
 			First: first,
 			Last: last,
 			SuffixLength: suffixLength,
-		})
+		}
 			
 	}
 	return &RangeHeader {

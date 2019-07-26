@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -45,15 +44,24 @@ func TestScanRangeHeader(t *testing.T) {
 		},
 		{
 			Header: `bytes=10-1`,
-			Error:  fmt.Errorf(`Unsatisfiable byte range 10-1`),
+			Error:  &RangeError {
+				Code:    UnsatisfiableRange,
+				Message: `Unsatisfiable byte range 10-1`,
+			},
 		},
 		{
 			Header: ` lines =1-2`,
-			Error:  fmt.Errorf(`Unsupported Range header unit=lines`),
+			Error:  &RangeError {
+				Code:    UnsupportedRangeUnit,
+				Message: `Unsupported Range header unit=lines`,
+			},
 		},
 		{
 			Header: `bytes=-`,
-			Error:  fmt.Errorf(`Invalid Range header, expected more than just a '-'`),
+			Error:  &RangeError {
+				Code:    InvalidRangeHeader,
+				Message: `Invalid Range header, expected more than just a '-'`,
+			},
 		},
 	}
 	for _, test := range tests {
