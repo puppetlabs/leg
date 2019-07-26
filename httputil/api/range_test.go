@@ -18,9 +18,9 @@ func TestScanRangeHeader(t *testing.T) {
 	}{
 		{
 			Header: ` bytes = 1 - 3 , 10 - `,
-			Expected: &RangeHeader {
+			Expected: &RangeHeader{
 				Unit: "bytes",
-				Specs: []RangeSpec {
+				Specs: []RangeSpec{
 					{
 						First: newInt64(1),
 						Last:  newInt64(3),
@@ -33,9 +33,9 @@ func TestScanRangeHeader(t *testing.T) {
 		},
 		{
 			Header: ` bytes = - 1000`,
-			Expected: &RangeHeader {
+			Expected: &RangeHeader{
 				Unit: "bytes",
-				Specs: []RangeSpec {
+				Specs: []RangeSpec{
 					{
 						SuffixLength: newInt64(1000),
 					},
@@ -44,21 +44,21 @@ func TestScanRangeHeader(t *testing.T) {
 		},
 		{
 			Header: `bytes=10-1`,
-			Error:  &RangeError {
+			Error: &RangeError{
 				Code:    UnsatisfiableRange,
 				Message: `Unsatisfiable byte range 10-1`,
 			},
 		},
 		{
 			Header: ` lines =1-2`,
-			Error:  &RangeError {
+			Error: &RangeError{
 				Code:    UnsupportedRangeUnit,
 				Message: `Unsupported Range header unit=lines`,
 			},
 		},
 		{
 			Header: `bytes=-`,
-			Error:  &RangeError {
+			Error: &RangeError{
 				Code:    InvalidRangeHeader,
 				Message: `Invalid Range header, expected more than just a '-'`,
 			},
