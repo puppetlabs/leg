@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/puppetlabs/horsehead/compare/v1.4.0...v1.5.0) (2019-07-26)
+
+
+### New
+
+* Add support for parsing Range header ([5e8297f9536abc6374b54141638e4b69082a4fec](https://github.com/puppetlabs/horsehead/commit/5e8297f9536abc6374b54141638e4b69082a4fec))
+
 # [1.4.0](https://github.com/puppetlabs/horsehead/compare/v1.3.0...v1.4.0) (2019-06-18)
 
 
