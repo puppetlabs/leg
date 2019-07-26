@@ -44,6 +44,10 @@ func TestScanRangeHeader(t *testing.T) {
 			},
 		},
 		{
+			Header: `bytes=10-1`,
+			Error:  fmt.Errorf(`Unsatisfiable byte range 10-1`),
+		},
+		{
 			Header: ` lines =1-2`,
 			Error:  fmt.Errorf(`Unsupported Range header unit=lines`),
 		},

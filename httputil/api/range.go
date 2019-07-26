@@ -46,6 +46,10 @@ func ScanRangeHeader(header string) (*RangeHeader, error) {
 			first = &v
 			if len(matches[2]) > 0 {
 				v2, _ := strconv.ParseInt(matches[2], 10, 64)
+				if v2 < *first {
+					return nil, fmt.Errorf(
+						`Unsatisfiable byte range %s`, specStr)
+				}
 				last = &v2
 			}
 		} else if len(matches[2]) > 0 {
