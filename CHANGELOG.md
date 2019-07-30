@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/puppetlabs/horsehead/compare/v1.5.0...v1.6.0) (2019-07-30)
+
+
+### New
+
+* Expose TrackingResponseWriter ([fc89e1fb201012cdefc3bd0ab6b712df69d98ec9](https://github.com/puppetlabs/horsehead/commit/fc89e1fb201012cdefc3bd0ab6b712df69d98ec9))
+
 # [1.5.0](https://github.com/puppetlabs/horsehead/compare/v1.4.0...v1.5.0) (2019-07-26)
 
 
