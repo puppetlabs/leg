@@ -44,12 +44,6 @@ func NewStorageError(code StorageErrorCode, msg string, cause error) *StorageErr
 	}
 }
 
-type StorageMeta struct {
-	Key           string
-	Metadata      map[string]string
-	ContentLength int64
-}
-
 type StorageSink func(io.Writer) error
 type StorageSrc func(io.Reader) error
 

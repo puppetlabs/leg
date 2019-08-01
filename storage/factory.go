@@ -39,8 +39,8 @@ func RegisterFactory(scheme string, factory BlobStorageFactory) {
 }
 
 func SupportedSchemes() []string {
-	factoriesMu.Lock()
-	defer factoriesMu.Unlock()
+	factoriesMu.RLock()
+	defer factoriesMu.RUnlock()
 	var list []string
 	for scheme := range factories {
 		list = append(list, scheme)
