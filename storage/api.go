@@ -2,7 +2,7 @@ package storage
 
 // Look here for various implementations:
 // 	https://github.com/puppetlabs/nebula-libs/tree/master/storage"
-// 
+//
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 )
 
 type StorageErrorCode string
+
 const (
 	AuthError     StorageErrorCode = "AuthError"
 	NotFoundError StorageErrorCode = "NotFoundError"
@@ -18,8 +19,8 @@ const (
 )
 
 type StorageError struct {
-	code StorageErrorCode
-	msg string
+	code  StorageErrorCode
+	msg   string
 	cause error
 }
 
@@ -36,7 +37,7 @@ func (e *StorageError) Cause() error {
 }
 
 func NewStorageError(code StorageErrorCode, msg string, cause error) *StorageError {
-	return &StorageError {
+	return &StorageError{
 		code:  code,
 		msg:   msg,
 		cause: cause,

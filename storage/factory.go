@@ -47,4 +47,3 @@ func SupportedSchemes() []string {
 	}
 	return list
 }
-
