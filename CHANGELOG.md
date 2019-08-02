@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/puppetlabs/horsehead/compare/v1.6.1...v1.7.0) (2019-08-02)
+
+
+### New
+
+* storage API. ([b68b74287f7bc210ed8fd355ae79893ec40a14d9](https://github.com/puppetlabs/horsehead/commit/b68b74287f7bc210ed8fd355ae79893ec40a14d9))
+
 ## [1.6.1](https://github.com/puppetlabs/horsehead/compare/v1.6.0...v1.6.1) (2019-08-02)
 
 # [1.6.0](https://github.com/puppetlabs/horsehead/compare/v1.5.0...v1.6.0) (2019-07-30)
