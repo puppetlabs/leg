@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/puppetlabs/horsehead/compare/v1.7.0...v1.8.0) (2019-08-08)
+
+
+### Update
+
+* adding a utility package for managing working directories ([50a74c4a5edcaa40313748cce3e0fa7894f6a736](https://github.com/puppetlabs/horsehead/commit/50a74c4a5edcaa40313748cce3e0fa7894f6a736))
+
 # [1.7.0](https://github.com/puppetlabs/horsehead/compare/v1.6.1...v1.7.0) (2019-08-02)
 
 
