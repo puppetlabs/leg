@@ -1,13 +1,14 @@
 package workdir
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 )
 
 const defaultMode = 0755
 
-type cleanup func() error
+type CleanupFunc func() error
 
 // WorkDir is a response type that contains the Path to a directory created by this package.
 type WorkDir struct {
@@ -15,7 +16,7 @@ type WorkDir struct {
 	Path string
 	// Cleanup is a function that will cleanup any directory and files under
 	// Path.
-	Cleanup cleanup
+	Cleanup CleanupFunc
 }
 
 type dirType int
@@ -63,21 +64,13 @@ var dirTypeEnv = map[dirType]dirTypeEnvDefault{
 	},
 }
 
-// New returns a new WorkDir or an error. If p is not empty, then it will attempt
-// to create the directory contained with in it. If p is empty, then it will use dirType
-// and namespace to determine what directory should be created and passed back to the caller.
+// New returns a new WorkDir or an error. An error is returned if p is empty.
 // A standard cleanup function is made available so the caller can decide if they want to
 // remove the directory created after they are done. Options allow additional control over
 // the directory attributes.
-func New(p string, dirType dirType, namespace []string, opts Options) (*WorkDir, error) {
+func New(p string, opts Options) (*WorkDir, error) {
 	if p == "" {
-		def := dirTypeEnv[dirType]
-
-		p = filepath.Join(def.defaultLoc, filepath.Join(namespace...))
-
-		if os.Getenv(def.envName) != "" {
-			p = filepath.Join(os.Getenv(def.envName), filepath.Join(namespace...))
-		}
+		return nil, errors.New("path cannot be empty")
 	}
 
 	mode := os.FileMode(defaultMode)
@@ -97,4 +90,33 @@ func New(p string, dirType dirType, namespace []string, opts Options) (*WorkDir,
 	}
 
 	return wd, nil
+}
+
+// Namespace holds the directory parts that will be joined together to form
+// a namespaced path segment in the final workdir.
+type Namespace struct {
+	parts []string
+}
+
+// New returns a new WorkDir under the context of dt (directory type) and allows for setting
+// a namespace. Below is an example of its use:
+// wd, _ := NewNamespace([]string{"foo", "bar"}).New(DirTypeConfig, Options{})
+// fmt.Println(wd.Path)
+//
+// Out: /home/kyle/.config/foo/bar
+func (n *Namespace) New(dt dirType, opts Options) (*WorkDir, error) {
+	def := dirTypeEnv[dt]
+
+	p := filepath.Join(def.defaultLoc, filepath.Join(n.parts...))
+
+	if os.Getenv(def.envName) != "" {
+		p = filepath.Join(os.Getenv(def.envName), filepath.Join(n.parts...))
+	}
+
+	return New(p, opts)
+}
+
+// NewNamespace returns a new Namespace with the provided parts slice set
+func NewNamespace(parts []string) *Namespace {
+	return &Namespace{parts: parts}
 }
