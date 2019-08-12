@@ -3,6 +3,7 @@ package noop
 import (
 	"context"
 	"fmt"
+	"runtime/debug"
 
 	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
 )
@@ -28,6 +29,9 @@ func (c Capturer) WithTags(tags ...trackers.Tag) trackers.Capturer {
 func (c Capturer) Try(ctx context.Context, fn func(ctx context.Context)) (rv interface{}) {
 	defer func() {
 		rv = recover()
+		if nil != rv {
+			debug.PrintStack()
+		}
 	}()
 
 	fn(ctx)
