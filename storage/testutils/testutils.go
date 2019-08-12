@@ -1,34 +1,26 @@
 package testutils
 
 import (
-	"io/ioutil"
 	"net/url"
 	"os"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/puppetlabs/horsehead/storage"
+	"github.com/puppetlabs/horsehead/workdir"
 	"github.com/stretchr/testify/require"
 )
 
-func mustCreateTempDir(t *testing.T) string {
-	tmp, err := ioutil.TempDir("", "storage-test")
+func NewTempFilesystemBlobStore(t *testing.T) (storage.BlobStore, func() error, string) {
+	wd, err := workdir.NewNamespace([]string{"tmp-blob-store", uuid.New().String()}).New(workdir.DirTypeCache, workdir.Options{
+		Mode: os.FileMode(0700),
+	})
 	require.NoError(t, err)
 
-	t.Logf("[blob storage] created temp directory: %s", tmp)
-
-	return tmp
-}
-
-func NewTempFilesystemBlobStore(t *testing.T) (storage.BlobStore, func(), string) {
-	tmp := mustCreateTempDir(t)
-
-	u, err := url.Parse("file://" + tmp)
+	u, err := url.Parse("file://" + wd.Path)
 	require.NoError(t, err)
 	fs, err := storage.NewBlobStore(*u)
 	require.NoError(t, err)
 
-	return fs, func() {
-		require.NoError(t, os.RemoveAll(tmp))
-		t.Logf("[blob storage] cleaned up temp directory %s", tmp)
-	}, tmp
+	return fs, wd.Cleanup, wd.Path
 }
