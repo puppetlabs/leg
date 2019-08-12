@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/puppetlabs/horsehead/compare/v1.8.0...v1.9.0) (2019-08-12)
+
+
+### New
+
+* storage/testutils makes it easy to generate a temp directory and use the file:// storage backend for testing. ([4d043182bab5075f5ee807f308845ed6e3c2d531](https://github.com/puppetlabs/horsehead/commit/4d043182bab5075f5ee807f308845ed6e3c2d531))
+
 # [1.8.0](https://github.com/puppetlabs/horsehead/compare/v1.7.0...v1.8.0) (2019-08-08)
 
 
