@@ -6,8 +6,8 @@ package storage
 
 import (
 	"context"
-	"io"
 	"fmt"
+	"io"
 )
 
 type ErrorCode string
@@ -35,9 +35,9 @@ func (e *errorImpl) Unwrap() error {
 
 func Errorf(cause error, code ErrorCode, format string, a ...interface{}) error {
 	return &errorImpl{
-		code:     code,
-		message:  fmt.Sprintf(format, a...),
-		cause:    cause,
+		code:    code,
+		message: fmt.Sprintf(format, a...),
+		cause:   cause,
 	}
 }
 
@@ -66,7 +66,13 @@ type PutOptions struct {
 	ContentType string
 }
 type GetOptions struct {
-	// TODO: Support range requests?
+	// If Offset and Length are 0, the full blob is returned.
+	//
+	// If length is < 0, all bytes after Offset are returned.
+	//
+	// If Offset is < 0, it is the offset from the end of the blob
+	// and length must be 0 or negative.
+	Offset, Length int64
 }
 type DeleteOptions struct {
 	// TODO: Support conditional deletes?
