@@ -92,3 +92,19 @@ func (e NoEncoding) EncodeForTransfer(value []byte) (string, error) {
 func (e NoEncoding) DecodeFromTransfer(value string) ([]byte, error) {
 	return []byte(value), nil
 }
+
+// EncodeForTransfer uses the DefaultEncodingType to encode value.
+func EncodeForTransfer(value []byte) (string, error) {
+	encoder := Encoders[DefaultEncodingType]()
+
+	return encoder.EncodeForTransfer(value)
+}
+
+// DecodeFromTransfer uses ParseEncodedValue to find the right encoder then
+// decodes value with it.
+func DecodeFromTransfer(value string) ([]byte, error) {
+	t, val := ParseEncodedValue(value)
+	encoder := Encoders[t]()
+
+	return encoder.DecodeFromTransfer(val)
+}

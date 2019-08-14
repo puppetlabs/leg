@@ -73,26 +73,61 @@ func TestEncoding(t *testing.T) {
 		t.Run(c.description, func(t *testing.T) {
 			ed := Encoders[c.encodingType]()
 
-			result, err := ed.EncodeForTransfer([]byte(c.value))
+			encoded, err := ed.EncodeForTransfer([]byte(c.value))
 			require.NoError(t, err)
-			require.Equal(t, c.expected, result, fmt.Sprintf("result was malformed: %s", result))
+			require.Equal(t, c.expected, encoded, fmt.Sprintf("encoding result was malformed: %s", encoded))
 
-			typ, value := ParseEncodedValue(result)
+			typ, value := ParseEncodedValue(encoded)
 			require.Equal(t, c.encodingType, typ)
 
 			newED := Encoders[typ]()
 
-			var newResult []byte
+			var decoded []byte
 
-			newResult, err = newED.DecodeFromTransfer(value)
+			decoded, err = newED.DecodeFromTransfer(value)
 			require.NoError(t, err)
-			require.Equal(t, c.value, string(newResult))
+			require.Equal(t, c.value, string(decoded))
 
 			if c.customResultTest != nil {
 				t.Run("custom result test", func(t *testing.T) {
-					c.customResultTest(t, result, newResult)
+					c.customResultTest(t, encoded, decoded)
 				})
 			}
+		})
+	}
+}
+
+func TestHelperFuncs(t *testing.T) {
+	var cases = []struct {
+		description string
+		value       string
+		expected    string
+	}{
+		{
+			description: "base64 encoding succeeds",
+			value:       "super secret token",
+			expected:    "base64:c3VwZXIgc2VjcmV0IHRva2Vu",
+		},
+		{
+			description: "user encoded base64 wrapped with our base64 encoder",
+			// "super secret token" encoded as base64
+			value:    "c3VwZXIgc2VjcmV0IHRva2Vu",
+			expected: "base64:YzNWd1pYSWdjMlZqY21WMElIUnZhMlZ1",
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.description, func(t *testing.T) {
+			encoded, err := EncodeForTransfer([]byte(c.value))
+			require.NoError(t, err)
+
+			require.Equal(t, c.expected, encoded)
+
+			var decoded []byte
+
+			decoded, err = DecodeFromTransfer(encoded)
+			require.NoError(t, err)
+			require.Equal(t, c.value, string(decoded))
 		})
 	}
 }
