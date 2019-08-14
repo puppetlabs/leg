@@ -1,4 +1,4 @@
-package encoding
+package transfer
 
 import (
 	"encoding/base64"
@@ -48,8 +48,8 @@ func ParseEncodedValue(value string) (encodingType, string) {
 // Encoders maps encoding algorithms to their respective EncodeDecoder types.
 // Example:
 //
-//	ed := encoding.Encoders[Base64EncodingType]()
-//	encodedValue, err := ed.EncodeSecretValue("my super secret value")
+//	ed := transfer.Encoders[Base64EncodingType]()
+//	encodedValue, err := ed.EncodeForTransfer("my super secret value")
 var Encoders = map[encodingType]func() EncodeDecoder{
 	Base64EncodingType: func() EncodeDecoder {
 		return Base64Encoding{}
@@ -59,21 +59,21 @@ var Encoders = map[encodingType]func() EncodeDecoder{
 	},
 }
 
-// Base64Encoding handles the encoding and decoding of secret values using base64.
+// Base64Encoding handles the encoding and decoding of values using base64.
 // All encoded values will be prefixed with "base64:"
 type Base64Encoding struct{}
 
-// EncodeSecretValue takes a byte slice and returns it encoded as a base64 string.
+// EncodeForTransfer takes a byte slice and returns it encoded as a base64 string.
 // No error is ever returned.
-func (e Base64Encoding) EncodeSecretValue(value []byte) (string, error) {
+func (e Base64Encoding) EncodeForTransfer(value []byte) (string, error) {
 	s := base64.StdEncoding.EncodeToString(value)
 
 	return fmt.Sprintf("%s:%s", Base64EncodingType, s), nil
 }
 
-// DecodeSecretValue takes a string and attempts to decode using a base64 decoder.
+// DecodeFromTransfer takes a string and attempts to decode using a base64 decoder.
 // If an error is returned, it will originate from the Go encoding/base64 package.
-func (e Base64Encoding) DecodeSecretValue(value string) ([]byte, error) {
+func (e Base64Encoding) DecodeFromTransfer(value string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(value)
 }
 
@@ -81,14 +81,14 @@ func (e Base64Encoding) DecodeSecretValue(value string) ([]byte, error) {
 // is no encoding type algorithm prefix on the value.
 type NoEncoding struct{}
 
-// EncodeSecretValue takes a byte slice and casts it to a string. No error is ever
+// EncodeForTransfer takes a byte slice and casts it to a string. No error is ever
 // returned.
-func (e NoEncoding) EncodeSecretValue(value []byte) (string, error) {
+func (e NoEncoding) EncodeForTransfer(value []byte) (string, error) {
 	return string(value), nil
 }
 
-// DecodeSecretValue takes a string and casts it to a byte slice. No error is ever
+// DecodeFromTransfer takes a string and casts it to a byte slice. No error is ever
 // returned.
-func (e NoEncoding) DecodeSecretValue(value string) ([]byte, error) {
+func (e NoEncoding) DecodeFromTransfer(value string) ([]byte, error) {
 	return []byte(value), nil
 }

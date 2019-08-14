@@ -1,4 +1,4 @@
-package encoding
+package transfer
 
 import (
 	"encoding/base64"
@@ -73,7 +73,7 @@ func TestEncoding(t *testing.T) {
 		t.Run(c.description, func(t *testing.T) {
 			ed := Encoders[c.encodingType]()
 
-			result, err := ed.EncodeSecretValue([]byte(c.value))
+			result, err := ed.EncodeForTransfer([]byte(c.value))
 			require.NoError(t, err)
 			require.Equal(t, c.expected, result, fmt.Sprintf("result was malformed: %s", result))
 
@@ -84,7 +84,7 @@ func TestEncoding(t *testing.T) {
 
 			var newResult []byte
 
-			newResult, err = newED.DecodeSecretValue(value)
+			newResult, err = newED.DecodeFromTransfer(value)
 			require.NoError(t, err)
 			require.Equal(t, c.value, string(newResult))
 
