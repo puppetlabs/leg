@@ -22,30 +22,34 @@ const (
 // unless they really need to.
 const DefaultEncodingType = Base64EncodingType
 
+// encodingTypeMap is an internal map used to get the encodingType type from a string
 var encodingTypeMap = map[string]encodingType{
 	"base64": Base64EncodingType,
-	"":       NoEncodingType,
 }
 
 // ParseEncodedValue will attempt to split on : and extract an encoding identifer
 // from the prefix of the string. It then returns the discovered encodingType and the
 // value without the encodingType prefixed.
 func ParseEncodedValue(value string) (encodingType, string) {
-	parts := strings.Split(value, ":")
+	parts := strings.SplitN(value, ":", 2)
+
+	if len(parts) < 2 {
+		return NoEncodingType, value
+	}
 
 	t, ok := encodingTypeMap[parts[0]]
 	if !ok {
 		return NoEncodingType, value
 	}
 
-	return t, strings.Join(parts[1:], ":")
+	return t, parts[1]
 }
 
 // Encoders maps encoding algorithms to their respective EncodeDecoder types.
 // Example:
 //
-// ed := encoding.Encoders[Base64EncodingType]()
-// encodedValue, err := ed.EncodeSecretValue("my super secret value")
+//	ed := encoding.Encoders[Base64EncodingType]()
+//	encodedValue, err := ed.EncodeSecretValue("my super secret value")
 var Encoders = map[encodingType]func() EncodeDecoder{
 	Base64EncodingType: func() EncodeDecoder {
 		return Base64Encoding{}

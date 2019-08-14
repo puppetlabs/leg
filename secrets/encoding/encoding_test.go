@@ -1,6 +1,7 @@
 package encoding
 
 import (
+	"encoding/base64"
 	"fmt"
 	"testing"
 
@@ -9,10 +10,11 @@ import (
 
 func TestEncoding(t *testing.T) {
 	var cases = []struct {
-		description  string
-		value        string
-		encodingType encodingType
-		expected     string
+		description      string
+		value            string
+		encodingType     encodingType
+		expected         string
+		customResultTest func(t *testing.T, encoded string, decoded []byte)
 	}{
 		{
 			description:  "base64 encoding succeeds",
@@ -38,6 +40,35 @@ func TestEncoding(t *testing.T) {
 			encodingType: NoEncodingType,
 			expected:     "super: secret token:12:49:wheel",
 		},
+		{
+			description:  "begins with :",
+			value:        ":fun time at the park",
+			encodingType: NoEncodingType,
+			expected:     ":fun time at the park",
+		},
+		{
+			description:  "user encoded base64",
+			value:        "c3VwZXIgc2VjcmV0IHRva2Vu",
+			encodingType: NoEncodingType,
+			expected:     "c3VwZXIgc2VjcmV0IHRva2Vu",
+		},
+		{
+			description: "user encoded base64 wrapped with our base64 encoder",
+			// "super secret token" encoded as base64
+			value:        "c3VwZXIgc2VjcmV0IHRva2Vu",
+			encodingType: Base64EncodingType,
+			expected:     "base64:YzNWd1pYSWdjMlZqY21WMElIUnZhMlZ1",
+			customResultTest: func(t *testing.T, encoded string, decoded []byte) {
+				t.Run("custom result test", func(t *testing.T) {
+					// tests that a user can encode their own values, have our system wrap it in our own
+					// encoding, then when they try to unwrap their encoding, they get the expected value.
+					result, err := base64.StdEncoding.DecodeString(string(decoded))
+					require.NoError(t, err)
+
+					require.Equal(t, "super secret token", string(result))
+				})
+			},
+		},
 	}
 
 	for _, c := range cases {
@@ -53,10 +84,14 @@ func TestEncoding(t *testing.T) {
 
 			newED := Encoders[typ]()
 
-			{
-				newResult, err := newED.DecodeSecretValue(value)
-				require.NoError(t, err)
-				require.Equal(t, c.value, string(newResult))
+			var newResult []byte
+
+			newResult, err = newED.DecodeSecretValue(value)
+			require.NoError(t, err)
+			require.Equal(t, c.value, string(newResult))
+
+			if c.customResultTest != nil {
+				c.customResultTest(t, result, newResult)
 			}
 		})
 	}
