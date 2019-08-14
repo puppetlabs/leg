@@ -1,3 +1,11 @@
+# [1.10.0](https://github.com/puppetlabs/horsehead/compare/v1.9.0...v1.10.0) (2019-08-14)
+
+
+### New
+
+* Add encoding/transfer package ([66198273ffd1cd9cc9ddafbad9e3d6cb352789bc](https://github.com/puppetlabs/horsehead/commit/66198273ffd1cd9cc9ddafbad9e3d6cb352789bc))
+* Add secrets/encoding package to standardize secret value encoding for storage ([d188a7b75c35dacec656c431fc335452e061ff5b](https://github.com/puppetlabs/horsehead/commit/d188a7b75c35dacec656c431fc335452e061ff5b))
+
 # [1.9.0](https://github.com/puppetlabs/horsehead/compare/v1.8.0...v1.9.0) (2019-08-12)
 
 
