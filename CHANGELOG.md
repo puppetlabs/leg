@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/puppetlabs/horsehead/compare/v1.10.0...v1.11.0) (2019-08-15)
+
+
+### New
+
+* BlobStore.Get range request ([8b8f381036b85761c48daf6d4cdaab4bbadb0688](https://github.com/puppetlabs/horsehead/commit/8b8f381036b85761c48daf6d4cdaab4bbadb0688))
+
 # [1.10.0](https://github.com/puppetlabs/horsehead/compare/v1.9.0...v1.10.0) (2019-08-14)
 
 
