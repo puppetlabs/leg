@@ -2,214 +2,100 @@ package scheduler
 
 import (
 	"context"
-	"fmt"
-	"sync"
-
-	"github.com/puppetlabs/horsehead/instrumentation/alerts"
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
-	"github.com/puppetlabs/horsehead/logging"
-	"github.com/puppetlabs/horsehead/request"
-	"github.com/puppetlabs/horsehead/scheduler/errors"
 )
 
-type StartedSegment struct {
-	ctx    context.Context
-	cancel context.CancelFunc
-	pc     chan Process
-
-	// Error handling and reporting.
-	errorHandler segmentErrorHandler
-	capturer     trackers.Capturer
-
-	// Used to execute a close of the Process channel exactly once.
-	done sync.Once
-
-	// These channels are used to track whether descriptor and supervisor
-	// goroutines have exited.
-	descriptors []chan struct{}
-	supervisors []chan struct{}
-}
-
-func (ss *StartedSegment) run(process Process) {
-	req := request.New()
-
-	ctx := request.NewContext(ss.ctx, req)
-	ctx = logging.NewContext(ctx, "request", req.Identifier)
-
-	log(ctx).Debug("process running", "description", process.Description())
-
-	err := ss.capturer.Try(ctx, func(ctx context.Context) {
-		if err := process.Run(ctx); err != nil {
-			log(ctx).Warn("process failed", "error", err)
-
-			ss.errorHandler.ForProcess(req, process, err)
-			ss.capturer.Capture(err).AsWarning().Report(ctx)
-		} else {
-			log(ctx).Debug("process complete")
-		}
-	})
-	if err != nil {
-		log(ctx).Crit("process panic()!", "error", err)
-
-		switch et := err.(type) {
-		case errors.Error:
-			ss.errorHandler.ForProcess(req, process, et)
-		case error:
-			ss.errorHandler.ForProcess(req, process, errors.NewProcessPanicError().WithCause(et))
-		default:
-			ss.errorHandler.ForProcess(req, process, errors.NewProcessPanicError().WithCause(fmt.Errorf("panic: %+v", et)))
-		}
-	}
-}
-
-func (ss *StartedSegment) describe(i int, desc Descriptor) {
-	defer func() {
-		close(ss.descriptors[i])
-	}()
-
-	if err := desc.Run(ss.ctx, ss.pc); err != nil {
-		log(ss.ctx).Warn("descriptor ended with error", "error", err)
-
-		ss.errorHandler.ForDescriptor(i, desc, err)
-	}
-}
-
-func (ss *StartedSegment) supervise(i int) {
-	defer func() {
-		close(ss.supervisors[i])
-	}()
-
-	for {
-		process, ok := <-ss.pc
-		if !ok {
-			return
-		}
-
-		ss.run(process)
-	}
-}
-
-func (ss *StartedSegment) waitErrorHandler() {
-	// If we have a potentially terminating error handler, we will force
-	// ourselves to close if it returns.
-	select {
-	case <-ss.ctx.Done():
-	case <-ss.errorHandler.Ch():
-		ss.cancel()
-	}
-}
-
-func (ss *StartedSegment) Wait(ctx context.Context) errors.Error {
-	for _, ch := range ss.descriptors {
-		select {
-		case <-ctx.Done():
-			return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
-		case <-ch:
-		}
-	}
-
-	// At this point, all descriptors have exited, so we can close the process
-	// channel. Then we will wait for supervisors to clean up and exit.
-	ss.done.Do(func() { close(ss.pc) })
-
-	for _, ch := range ss.supervisors {
-		select {
-		case <-ctx.Done():
-			return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
-		case <-ch:
-		}
-	}
-
-	// Now we will have collected all errors from running processes. If our
-	// error handler recorded any errors, let's return them now.
-	if errs := ss.errorHandler.Errors(); len(errs) > 0 {
-		rerr := errors.NewLifecycleExecutionError()
-
-		for _, err := range errs {
-			rerr = rerr.WithCause(err)
-		}
-
-		return rerr
-	}
-
-	return nil
-}
-
-func (ss *StartedSegment) Close(ctx context.Context) errors.Error {
-	// The important bit: cancel the context used by everything under this
-	// segment.
-	ss.cancel()
-
-	// The supervise code above is simply waiting for the contex to cancel. The
-	// descriptors need to respond to the context and exit on their own.
-	if err := ss.Wait(ctx); err != nil {
-		return errors.NewLifecycleCloseError().WithCause(err)
-	}
-
-	return nil
-}
-
+// Segment is a bounded executor for processes.
+//
+// It manages a slice of descriptors, which are responsible for emitting the
+// processes to schedule. Each descriptor is run concurrently when the segment
+// is started.
+//
+// When all descriptors terminate, a segment automatically terminates. It
+// attempts to complete all remaining work before terminating.
+//
+// The concurrency of the segment defines the size of the worker pool that
+// handle processes. If all workers are busy, the channel used by descriptors to
+// emit processes will block until a process completes.
 type Segment struct {
-	concurrency   int
-	descriptors   []Descriptor
-	errorBehavior SegmentErrorBehavior
-	capturer      trackers.Capturer
+	concurrency             int
+	descriptors             []Descriptor
+	descriptorErrorBehavior ErrorBehavior
+	processErrorBehavior    ErrorBehavior
 }
 
-func (s *Segment) WithErrorBehavior(errorBehavior SegmentErrorBehavior) *Segment {
-	s.errorBehavior = errorBehavior
+var _ Lifecycle = &Segment{}
+
+// WithErrorBehavior sets the error behavior for descriptors and processes for
+// this segment.
+func (s *Segment) WithErrorBehavior(behavior ErrorBehavior) *Segment {
+	return s.WithDescriptorErrorBehavior(behavior).WithProcessErrorBehavior(behavior)
+}
+
+// WithDescriptorErrorBehavior sets the error behavior for descriptors in this
+// segment.
+func (s *Segment) WithDescriptorErrorBehavior(behavior ErrorBehavior) *Segment {
+	s.descriptorErrorBehavior = behavior
 	return s
 }
 
-func (s *Segment) WithCapturer(capturer trackers.Capturer) *Segment {
-	s.capturer = capturer
+// WithProcessErrorBehavior sets the error behavior for processes run by this
+// segment.
+func (s *Segment) WithProcessErrorBehavior(behavior ErrorBehavior) *Segment {
+	s.processErrorBehavior = behavior
 	return s
 }
 
-func (s *Segment) Start() StartedLifecycle {
-	ctx, cancel := context.WithCancel(context.Background())
+// Start starts this segment, creating a worker pool of size equal to the
+// concurrency of this segment and executing all descriptors.
+func (s *Segment) Start(opts LifecycleStartOptions) StartedLifecycle {
 	pc := make(chan Process)
 
-	capturer := s.capturer
-	if capturer == nil {
-		capturer = alerts.NewAlerts(alerts.NoDelegate, alerts.Options{}).NewCapturer()
-	}
+	// Bind the lifecycle all the way up here so we can close it in the worker.
+	var slc StartedLifecycle
 
-	ctx = trackers.NewContextWithCapturer(ctx, capturer)
+	worker := SchedulableFunc(func(ctx context.Context, er ErrorReporter) {
+		for {
+			select {
+			case proc, ok := <-pc:
+				if !ok {
+					return
+				}
 
-	ss := &StartedSegment{
-		ctx:    ctx,
-		cancel: cancel,
-		pc:     pc,
+				SchedulableProcess(proc).Run(ctx, er)
+			case <-ctx.Done():
+				// We want to let the lifecycle know that we're preparing to
+				// exit, but we want to handle any stragglers left on the
+				// process channel, so we'll just close the lifecycle itself
+				// rather than closing the channel or blindly exiting.
+				slc.Close()
+			}
+		}
+	})
 
-		errorHandler: s.errorBehavior.handler(),
-		capturer:     capturer,
+	// This scheduler runs all the descriptors.
+	ds := NewScheduler(ManySchedulableDescriptor(s.descriptors, pc)).
+		WithErrorBehavior(s.descriptorErrorBehavior).
+		WithEventHandler(&SchedulerEventHandlerFuncs{
+			OnDoneFunc: func() { close(pc) },
+		})
 
-		descriptors: make([]chan struct{}, len(s.descriptors)),
-		supervisors: make([]chan struct{}, s.concurrency),
-	}
+	// This scheduler runs our worker pool.
+	ps := NewScheduler(NManySchedulable(s.concurrency, worker)).
+		WithErrorBehavior(s.processErrorBehavior)
 
-	for i, desc := range s.descriptors {
-		ss.descriptors[i] = make(chan struct{})
+	// We aggregate them into one scheduler that end users can manage.
+	slc = NewParent(ds, ps).WithErrorBehavior(ErrorBehaviorCollect).Start(opts)
 
-		go ss.describe(i, desc)
-	}
-
-	for i := 0; i < s.concurrency; i++ {
-		ss.supervisors[i] = make(chan struct{})
-
-		go ss.supervise(i)
-	}
-
-	go ss.waitErrorHandler()
-
-	return ss
+	return slc
 }
 
+// NewSegment creates a new segment with the given worker pool size
+// (concurrency) and slice of descriptors.
 func NewSegment(concurrency int, descriptors []Descriptor) *Segment {
 	return &Segment{
-		concurrency:   concurrency,
-		descriptors:   descriptors,
-		errorBehavior: SegmentErrorBehaviorCollect,
+		concurrency:             concurrency,
+		descriptors:             descriptors,
+		descriptorErrorBehavior: ErrorBehaviorTerminate,
+		processErrorBehavior:    ErrorBehaviorCollect,
 	}
 }

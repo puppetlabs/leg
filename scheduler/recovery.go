@@ -3,8 +3,6 @@ package scheduler
 import (
 	"context"
 	"reflect"
-
-	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
 )
 
 // RecoveryDescriptor wraps a given descriptor so that it restarts if the
@@ -14,7 +12,9 @@ type RecoveryDescriptor struct {
 	delegate Descriptor
 }
 
-func (rd *RecoveryDescriptor) runOnce(ctx context.Context, pc chan<- Process) (bool, errawr.Error) {
+var _ Descriptor = &RecoveryDescriptor{}
+
+func (rd *RecoveryDescriptor) runOnce(ctx context.Context, pc chan<- Process) (bool, error) {
 	err := rd.delegate.Run(ctx, pc)
 
 	select {
@@ -30,7 +30,10 @@ func (rd *RecoveryDescriptor) runOnce(ctx context.Context, pc chan<- Process) (b
 	return true, nil
 }
 
-func (rd *RecoveryDescriptor) Run(ctx context.Context, pc chan<- Process) errawr.Error {
+// Run delegates work to another descriptor, catching any errors are restarting
+// the descriptor immediately if an error occurs. It never returns an error. It
+// only terminates when the context is done.
+func (rd *RecoveryDescriptor) Run(ctx context.Context, pc chan<- Process) error {
 	for {
 		if cont, err := rd.runOnce(ctx, pc); err != nil {
 			return err
@@ -42,6 +45,8 @@ func (rd *RecoveryDescriptor) Run(ctx context.Context, pc chan<- Process) errawr
 	return nil
 }
 
+// NewRecoveryDescriptor creates a new recovering descriptor wrapping the given
+// delegate descriptor.
 func NewRecoveryDescriptor(delegate Descriptor) *RecoveryDescriptor {
 	return &RecoveryDescriptor{delegate: delegate}
 }

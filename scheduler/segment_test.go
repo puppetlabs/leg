@@ -5,30 +5,28 @@ import (
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
 	"github.com/puppetlabs/errawr-go/v2/pkg/testutil"
 	"github.com/puppetlabs/horsehead/scheduler"
-	"github.com/puppetlabs/horsehead/scheduler/errors"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSegmentProcess(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
 	var ok bool
 
 	lc := scheduler.NewSegment(1, []scheduler.Descriptor{
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
 			ok = true
 			return nil
 		})),
 	})
 
-	slc := lc.Start()
-	defer slc.Close(ctx)
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	defer slc.Close()
 
-	assert.NoError(t, slc.Wait(ctx))
+	assert.NoError(t, scheduler.WaitContext(ctx, slc))
 	assert.True(t, ok, "process did not run")
 }
 
@@ -37,44 +35,44 @@ func TestSegmentClose(t *testing.T) {
 	defer cancel()
 
 	lc := scheduler.NewSegment(1, []scheduler.Descriptor{
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
 			<-ctx.Done()
 			return nil
 		})),
 	})
 
-	slc := lc.Start()
-	assert.NoError(t, slc.Close(ctx))
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	assert.NoError(t, scheduler.CloseWaitContext(ctx, slc))
+	assert.Empty(t, slc.Errs())
 }
 
-func TestSegmentErrorBehaviorCollect(t *testing.T) {
+func TestErrorBehaviorCollect(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
 			return testutil.NewStubError("boom 1")
 		})),
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
 			return testutil.NewStubError("boom 2")
 		})),
-	}).WithErrorBehavior(scheduler.SegmentErrorBehaviorCollect)
+	}).WithErrorBehavior(scheduler.ErrorBehaviorCollect)
 
-	slc := lc.Start()
-	err := slc.Wait(ctx)
-	assert.True(t, errors.IsLifecycleExecutionError(err))
-	assert.Len(t, err.Causes(), 2)
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	assert.NoError(t, scheduler.WaitContext(ctx, slc))
+	assert.Len(t, slc.Errs(), 2)
 }
 
-func TestSegmentErrorBehaviorTerminate(t *testing.T) {
+func TestErrorBehaviorTerminate(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewIntervalDescriptor(10*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
 			return testutil.NewStubError("boom")
 		})),
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewIntervalDescriptor(10*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 			case <-time.After(2 * time.Second):
@@ -83,21 +81,22 @@ func TestSegmentErrorBehaviorTerminate(t *testing.T) {
 
 			return nil
 		})),
-	}).WithErrorBehavior(scheduler.SegmentErrorBehaviorTerminate)
+	}).WithErrorBehavior(scheduler.ErrorBehaviorTerminate)
 
-	slc := lc.Start()
-	assert.True(t, errors.IsLifecycleExecutionError(slc.Wait(ctx)))
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	assert.NoError(t, scheduler.WaitContext(ctx, slc))
+	assert.NotEmpty(t, slc.Errs())
 }
 
-func TestSegmentErrorBehaviorPanic(t *testing.T) {
+func TestErrorBehaviorPanic(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewIntervalDescriptor(10*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
 			panic("no")
 		})),
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewIntervalDescriptor(10*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
 			select {
 			case <-ctx.Done():
 			case <-time.After(2 * time.Second):
@@ -106,22 +105,44 @@ func TestSegmentErrorBehaviorPanic(t *testing.T) {
 
 			return nil
 		})),
-	}).WithErrorBehavior(scheduler.SegmentErrorBehaviorTerminate)
+	}).WithErrorBehavior(scheduler.ErrorBehaviorTerminate)
 
-	slc := lc.Start()
-	assert.True(t, errors.IsLifecycleExecutionError(slc.Wait(ctx)))
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	assert.NoError(t, scheduler.WaitContext(ctx, slc))
+	assert.NotEmpty(t, slc.Errs())
 }
 
-func TestSegmentErrorBehaviorDrop(t *testing.T) {
+func TestErrorBehaviorDrop(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
-		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) errawr.Error {
+		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
 			return testutil.NewStubError("boom")
 		})),
-	}).WithErrorBehavior(scheduler.SegmentErrorBehaviorDrop)
+	}).WithErrorBehavior(scheduler.ErrorBehaviorDrop)
 
-	slc := lc.Start()
-	assert.NoError(t, slc.Wait(ctx))
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	assert.NoError(t, scheduler.WaitContext(ctx, slc))
+	assert.Empty(t, slc.Errs())
+}
+
+func TestProcessErrorBehaviorTerminate(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// It is conceivable that someone would (possibly erroneously, but whatever)
+	// configure a segment to collect descriptor errors but terminate on process
+	// errors.
+	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
+		scheduler.NewIntervalDescriptor(2*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
+			return testutil.NewStubError("boom")
+		})),
+	}).
+		WithDescriptorErrorBehavior(scheduler.ErrorBehaviorCollect).
+		WithProcessErrorBehavior(scheduler.ErrorBehaviorTerminate)
+
+	slc := lc.Start(scheduler.LifecycleStartOptions{})
+	assert.NoError(t, scheduler.WaitContext(ctx, slc))
+	assert.Len(t, slc.Errs(), 1)
 }
