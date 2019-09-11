@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/puppetlabs/horsehead/compare/v2.0.0...v2.0.1) (2019-09-11)
+
+
+### Fix
+
+* Comply with Go module versioning rules ([89917dea170c47e73aaff2b54dacf7a179a52787](https://github.com/puppetlabs/horsehead/commit/89917dea170c47e73aaff2b54dacf7a179a52787))
+
 # [2.0.0](https://github.com/puppetlabs/horsehead/compare/v1.11.0...v2.0.0) (2019-09-11)
 
 
