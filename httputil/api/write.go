@@ -7,8 +7,8 @@ import (
 	"net/url"
 
 	"github.com/puppetlabs/errawr-go/v2/pkg/encoding"
-	"github.com/puppetlabs/horsehead/httputil/errors"
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/v2/httputil/errors"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
 )
 
 type TrackingResponseWriter interface {

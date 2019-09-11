@@ -1,10 +1,10 @@
 package alerts
 
 import (
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/internal/noop"
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/internal/sentry"
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
-	"github.com/puppetlabs/horsehead/instrumentation/errors"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/internal/noop"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/internal/sentry"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/errors"
 )
 
 type Options struct {

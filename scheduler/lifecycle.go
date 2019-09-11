@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
 )
 
 // StartedLifecycle represents a fully configured, operating scheduler.

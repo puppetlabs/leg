@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/puppetlabs/horsehead/httputil/errors"
+	"github.com/puppetlabs/horsehead/v2/httputil/errors"
 )
 
 type Cacheable interface {

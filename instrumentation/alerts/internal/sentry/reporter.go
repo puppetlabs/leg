@@ -4,7 +4,7 @@ import (
 	"context"
 
 	raven "github.com/getsentry/raven-go"
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
 )
 
 type Reporter struct {

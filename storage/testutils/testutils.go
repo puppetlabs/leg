@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/puppetlabs/horsehead/storage"
-	"github.com/puppetlabs/horsehead/workdir"
+	"github.com/puppetlabs/horsehead/v2/storage"
+	"github.com/puppetlabs/horsehead/v2/workdir"
 	"github.com/stretchr/testify/require"
 )
 

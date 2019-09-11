@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gws "github.com/gorilla/websocket"
-	"github.com/puppetlabs/horsehead/httputil/websocket"
+	"github.com/puppetlabs/horsehead/v2/httputil/websocket"
 )
 
 func TestConnCompatibility(t *testing.T) {

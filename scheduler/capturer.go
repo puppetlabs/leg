@@ -1,8 +1,8 @@
 package scheduler
 
 import (
-	"github.com/puppetlabs/horsehead/instrumentation/alerts"
-	"github.com/puppetlabs/horsehead/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts"
+	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
 )
 
 var defaultCapturer = alerts.NewAlerts(alerts.NoDelegate, alerts.Options{}).NewCapturer()

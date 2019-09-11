@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/puppetlabs/horsehead/lifecycle/errors"
+	"github.com/puppetlabs/horsehead/v2/lifecycle/errors"
 )
 
 type (

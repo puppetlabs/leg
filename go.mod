@@ -1,4 +1,4 @@
-module github.com/puppetlabs/horsehead
+module github.com/puppetlabs/horsehead/v2
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/puppetlabs/horsehead/httputil/fs"
+	"github.com/puppetlabs/horsehead/v2/httputil/fs"
 	"github.com/stretchr/testify/require"
 )
 

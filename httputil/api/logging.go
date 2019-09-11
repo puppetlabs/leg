@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	logging "github.com/puppetlabs/horsehead/logging"
+	logging "github.com/puppetlabs/horsehead/v2/logging"
 )
 
 var (
