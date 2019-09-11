@@ -1,3 +1,10 @@
+# [2.0.0](https://github.com/puppetlabs/horsehead/compare/v1.11.0...v2.0.0) (2019-09-11)
+
+
+### Breaking
+
+* Revise scheduler to correctly propagate error behavior ([db6c5f1c90160b25466dd3950a4a7ea5cb195ce6](https://github.com/puppetlabs/horsehead/commit/db6c5f1c90160b25466dd3950a4a7ea5cb195ce6))
+
 # [1.11.0](https://github.com/puppetlabs/horsehead/compare/v1.10.0...v1.11.0) (2019-08-15)
 
 
