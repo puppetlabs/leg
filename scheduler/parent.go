@@ -1,65 +1,37 @@
 package scheduler
 
-import (
-	"context"
-
-	"github.com/puppetlabs/horsehead/scheduler/errors"
-)
-
-type StartedParent struct {
-	delegates []StartedLifecycle
-}
-
-func (sp *StartedParent) Wait(ctx context.Context) errors.Error {
-	for _, d := range sp.delegates {
-		select {
-		case <-ctx.Done():
-			return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
-		default:
-		}
-
-		if err := d.Wait(ctx); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (sp *StartedParent) Close(ctx context.Context) errors.Error {
-	err := errors.NewLifecycleCloseError()
-
-	for _, d := range sp.delegates {
-		if cerr := d.Close(ctx); cerr != nil {
-			err = err.WithCause(cerr)
-		}
-	}
-
-	switch len(err.Causes()) {
-	case 0:
-		return nil
-	case 1:
-		return err.Causes()[0]
-	default:
-		return err
-	}
-}
-
+// Parent is a lifecycle that aggregates other lifecycles.
 type Parent struct {
-	delegates []Lifecycle
+	delegates     []Lifecycle
+	errorBehavior ErrorBehavior
 }
 
-func (p *Parent) Start() StartedLifecycle {
-	sd := make([]StartedLifecycle, len(p.delegates))
+var _ Lifecycle = &Parent{}
+
+// WithErrorBehavior changes the error behavior for the parent. It does not
+// affect the error behavior of any delegate lifecycles.
+func (p *Parent) WithErrorBehavior(errorBehavior ErrorBehavior) *Parent {
+	p.errorBehavior = errorBehavior
+	return p
+}
+
+// Start starts all the delegate lifecycles that are part of this parent in
+// parallel and waits for them to terminate according to the specified error
+// behavior.
+func (p *Parent) Start(opts LifecycleStartOptions) StartedLifecycle {
+	sd := make(ManySchedulableSlice, len(p.delegates))
 	for i, d := range p.delegates {
-		sd[i] = d.Start()
+		sd[i] = SchedulableLifecycle(d, opts)
 	}
 
-	return &StartedParent{delegates: sd}
+	return NewScheduler(sd).WithErrorBehavior(p.errorBehavior).Start(opts)
 }
 
+// NewParent creates a new parent lifecycle comprised of the given delegate
+// lifecycles.
 func NewParent(delegates ...Lifecycle) *Parent {
 	return &Parent{
-		delegates: delegates,
+		delegates:     delegates,
+		errorBehavior: ErrorBehaviorTerminate,
 	}
 }

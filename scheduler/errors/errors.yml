@@ -1,7 +1,7 @@
 version: 1
 domain:
-  key: lis
-  title: Insights Scheduler Library
+  key: hsch
+  title: Horsehead Scheduler
 sections:
   #
   # Lifecycle errors
@@ -9,10 +9,6 @@ sections:
   lifecycle:
     title: Lifecycle errors
     errors:
-      close_error:
-        title: Close error
-        description: >
-          The scheduled tasks failed to terminate.
       timeout_error:
         title: Timeout
         description: >
@@ -30,18 +26,10 @@ sections:
       descriptor_error:
         title: Descriptor error
         description: >
-          Descriptor \#{{i}} of type {{pre type}} terminated unexpectedly.
+          Descriptor {{pre type}} terminated unexpectedly.
         arguments:
-          i:
-            type: integer
-            description: >
-              the offset into the descriptor list of this descriptor
           type:
             description: the type of this descriptor
-      execution_error:
-        title: Execution error
-        description: >
-          The scheduled processes failed to execute.
 
   #
   # Process errors
