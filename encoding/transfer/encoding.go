@@ -4,17 +4,18 @@ import (
 	"encoding/base64"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
-type encodingType string
+type EncodingType string
 
-func (p encodingType) String() string {
+func (p EncodingType) String() string {
 	return string(p)
 }
 
 const (
-	Base64EncodingType encodingType = "base64"
-	NoEncodingType     encodingType = ""
+	Base64EncodingType EncodingType = "base64"
+	NoEncodingType     EncodingType = ""
 )
 
 // DefaultEncodingType is the default encodingType. This makes it easier to use this
@@ -23,14 +24,14 @@ const (
 const DefaultEncodingType = Base64EncodingType
 
 // encodingTypeMap is an internal map used to get the encodingType type from a string
-var encodingTypeMap = map[string]encodingType{
+var encodingTypeMap = map[string]EncodingType{
 	"base64": Base64EncodingType,
 }
 
 // ParseEncodedValue will attempt to split on : and extract an encoding identifer
 // from the prefix of the string. It then returns the discovered encodingType and the
 // value without the encodingType prefixed.
-func ParseEncodedValue(value string) (encodingType, string) {
+func ParseEncodedValue(value string) (EncodingType, string) {
 	parts := strings.SplitN(value, ":", 2)
 
 	if len(parts) < 2 {
@@ -45,12 +46,19 @@ func ParseEncodedValue(value string) (encodingType, string) {
 	return t, parts[1]
 }
 
+// EncodeDecoderFactoryFunc is a function that produces an encoder/decoder.
+type EncodeDecoderFactoryFunc func() EncodeDecoder
+
+// EncodeDecoderFactories defines the type that can be used to produce
+// encoder/decoders.
+type EncodeDecoderFactories map[EncodingType]EncodeDecoderFactoryFunc
+
 // Encoders maps encoding algorithms to their respective EncodeDecoder types.
 // Example:
 //
 //	ed := transfer.Encoders[Base64EncodingType]()
 //	encodedValue, err := ed.EncodeForTransfer("my super secret value")
-var Encoders = map[encodingType]func() EncodeDecoder{
+var Encoders = EncodeDecoderFactories{
 	Base64EncodingType: func() EncodeDecoder {
 		return Base64Encoding{}
 	},
@@ -71,6 +79,14 @@ func (e Base64Encoding) EncodeForTransfer(value []byte) (string, error) {
 	return fmt.Sprintf("%s:%s", Base64EncodingType, s), nil
 }
 
+// EncodeJSON encodes the given value as JSON.
+func (Base64Encoding) EncodeJSON(value []byte) (JSONOrStr, error) {
+	return JSONOrStr{JSON: JSON{
+		EncodingType: Base64EncodingType,
+		Data:         base64.StdEncoding.EncodeToString(value),
+	}}, nil
+}
+
 // DecodeFromTransfer takes a string and attempts to decode using a base64 decoder.
 // If an error is returned, it will originate from the Go encoding/base64 package.
 func (e Base64Encoding) DecodeFromTransfer(value string) ([]byte, error) {
@@ -87,17 +103,43 @@ func (e NoEncoding) EncodeForTransfer(value []byte) (string, error) {
 	return string(value), nil
 }
 
+// EncodeJSON encodes the given value as JSON, possibly as a JSON string.
+func (NoEncoding) EncodeJSON(value []byte) (JSONOrStr, error) {
+	if !utf8.Valid(value) {
+		return JSONOrStr{}, ErrNotEncodable
+	}
+
+	return JSONOrStr{JSON: JSON{EncodingType: NoEncodingType, Data: string(value)}}, nil
+}
+
 // DecodeFromTransfer takes a string and casts it to a byte slice. No error is ever
 // returned.
 func (e NoEncoding) DecodeFromTransfer(value string) ([]byte, error) {
 	return []byte(value), nil
 }
 
-// EncodeForTransfer uses the DefaultEncodingType to encode value.
+// encodingTypeOf returns a default UTF-8 transfer-safe encoding for the given
+// value. Note that this function requires processing the value.
+func encodingTypeOf(value []byte) EncodingType {
+	if !utf8.Valid(value) {
+		return Base64EncodingType
+	}
+
+	return NoEncodingType
+}
+
+// EncodeForTransfer uses a UTF-8 transfer-safe encoding to encode value.
 func EncodeForTransfer(value []byte) (string, error) {
-	encoder := Encoders[DefaultEncodingType]()
+	encoder := Encoders[encodingTypeOf(value)]()
 
 	return encoder.EncodeForTransfer(value)
+}
+
+// EncodeJSON returns a JSON transfer-safe encoding of value.
+func EncodeJSON(value []byte) (JSONOrStr, error) {
+	encoder := Encoders[encodingTypeOf(value)]()
+
+	return encoder.EncodeJSON(value)
 }
 
 // DecodeFromTransfer uses ParseEncodedValue to find the right encoder then

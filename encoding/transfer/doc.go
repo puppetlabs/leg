@@ -19,5 +19,9 @@ Basic use when decoding a value:
 	if err != nil {
 		// handle error
 	}
+
+In addition, it provides types for automatically encoding and decoding non-UTF-8 strings in an expanded JSON
+format.
 */
+
 package transfer
