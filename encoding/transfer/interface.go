@@ -2,6 +2,7 @@ package transfer
 
 // Encoder encodes a byte slice and returns a string with the encoding type prefixed
 type Encoder interface {
+	EncodeJSON([]byte) (JSONOrStr, error)
 	EncodeForTransfer([]byte) (string, error)
 }
 

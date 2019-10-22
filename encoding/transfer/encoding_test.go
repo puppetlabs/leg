@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -12,7 +13,7 @@ func TestEncoding(t *testing.T) {
 	var cases = []struct {
 		description      string
 		value            string
-		encodingType     encodingType
+		encodingType     EncodingType
 		expected         string
 		customResultTest func(t *testing.T, encoded string, decoded []byte)
 	}{
@@ -104,15 +105,20 @@ func TestHelperFuncs(t *testing.T) {
 		expected    string
 	}{
 		{
-			description: "base64 encoding succeeds",
+			description: "valid UTF-8 is passed through",
 			value:       "super secret token",
-			expected:    "base64:c3VwZXIgc2VjcmV0IHRva2Vu",
+			expected:    "super secret token",
 		},
 		{
-			description: "user encoded base64 wrapped with our base64 encoder",
+			description: "user encoded base64",
 			// "super secret token" encoded as base64
 			value:    "c3VwZXIgc2VjcmV0IHRva2Vu",
-			expected: "base64:YzNWd1pYSWdjMlZqY21WMElIUnZhMlZ1",
+			expected: "c3VwZXIgc2VjcmV0IHRva2Vu",
+		},
+		{
+			description: "invalid UTF-8 is base64-encoded",
+			value:       "Hello, \x90\xA2\x8A\x45",
+			expected:    "base64:SGVsbG8sIJCiikU=",
 		},
 	}
 
@@ -130,4 +136,18 @@ func TestHelperFuncs(t *testing.T) {
 			require.Equal(t, c.value, string(decoded))
 		})
 	}
+}
+
+func ExampleEncodeJSON() {
+	j, _ := EncodeJSON([]byte("Hello, \x90\xA2\x8A\x45"))
+	b, _ := json.Marshal(j)
+	fmt.Println(string(b))
+	// Output: {"$encoding":"base64","data":"SGVsbG8sIJCiikU="}
+}
+
+func ExampleEncodeJSON_plain() {
+	j, _ := EncodeJSON([]byte("super secret token"))
+	b, _ := json.Marshal(j)
+	fmt.Println(string(b))
+	// Output: "super secret token"
 }
