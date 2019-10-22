@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/puppetlabs/horsehead/compare/v2.0.1...v2.1.0) (2019-10-22)
+
+
+### New
+
+* Add JSON support for encoding/transfer ([dc59f1999540d228e32b29b3018acd880f01bc1d](https://github.com/puppetlabs/horsehead/commit/dc59f1999540d228e32b29b3018acd880f01bc1d))
+
 ## [2.0.1](https://github.com/puppetlabs/horsehead/compare/v2.0.0...v2.0.1) (2019-09-11)
 
 
