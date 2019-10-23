@@ -1,3 +1,19 @@
+## [2.1.2](https://github.com/puppetlabs/horsehead/compare/v2.1.1...v2.1.2) (2019-10-23)
+
+
+### Build
+
+* Fix semantic-release vulnerabilities ([47908e9ae877b2c7a3fbd80092eaf038192fa39d](https://github.com/puppetlabs/horsehead/commit/47908e9ae877b2c7a3fbd80092eaf038192fa39d))
+* Remove nonexistent-but-private package from go.sum ([42c802ca3f66a3081cc67d61bd2c1e74c5410176](https://github.com/puppetlabs/horsehead/commit/42c802ca3f66a3081cc67d61bd2c1e74c5410176))
+
+### Chore
+
+* Remove old CODEOWNERS ([c982592f3f21f37f4199bfa4ffb7708cedb470d5](https://github.com/puppetlabs/horsehead/commit/c982592f3f21f37f4199bfa4ffb7708cedb470d5))
+
+### Fix
+
+* Sync dependencies as a release ([5c247e63eaf48c283e17667bcaf055a1c91873e9](https://github.com/puppetlabs/horsehead/commit/5c247e63eaf48c283e17667bcaf055a1c91873e9))
+
 ## [2.1.1](https://github.com/puppetlabs/horsehead/compare/v2.1.0...v2.1.1) (2019-10-23)
 
 
