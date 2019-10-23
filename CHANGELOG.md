@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/puppetlabs/horsehead/compare/v2.1.0...v2.1.1) (2019-10-23)
+
+
+### Fix
+
+* Fix error domains; prepare for public release ([80a8dabc371637e1c438c0e669eca4539ace9c5d](https://github.com/puppetlabs/horsehead/commit/80a8dabc371637e1c438c0e669eca4539ace9c5d))
+
 # [2.1.0](https://github.com/puppetlabs/horsehead/compare/v2.0.1...v2.1.0) (2019-10-22)
 
 
