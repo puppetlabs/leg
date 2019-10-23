@@ -1,7 +1,7 @@
 version: 1
 domain:
-  key: lin
-  title: Insights Net Utils Library
+  key: hnu
+  title: Horsehead network utilities
 sections:
   #
   # Backoff errors

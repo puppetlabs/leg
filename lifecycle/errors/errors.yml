@@ -1,7 +1,7 @@
 version: 1
 domain:
-  key: lil
-  title: Insights Lifecycle Library
+  key: hlife
+  title: Horsehead lifecycle management
 sections:
   #
   # Closer errors

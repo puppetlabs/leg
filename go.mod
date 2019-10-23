@@ -1,5 +1,7 @@
 module github.com/puppetlabs/horsehead/v2
 
+go 1.13
+
 require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973 // indirect

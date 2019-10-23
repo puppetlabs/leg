@@ -4,6 +4,13 @@ Named after the [Horsehead Nebula](https://en.wikipedia.org/wiki/Horsehead_Nebul
 This repo provides Go packages that serve has helper functions and utility for
 Go-based codebases at Puppet (mostly on the Nebula project).
 
+## 🚧 Caution 🚧
+
+Note that many of the packages in this project are unstable, and we make **no
+guarantee** about API compatibility. We do practice semantic versioning with
+this repository, but be aware that the entire repository structure has potential
+to change.
+
 ## workdir package
 
 This package provides utilties for creating and managing working directories.

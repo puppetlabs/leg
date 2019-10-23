@@ -1,7 +1,7 @@
 version: 1
 domain:
-  key: ii
-  title: Insights Instrumentation
+  key: hi
+  title: Horsehead Instrumentation
 sections:
   metrics:
     title: Metrics errors
