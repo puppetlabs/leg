@@ -1,0 +1,91 @@
+# github.com/DATA-DOG/go-sqlmock v1.3.3
+github.com/DATA-DOG/go-sqlmock
+# github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973
+github.com/beorn7/perks/quantile
+# github.com/certifi/gocertifi v0.0.0-20180118203423-deb3ae2ef261
+github.com/certifi/gocertifi
+# github.com/dave/jennifer v0.0.0-20171004025221-97587ff16f68
+github.com/dave/jennifer/jen
+# github.com/davecgh/go-spew v1.1.1
+github.com/davecgh/go-spew/spew
+# github.com/getsentry/raven-go v0.2.0
+github.com/getsentry/raven-go
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
+# github.com/golang/protobuf v1.2.0
+github.com/golang/protobuf/proto
+# github.com/google/uuid v1.0.0
+github.com/google/uuid
+# github.com/gorilla/websocket v1.4.0
+github.com/gorilla/websocket
+# github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec
+github.com/inconshreveable/log15
+# github.com/mattn/go-colorable v0.1.2
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.8
+github.com/mattn/go-isatty
+# github.com/matttproud/golang_protobuf_extensions v1.0.1
+github.com/matttproud/golang_protobuf_extensions/pbutil
+# github.com/pborman/uuid v0.0.0-20180906182336-adf5a7427709
+github.com/pborman/uuid
+# github.com/pkg/errors v0.8.1
+github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/prometheus/client_golang v0.9.0
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/client_golang/prometheus/internal
+github.com/prometheus/client_golang/prometheus/promhttp
+# github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910
+github.com/prometheus/client_model/go
+# github.com/prometheus/common v0.0.0-20181020173914-7e9e6cabbd39
+github.com/prometheus/common/expfmt
+github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
+github.com/prometheus/common/model
+# github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d
+github.com/prometheus/procfs
+github.com/prometheus/procfs/internal/util
+github.com/prometheus/procfs/nfs
+github.com/prometheus/procfs/xfs
+# github.com/puppetlabs/errawr-gen v1.0.0
+github.com/puppetlabs/errawr-gen/pkg/doc
+github.com/puppetlabs/errawr-gen/pkg/errors
+github.com/puppetlabs/errawr-gen/pkg/generator
+github.com/puppetlabs/errawr-gen/pkg/lang/golang
+github.com/puppetlabs/errawr-gen/pkg/util/fs
+# github.com/puppetlabs/errawr-go/v2 v2.1.0
+github.com/puppetlabs/errawr-go/v2/pkg/encoding
+github.com/puppetlabs/errawr-go/v2/pkg/errawr
+github.com/puppetlabs/errawr-go/v2/pkg/golang
+github.com/puppetlabs/errawr-go/v2/pkg/impl
+github.com/puppetlabs/errawr-go/v2/pkg/testutil
+# github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50
+github.com/reflect/raymond
+github.com/reflect/raymond/ast
+github.com/reflect/raymond/lexer
+github.com/reflect/raymond/parser
+# github.com/reflect/xparse v0.0.0-20171128034418-ab29bdc5e11c
+github.com/reflect/xparse/xtime
+# github.com/serenize/snaker v0.0.0-20171002133257-c7a77c38c398
+github.com/serenize/snaker
+# github.com/shurcooL/httpfs v0.0.0-20190527155220-6a4d4a70508b
+github.com/shurcooL/httpfs/vfsutil
+# github.com/shurcooL/vfsgen v0.0.0-20181202132449-6a9ea43bcacd
+github.com/shurcooL/vfsgen
+# github.com/stretchr/testify v1.3.0
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
+# github.com/xeipuuv/gojsonpointer v0.0.0-20170225233418-6fe8760cad35
+github.com/xeipuuv/gojsonpointer
+# github.com/xeipuuv/gojsonreference v0.0.0-20150808065054-e02fc20de94c
+github.com/xeipuuv/gojsonreference
+# github.com/xeipuuv/gojsonschema v0.0.0-20171025060643-212d8a0df7ac
+github.com/xeipuuv/gojsonschema
+# golang.org/x/sys v0.0.0-20190613124609-5ed2794edfdc
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.0
+golang.org/x/text/runes
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
+# gopkg.in/yaml.v2 v2.2.2
+gopkg.in/yaml.v2
