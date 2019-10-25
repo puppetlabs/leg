@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/puppetlabs/horsehead/compare/v2.1.2...v2.2.0) (2019-10-25)
+
+
+### New
+
+* Add data structures and graph libraries ([fc99ca1c6b0b9001d78d97cbbc9475b589654c23](https://github.com/puppetlabs/horsehead/commit/fc99ca1c6b0b9001d78d97cbbc9475b589654c23))
+
 ## [2.1.2](https://github.com/puppetlabs/horsehead/compare/v2.1.1...v2.1.2) (2019-10-23)
 
 
