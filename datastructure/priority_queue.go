@@ -3,7 +3,7 @@
 //
 // https://golang.org/pkg/container/heap/
 
-package godat
+package datastructure
 
 import (
 	"container/heap"
@@ -63,7 +63,7 @@ func (pq *PriorityQueue) Clear() {
 	heap.Init(&pq.impl)
 }
 
-// Adds a new item to the priority queue with the given priority.
+// Add inserts a new item to the priority queue with the given priority.
 func (pq *PriorityQueue) Add(v interface{}, priority float64) {
 	item := &priorityQueueItem{
 		value:    v,
@@ -73,10 +73,10 @@ func (pq *PriorityQueue) Add(v interface{}, priority float64) {
 	heap.Push(&pq.impl, item)
 }
 
-// Retrieves and removes the item with the highest priority from the queue.
+// Poll retrieves and removes the item with the highest priority from the queue.
 //
-// If no items are currently in the queue, this function returns a nil value
-// and false. Otherwise, it returns the value and true.
+// If no items are currently in the queue, this function returns a nil value and
+// false. Otherwise, it returns the value and true.
 func (pq *PriorityQueue) Poll() (interface{}, bool) {
 	if pq.impl.Len() == 0 {
 		return nil, false
@@ -86,11 +86,11 @@ func (pq *PriorityQueue) Poll() (interface{}, bool) {
 	return item.value, true
 }
 
-// Retrieves and removes the item with the highest priority from the queue, and
-// stores the item value in the into parameter. The into parameter must be of a
-// type assignable by the stored value. If there are no items in the queue, the
-// into parameter is not modified and the function returns false. Otherwise,
-// the function returns true.
+// PollInto retrieves and removes the item with the highest priority from the
+// queue, and stores the item value in the into parameter. The into parameter
+// must be of a type assignable by the stored value. If there are no items in
+// the queue, the into parameter is not modified and the function returns false.
+// Otherwise, the function returns true.
 //
 // If the into parameter is not compatible with the stored value, this function
 // will panic.
@@ -105,7 +105,7 @@ func (pq *PriorityQueue) PollInto(into interface{}) bool {
 	return found
 }
 
-// Creates a new priority queue backed by a heap.
+// NewPriorityQueue creates a new priority queue backed by a heap.
 func NewPriorityQueue() *PriorityQueue {
 	pq := &PriorityQueue{}
 	heap.Init(&pq.impl)

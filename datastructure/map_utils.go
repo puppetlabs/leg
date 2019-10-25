@@ -1,4 +1,4 @@
-package godat
+package datastructure
 
 import (
 	"reflect"
@@ -89,8 +89,8 @@ func mapForEachInto(m Map, fn interface{}) error {
 		err := r[0]
 		if err.IsNil() {
 			return nil
-		} else {
-			return err.Interface().(error)
 		}
+
+		return err.Interface().(error)
 	})
 }

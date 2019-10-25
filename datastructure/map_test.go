@@ -1,4 +1,4 @@
-package godat
+package datastructure
 
 import (
 	"errors"
@@ -95,9 +95,9 @@ func TestMapIteration(t *testing.T) {
 		assert.Contains(t, m.Values(), 3)
 
 		err := m.ForEach(func(key, value interface{}) error {
-			return errors.New("something went wrong!")
+			return errors.New("something went wrong")
 		})
-		assert.EqualError(t, err, "something went wrong!")
+		assert.EqualError(t, err, "something went wrong")
 	}
 }
 
@@ -129,9 +129,9 @@ func TestMapIterationReflection(t *testing.T) {
 		})
 
 		err := m.ForEachInto(func(key string, value int) error {
-			return errors.New("something else went wrong!")
+			return errors.New("something else went wrong")
 		})
-		assert.EqualError(t, err, "something else went wrong!")
+		assert.EqualError(t, err, "something else went wrong")
 
 		assert.Panics(t, func() {
 			m.ForEachInto(func(key, value uint) error {

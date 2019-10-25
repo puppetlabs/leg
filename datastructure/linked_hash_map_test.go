@@ -1,4 +1,4 @@
-package godat
+package datastructure
 
 import (
 	"github.com/stretchr/testify/assert"

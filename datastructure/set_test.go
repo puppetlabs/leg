@@ -1,4 +1,4 @@
-package godat
+package datastructure
 
 import (
 	"errors"
@@ -47,9 +47,9 @@ func TestSetIteration(t *testing.T) {
 		assert.Contains(t, s.Values(), "c")
 
 		err := s.ForEach(func(element interface{}) error {
-			return errors.New("something went wrong!")
+			return errors.New("something went wrong")
 		})
-		assert.EqualError(t, err, "something went wrong!")
+		assert.EqualError(t, err, "something went wrong")
 	}
 }
 
@@ -90,9 +90,9 @@ func TestSetIterationReflection(t *testing.T) {
 		})
 
 		err := s.ForEachInto(func(element string) error {
-			return errors.New("something else went wrong!")
+			return errors.New("something else went wrong")
 		})
-		assert.EqualError(t, err, "something else went wrong!")
+		assert.EqualError(t, err, "something else went wrong")
 
 		assert.Panics(t, func() {
 			s.ForEachInto(func(element uint) error {

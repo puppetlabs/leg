@@ -1,6 +1,7 @@
-package godat
+package datastructure
 
-// A simple hash map implementation, backed by the built-in map type in Go.
+// HashMap is a simple hash map implementation, backed by the built-in map type
+// in Go.
 type HashMap map[interface{}]interface{}
 
 func (m HashMap) Contains(key interface{}) (found bool) {
@@ -73,14 +74,15 @@ func (m *HashMap) ForEachInto(fn interface{}) error {
 	return mapForEachInto(m, fn)
 }
 
-// Creates a new hash map with the default initial capacity of this Go
-// implementation.
+// NewHashMap creates a new hash map with the default initial capacity of this
+// Go implementation.
 func NewHashMap() *HashMap {
 	m := make(HashMap)
 	return &m
 }
 
-// Creates a new hash map with the specified initial capacity.
+// NewHashMapWithCapacity creates a new hash map with the specified initial
+// capacity.
 func NewHashMapWithCapacity(capacity int) *HashMap {
 	m := make(HashMap, capacity)
 	return &m

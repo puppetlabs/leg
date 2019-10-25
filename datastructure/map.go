@@ -5,32 +5,32 @@
 //
 // https://github.com/emirpasic/gods/blob/52d942a0538c185239fa3737047f297d983ac3e0/maps/maps.go
 
-package godat
+package datastructure
 
 type MapIterationFunc func(key, value interface{}) error
 
-// A key-to-value mapping, where keys are unique.
+// Map represents a key-to-value mapping, where keys are unique.
 type Map interface {
 	Container
 
-	// Returns true if the given key exists in this map.
+	// Contains returns true if the given key exists in this map.
 	Contains(key interface{}) bool
 
-	// Adds the given key and value to the map. If the value already exists in
-	// the map, the old value is overwritten by the specified value.
+	// Put adds the given key and value to the map. If the value already exists
+	// in the map, the old value is overwritten by the specified value.
 	//
 	// Returns true if this map already contained an entry for this key, and
 	// false otherwise.
 	Put(key, value interface{}) bool
 
-	// Retrieves the value associated with the given key from the map.
+	// Get retrieves the value associated with the given key from the map.
 	//
 	// Returns the value, or nil if the key does not exist in the map, and a
 	// boolean indicating whether the key exists.
 	Get(key interface{}) (interface{}, bool)
 
-	// Retrieves the value associated with the given key from the map and
-	// stores it in the into parameter passed to this function.
+	// GetInto retrieves the value associated with the given key from the map
+	// and stores it in the into parameter passed to this function.
 	//
 	// The into parameter must be a pointer to a type assignable by the stored
 	// value. If the given key does not exist in the map, the into parameter is
@@ -42,32 +42,32 @@ type Map interface {
 	// Returns true if the key exists, and false otherwise.
 	GetInto(key interface{}, into interface{}) bool
 
-	// Removes the given key from the map, and returns true if the key existed
-	// in the map.
+	// Remove eliminates the given key from the map, and returns true if the key
+	// existed in the map.
 	Remove(key interface{}) bool
 
-	// Returns the keys from this map as a slice of interface{}.
+	// Keys returns the keys from this map as a slice of interface{}.
 	Keys() []interface{}
 
-	// Inserts the keys from this map into the given slice. The type of the
-	// into parameter must be a pointer to a slice for which each value must be
-	// assignable by the type of every key in this map.
+	// KeysInto inserts the keys from this map into the given slice. The type of
+	// the into parameter must be a pointer to a slice for which each value must
+	// be assignable by the type of every key in this map.
 	//
 	// If the requirements for the into parameter are not met, this function
 	// will panic.
 	KeysInto(into interface{})
 
-	// Iterates each key-value pair in the map and executes the given callback
-	// function. If the callback function returns an error, this function will
-	// return the same error and immediately stop iteration.
+	// ForEach iterates each key-value pair in the map and executes the given
+	// callback function. If the callback function returns an error, this
+	// function will return the same error and immediately stop iteration.
 	//
 	// To stop iteration without returning an error, return ErrStopIteration.
 	ForEach(fn MapIterationFunc) error
 
-	// Iterates each key-value pair in the map and executes the given callback
-	// function, which must be of a type similar to MapIterationFunc, except
-	// that the key and value parameters may be any type assignable by every
-	// key and value in the map, respectively.
+	// ForEachInto iterates each key-value pair in the map and executes the
+	// given callback function, which must be of a type similar to
+	// MapIterationFunc, except that the key and value parameters may be any
+	// type assignable by every key and value in the map, respectively.
 	//
 	// If the requirements for the fn parameter are not met, this function will
 	// panic.

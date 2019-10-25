@@ -1,4 +1,4 @@
-package godat
+package datastructure
 
 import (
 	"container/list"
@@ -8,9 +8,9 @@ type linkedHashMapEntry struct {
 	key, value interface{}
 }
 
-// A hash map that iterates its entries in the order they were inserted into
-// the map. Calls to Put() for a key that already exists in the map will not
-// change its insertion order.
+// LinkedHashMap is hash map that iterates its entries in the order they were
+// inserted into the map. Calls to Put() for a key that already exists in the
+// map will not change its insertion order.
 type LinkedHashMap struct {
 	accessor *list.List
 	storage  map[interface{}]*list.Element
@@ -104,8 +104,8 @@ func (m *LinkedHashMap) ForEachInto(fn interface{}) error {
 	return mapForEachInto(m, fn)
 }
 
-// Creates a new linked hash map with the default initial capacity of this Go
-// implementation.
+// NewLinkedHashMap creates a new linked hash map with the default initial
+// capacity of this Go implementation.
 func NewLinkedHashMap() *LinkedHashMap {
 	return &LinkedHashMap{
 		accessor: list.New(),
@@ -113,7 +113,8 @@ func NewLinkedHashMap() *LinkedHashMap {
 	}
 }
 
-// Creates a new linked hash map with the specified initial capacity.
+// NewLinkedHashMapWithCapacity creates a new linked hash map with the specified
+// initial capacity.
 func NewLinkedHashMapWithCapacity(capacity int) *LinkedHashMap {
 	return &LinkedHashMap{
 		accessor: list.New(),
