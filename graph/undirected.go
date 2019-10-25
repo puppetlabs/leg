@@ -3,10 +3,10 @@
 //
 // (C) Copyright 2015-2016, by Barak Naveh and Contributors.
 
-package gographt
+package graph
 
 import (
-	"github.com/reflect/godat"
+	"github.com/puppetlabs/horsehead/v2/datastructure"
 )
 
 // UndirectedGraphSupportedFeatures are the features supported by all undirected
@@ -15,7 +15,7 @@ const UndirectedGraphSupportedFeatures = DeterministicIteration
 
 type undirectedVertexSet struct {
 	features GraphFeature
-	storage  godat.Map // map[Vertex]MutableEdgeSet
+	storage  datastructure.Map // map[Vertex]MutableEdgeSet
 }
 
 func (vs *undirectedVertexSet) Contains(vertex Vertex) bool {
@@ -60,9 +60,9 @@ func (vs *undirectedVertexSet) edgesOf(vertex Vertex) MutableEdgeSet {
 
 	if set == nil {
 		if vs.features&DeterministicIteration != 0 {
-			set = NewMutableEdgeSet(godat.NewLinkedHashSet())
+			set = NewMutableEdgeSet(datastructure.NewLinkedHashSet())
 		} else {
-			set = NewMutableEdgeSet(godat.NewHashSet())
+			set = NewMutableEdgeSet(datastructure.NewHashSet())
 		}
 
 		vs.storage.Put(vertex, set)
@@ -103,13 +103,13 @@ func (o *undirectedGraphOps) EdgeBetween(source, target Vertex) (Edge, error) {
 	err := o.vertices.edgesOf(source).ForEach(func(edge Edge) error {
 		if o.edgeHasSourceAndTarget(edge, source, target) {
 			found = edge
-			return godat.ErrStopIteration
+			return datastructure.ErrStopIteration
 		}
 
 		return nil
 	})
 
-	if err == godat.ErrStopIteration {
+	if err == datastructure.ErrStopIteration {
 		return found, nil
 	}
 
@@ -160,11 +160,11 @@ func (o *undirectedGraphOps) DegreeOf(vertex Vertex) uint {
 }
 
 func newUndirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *baseUndirectedGraph {
-	var vertexStorage godat.Map
+	var vertexStorage datastructure.Map
 	if features&DeterministicIteration != 0 {
-		vertexStorage = godat.NewLinkedHashMap()
+		vertexStorage = datastructure.NewLinkedHashMap()
 	} else {
-		vertexStorage = godat.NewHashMap()
+		vertexStorage = datastructure.NewHashMap()
 	}
 
 	ops := &undirectedGraphOps{

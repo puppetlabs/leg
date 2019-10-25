@@ -8,18 +8,18 @@ package traverse
 import (
 	"reflect"
 
-	"github.com/reflect/gographt"
+	"github.com/puppetlabs/horsehead/v2/graph"
 )
 
 type TopologicalOrderTraverser struct {
-	g gographt.DirectedGraph
+	g graph.DirectedGraph
 }
 
-func (t *TopologicalOrderTraverser) Vertices() ([]gographt.Vertex, error) {
-	vertices := make([]gographt.Vertex, t.g.Vertices().Count())
+func (t *TopologicalOrderTraverser) Vertices() ([]graph.Vertex, error) {
+	vertices := make([]graph.Vertex, t.g.Vertices().Count())
 
 	i := 0
-	err := t.ForEach(func(vertex gographt.Vertex) error {
+	err := t.ForEach(func(vertex graph.Vertex) error {
 		vertices[i] = vertex
 		i++
 
@@ -32,16 +32,16 @@ func (t *TopologicalOrderTraverser) Vertices() ([]gographt.Vertex, error) {
 	return vertices, nil
 }
 
-func (t *TopologicalOrderTraverser) ForEach(fn func(vertex gographt.Vertex) error) error {
+func (t *TopologicalOrderTraverser) ForEach(fn func(vertex graph.Vertex) error) error {
 	if t.g.Vertices().Count() == 0 {
 		return nil
 	}
 
-	var queue []gographt.Vertex
-	remaining := make(map[gographt.Vertex]uint)
+	var queue []graph.Vertex
+	remaining := make(map[graph.Vertex]uint)
 
 	// Find our starting point(s).
-	t.g.Vertices().ForEach(func(vertex gographt.Vertex) error {
+	t.g.Vertices().ForEach(func(vertex graph.Vertex) error {
 		if in, _ := t.g.InDegreeOf(vertex); in == 0 {
 			queue = append(queue, vertex)
 		}
@@ -64,7 +64,7 @@ func (t *TopologicalOrderTraverser) ForEach(fn func(vertex gographt.Vertex) erro
 		}
 
 		edges, _ := t.g.OutgoingEdgesOf(cur)
-		edges.ForEach(func(edge gographt.Edge) error {
+		edges.ForEach(func(edge graph.Edge) error {
 			next, _ := t.g.TargetVertexOf(edge)
 
 			if remaining[next] > 0 {
@@ -90,7 +90,7 @@ func (t *TopologicalOrderTraverser) ForEachInto(fn interface{}) error {
 		panic(ErrInvalidFuncSignature)
 	}
 
-	return t.ForEach(func(vertex gographt.Vertex) error {
+	return t.ForEach(func(vertex graph.Vertex) error {
 		p := reflect.ValueOf(vertex)
 		if !p.IsValid() {
 			p = reflect.Zero(fnt.In(0))
@@ -107,6 +107,6 @@ func (t *TopologicalOrderTraverser) ForEachInto(fn interface{}) error {
 	})
 }
 
-func NewTopologicalOrderTraverser(g gographt.DirectedGraph) *TopologicalOrderTraverser {
+func NewTopologicalOrderTraverser(g graph.DirectedGraph) *TopologicalOrderTraverser {
 	return &TopologicalOrderTraverser{g}
 }

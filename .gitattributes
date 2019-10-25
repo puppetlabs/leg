@@ -1,2 +1,0 @@
-./vendor/github.com/*     -diff
-./vendor/golang.org/*     -diff

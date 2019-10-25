@@ -8,33 +8,33 @@ package algo
 import (
 	"testing"
 
-	"github.com/reflect/gographt"
+	"github.com/puppetlabs/horsehead/v2/graph"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestTiernanSimpleCycles(t *testing.T) {
-	g := gographt.NewDirectedPseudographWithFeatures(gographt.DeterministicIteration)
+	g := graph.NewDirectedPseudographWithFeatures(graph.DeterministicIteration)
 	for i := 0; i < 7; i++ {
 		g.AddVertex(i)
 	}
 
 	g.Connect(0, 0)
-	assert.Equal(t, [][]gographt.Vertex{{0}}, TiernanSimpleCyclesOf(g).Cycles())
+	assert.Equal(t, [][]graph.Vertex{{0}}, TiernanSimpleCyclesOf(g).Cycles())
 
 	g.Connect(1, 1)
-	assert.Equal(t, [][]gographt.Vertex{{0}, {1}}, TiernanSimpleCyclesOf(g).Cycles())
+	assert.Equal(t, [][]graph.Vertex{{0}, {1}}, TiernanSimpleCyclesOf(g).Cycles())
 
 	g.Connect(0, 1)
 	g.Connect(1, 0)
-	assert.Equal(t, [][]gographt.Vertex{{0, 1}, {0}, {1}}, TiernanSimpleCyclesOf(g).Cycles())
+	assert.Equal(t, [][]graph.Vertex{{0, 1}, {0}, {1}}, TiernanSimpleCyclesOf(g).Cycles())
 
 	g.Connect(1, 2)
 	g.Connect(2, 3)
 	g.Connect(3, 0)
-	assert.Equal(t, [][]gographt.Vertex{{0, 1, 2, 3}, {0, 1}, {0}, {1}}, TiernanSimpleCyclesOf(g).Cycles())
+	assert.Equal(t, [][]graph.Vertex{{0, 1, 2, 3}, {0, 1}, {0}, {1}}, TiernanSimpleCyclesOf(g).Cycles())
 
 	g.Connect(6, 6)
-	assert.Equal(t, [][]gographt.Vertex{{0, 1, 2, 3}, {0, 1}, {0}, {1}, {6}}, TiernanSimpleCyclesOf(g).Cycles())
+	assert.Equal(t, [][]graph.Vertex{{0, 1, 2, 3}, {0, 1}, {0}, {1}, {6}}, TiernanSimpleCyclesOf(g).Cycles())
 
 	conditions := []struct {
 		ConnectedVertices, Cycles int
@@ -51,7 +51,7 @@ func TestTiernanSimpleCycles(t *testing.T) {
 	}
 
 	for _, cond := range conditions {
-		g = gographt.NewDirectedPseudograph()
+		g = graph.NewDirectedPseudograph()
 		for i := 0; i < cond.ConnectedVertices; i++ {
 			g.AddVertex(i)
 		}
@@ -66,7 +66,7 @@ func TestTiernanSimpleCycles(t *testing.T) {
 }
 
 func TestTiernanSimpleCyclesInto(t *testing.T) {
-	g := gographt.NewSimpleDirectedGraphWithFeatures(gographt.DeterministicIteration)
+	g := graph.NewSimpleDirectedGraphWithFeatures(graph.DeterministicIteration)
 	g.AddVertex("a")
 	g.AddVertex("b")
 	g.AddVertex("c")

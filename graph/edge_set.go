@@ -1,7 +1,7 @@
-package gographt
+package graph
 
 import (
-	"github.com/reflect/godat"
+	"github.com/puppetlabs/horsehead/v2/datastructure"
 )
 
 type unenforcedSliceEdgeSet []Edge
@@ -39,7 +39,7 @@ func (es *unenforcedSliceEdgeSet) Add(edge Edge) {
 }
 
 type edgeSet struct {
-	storage godat.Set
+	storage datastructure.Set
 }
 
 func (es *edgeSet) Contains(edge Edge) bool {
@@ -78,6 +78,6 @@ func (es *edgeSet) Remove(edge Edge) {
 
 // NewMutableEdgeSet creates a new mutable edge set using the given underlying
 // set to store the edges.
-func NewMutableEdgeSet(storage godat.Set) MutableEdgeSet {
+func NewMutableEdgeSet(storage datastructure.Set) MutableEdgeSet {
 	return &edgeSet{storage}
 }

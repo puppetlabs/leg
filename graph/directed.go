@@ -3,10 +3,10 @@
 //
 // (C) Copyright 2015-2017, by Barak Naveh and Contributors.
 
-package gographt
+package graph
 
 import (
-	"github.com/reflect/godat"
+	"github.com/puppetlabs/horsehead/v2/datastructure"
 )
 
 // DirectedGraphSupportedFeatures are the features supported by all directed
@@ -20,7 +20,7 @@ type directedEdgeContainer struct {
 
 type directedVertexSet struct {
 	features GraphFeature
-	storage  godat.Map // map[Vertex]*directedEdgeContainer
+	storage  datastructure.Map // map[Vertex]*directedEdgeContainer
 }
 
 func (vs *directedVertexSet) Contains(vertex Vertex) bool {
@@ -79,9 +79,9 @@ func (vs *directedVertexSet) incomingEdgesOf(vertex Vertex) MutableEdgeSet {
 
 	if container.incoming == nil {
 		if vs.features&DeterministicIteration != 0 {
-			container.incoming = NewMutableEdgeSet(godat.NewLinkedHashSet())
+			container.incoming = NewMutableEdgeSet(datastructure.NewLinkedHashSet())
 		} else {
-			container.incoming = NewMutableEdgeSet(godat.NewHashSet())
+			container.incoming = NewMutableEdgeSet(datastructure.NewHashSet())
 		}
 	}
 
@@ -96,9 +96,9 @@ func (vs *directedVertexSet) outgoingEdgesOf(vertex Vertex) MutableEdgeSet {
 
 	if container.outgoing == nil {
 		if vs.features&DeterministicIteration != 0 {
-			container.outgoing = NewMutableEdgeSet(godat.NewLinkedHashSet())
+			container.outgoing = NewMutableEdgeSet(datastructure.NewLinkedHashSet())
 		} else {
-			container.outgoing = NewMutableEdgeSet(godat.NewHashSet())
+			container.outgoing = NewMutableEdgeSet(datastructure.NewHashSet())
 		}
 	}
 
@@ -139,13 +139,13 @@ func (o *directedGraphOps) EdgeBetween(source, target Vertex) (Edge, error) {
 		tt, _ := o.g.TargetVertexOf(edge)
 		if tt == target {
 			found = edge
-			return godat.ErrStopIteration
+			return datastructure.ErrStopIteration
 		}
 
 		return nil
 	})
 
-	if err == godat.ErrStopIteration {
+	if err == datastructure.ErrStopIteration {
 		return found, nil
 	}
 
@@ -159,9 +159,9 @@ func (o *directedGraphOps) EdgesOf(vertex Vertex) EdgeSet {
 
 	var set MutableEdgeSet
 	if o.g.Features()&DeterministicIteration != 0 {
-		set = NewMutableEdgeSet(godat.NewLinkedHashSet())
+		set = NewMutableEdgeSet(datastructure.NewLinkedHashSet())
 	} else {
-		set = NewMutableEdgeSet(godat.NewHashSet())
+		set = NewMutableEdgeSet(datastructure.NewHashSet())
 	}
 
 	o.IncomingEdgesOf(vertex).ForEach(func(edge Edge) error {
@@ -229,11 +229,11 @@ func (o *directedGraphOps) OutgoingEdgesOf(vertex Vertex) EdgeSet {
 }
 
 func newDirectedGraph(features GraphFeature, allowLoops, allowMultipleEdges bool) *baseDirectedGraph {
-	var vertexStorage godat.Map
+	var vertexStorage datastructure.Map
 	if features&DeterministicIteration != 0 {
-		vertexStorage = godat.NewLinkedHashMap()
+		vertexStorage = datastructure.NewLinkedHashMap()
 	} else {
-		vertexStorage = godat.NewHashMap()
+		vertexStorage = datastructure.NewHashMap()
 	}
 
 	ops := &directedGraphOps{

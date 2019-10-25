@@ -6,43 +6,43 @@
 package algo
 
 import (
-	"github.com/reflect/godat"
-	"github.com/reflect/gographt"
+	"github.com/puppetlabs/horsehead/v2/datastructure"
+	"github.com/puppetlabs/horsehead/v2/graph"
 )
 
 const (
-	PrimMinimumSpanningTreeSupportedFeatures = gographt.DeterministicIteration
+	PrimMinimumSpanningTreeSupportedFeatures = graph.DeterministicIteration
 )
 
 type PrimMinimumSpanningTree struct {
 	TotalWeight float64
 
-	features gographt.GraphFeature
-	es       gographt.MutableEdgeSet
+	features graph.GraphFeature
+	es       graph.MutableEdgeSet
 }
 
-func (mst *PrimMinimumSpanningTree) Features() gographt.GraphFeature {
+func (mst *PrimMinimumSpanningTree) Features() graph.GraphFeature {
 	return mst.features
 }
 
-func (mst *PrimMinimumSpanningTree) Edges() gographt.EdgeSet {
+func (mst *PrimMinimumSpanningTree) Edges() graph.EdgeSet {
 	return mst.es
 }
 
-func PrimMinimumSpanningTreeOf(g gographt.UndirectedGraph) *PrimMinimumSpanningTree {
+func PrimMinimumSpanningTreeOf(g graph.UndirectedGraph) *PrimMinimumSpanningTree {
 	vs := g.Vertices()
 
 	var (
-		es        gographt.MutableEdgeSet
-		unspanned godat.Set
+		es        graph.MutableEdgeSet
+		unspanned datastructure.Set
 	)
 
-	if g.Features()&gographt.DeterministicIteration != 0 {
-		es = gographt.NewMutableEdgeSet(godat.NewLinkedHashSet())
-		unspanned = godat.NewLinkedHashSetWithCapacity(int(vs.Count()))
+	if g.Features()&graph.DeterministicIteration != 0 {
+		es = graph.NewMutableEdgeSet(datastructure.NewLinkedHashSet())
+		unspanned = datastructure.NewLinkedHashSetWithCapacity(int(vs.Count()))
 	} else {
-		es = gographt.NewMutableEdgeSet(godat.NewHashSet())
-		unspanned = godat.NewHashSetWithCapacity(int(vs.Count()))
+		es = graph.NewMutableEdgeSet(datastructure.NewHashSet())
+		unspanned = datastructure.NewHashSetWithCapacity(int(vs.Count()))
 	}
 
 	mst := &PrimMinimumSpanningTree{
@@ -50,31 +50,31 @@ func PrimMinimumSpanningTreeOf(g gographt.UndirectedGraph) *PrimMinimumSpanningT
 		es:       es,
 	}
 
-	vs.ForEach(func(vertex gographt.Vertex) error {
+	vs.ForEach(func(vertex graph.Vertex) error {
 		unspanned.Add(vertex)
 		return nil
 	})
 
 	for !unspanned.Empty() {
-		var root gographt.Vertex
-		unspanned.ForEachInto(func(vertex gographt.Vertex) error {
+		var root graph.Vertex
+		unspanned.ForEachInto(func(vertex graph.Vertex) error {
 			root = vertex
-			return godat.ErrStopIteration
+			return datastructure.ErrStopIteration
 		})
 
 		unspanned.Remove(root)
 
-		dangling := godat.NewPriorityQueue()
+		dangling := datastructure.NewPriorityQueue()
 
 		edges, _ := g.EdgesOf(root)
-		edges.ForEach(func(edge gographt.Edge) error {
+		edges.ForEach(func(edge graph.Edge) error {
 			weight, _ := g.WeightOf(edge)
 			dangling.Add(edge, -weight)
 
 			return nil
 		})
 
-		var next gographt.Edge
+		var next graph.Edge
 		for dangling.PollInto(&next) {
 			target, _ := g.SourceVertexOf(next)
 			if !unspanned.Contains(target) {
@@ -90,8 +90,8 @@ func PrimMinimumSpanningTreeOf(g gographt.UndirectedGraph) *PrimMinimumSpanningT
 			unspanned.Remove(target)
 
 			edges, _ := g.EdgesOf(target)
-			edges.ForEach(func(edge gographt.Edge) error {
-				candidate, _ := gographt.OppositeVertexOf(g, edge, target)
+			edges.ForEach(func(edge graph.Edge) error {
+				candidate, _ := graph.OppositeVertexOf(g, edge, target)
 				if !unspanned.Contains(candidate) {
 					return nil
 				}
@@ -104,7 +104,7 @@ func PrimMinimumSpanningTreeOf(g gographt.UndirectedGraph) *PrimMinimumSpanningT
 		}
 	}
 
-	mst.es.ForEach(func(edge gographt.Edge) error {
+	mst.es.ForEach(func(edge graph.Edge) error {
 		weight, _ := g.WeightOf(edge)
 		mst.TotalWeight += weight
 

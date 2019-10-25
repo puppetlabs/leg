@@ -6,15 +6,14 @@
 package algo
 
 import (
-	"github.com/reflect/gographt"
-
 	"testing"
 
+	"github.com/puppetlabs/horsehead/v2/graph"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPrimWithConnectedWeightedGraph(t *testing.T) {
-	g := gographt.NewSimpleWeightedGraph()
+	g := graph.NewSimpleWeightedGraph()
 
 	for _, vertex := range []string{"A", "B", "C", "D", "E"} {
 		g.AddVertex(vertex)
@@ -45,7 +44,7 @@ func TestPrimWithConnectedWeightedGraph(t *testing.T) {
 }
 
 func TestPrimWithEqualWeights(t *testing.T) {
-	g := gographt.NewSimpleGraph()
+	g := graph.NewSimpleGraph()
 
 	for _, vertex := range []string{"A", "B", "C", "D", "E"} {
 		g.AddVertex(vertex)
@@ -63,5 +62,5 @@ func TestPrimWithEqualWeights(t *testing.T) {
 
 	edges := mst.Edges().AsSlice()
 	assert.Len(t, edges, 4)
-	assert.InDelta(t, gographt.DefaultEdgeWeight*4, mst.TotalWeight, 1e-6)
+	assert.InDelta(t, graph.DefaultEdgeWeight*4, mst.TotalWeight, 1e-6)
 }

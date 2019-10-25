@@ -3,10 +3,10 @@
 //
 // (C) Copyright 2003-2016, by Barak Naveh and Contributors.
 
-package gographt
+package graph
 
 import (
-	"github.com/reflect/godat"
+	"github.com/puppetlabs/horsehead/v2/datastructure"
 )
 
 type intrusiveEdge struct {
@@ -61,7 +61,7 @@ type baseGraph struct {
 	Ops                              baseGraphOps
 
 	features  GraphFeature
-	edges     godat.Map // map[Edge]*intrusiveEdge
+	edges     datastructure.Map // map[Edge]*intrusiveEdge
 	edgesView EdgeSet
 }
 
@@ -242,11 +242,11 @@ func (g *baseGraph) WeightOf(edge Edge) (float64, error) {
 }
 
 func newBaseGraph(features GraphFeature, allowsLoops, allowsMultipleEdges bool, ops baseGraphOps) *baseGraph {
-	var edges godat.Map
+	var edges datastructure.Map
 	if features&DeterministicIteration != 0 {
-		edges = godat.NewLinkedHashMap()
+		edges = datastructure.NewLinkedHashMap()
 	} else {
-		edges = godat.NewHashMap()
+		edges = datastructure.NewHashMap()
 	}
 
 	return &baseGraph{

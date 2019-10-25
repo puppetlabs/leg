@@ -6,24 +6,24 @@
 package algo
 
 import (
-	"github.com/reflect/gographt"
-
 	"math"
+
+	"github.com/puppetlabs/horsehead/v2/graph"
 )
 
 const (
-	BellmanFordSupportedFeatures = gographt.DeterministicIteration
+	BellmanFordSupportedFeatures = graph.DeterministicIteration
 )
 
 type bellmanFordPathElement struct {
-	vertex gographt.Vertex
+	vertex graph.Vertex
 	cost   float64
 
-	prevEdge        gographt.Edge
+	prevEdge        graph.Edge
 	prevPathElement *bellmanFordPathElement
 }
 
-func (bfpe *bellmanFordPathElement) improve(prevPathElement *bellmanFordPathElement, prevEdge gographt.Edge, cost float64) bool {
+func (bfpe *bellmanFordPathElement) improve(prevPathElement *bellmanFordPathElement, prevEdge graph.Edge, cost float64) bool {
 	if cost >= (bfpe.cost - 1e-7) {
 		return false
 	}
@@ -37,17 +37,17 @@ func (bfpe *bellmanFordPathElement) improve(prevPathElement *bellmanFordPathElem
 }
 
 type bellmanFordExecutor struct {
-	graph gographt.Graph
-	start gographt.Vertex
+	graph graph.Graph
+	start graph.Vertex
 
 	// Vertices whose shortest path costs have been improved during the
 	// previous pass.
-	prevImprovedVertices   []gographt.Vertex
-	prevVertexData         map[gographt.Vertex]*bellmanFordPathElement
+	prevImprovedVertices   []graph.Vertex
+	prevVertexData         map[graph.Vertex]*bellmanFordPathElement
 	startVertexEncountered bool
 
 	// Vertices seen so far.
-	vertexData map[gographt.Vertex]*bellmanFordPathElement
+	vertexData map[graph.Vertex]*bellmanFordPathElement
 }
 
 func (e *bellmanFordExecutor) calculate() {
@@ -65,12 +65,12 @@ func (e *bellmanFordExecutor) hasNext() bool {
 func (e *bellmanFordExecutor) next() {
 	e.encounterStartVertex()
 
-	var improvedVertices []gographt.Vertex
+	var improvedVertices []graph.Vertex
 	for i := len(e.prevImprovedVertices) - 1; i >= 0; i-- {
 		vertex := e.prevImprovedVertices[i]
 
-		e.forEachEdgeOf(vertex, func(edge gographt.Edge) error {
-			otherVertex, _ := gographt.OppositeVertexOf(e.graph, edge, vertex)
+		e.forEachEdgeOf(vertex, func(edge graph.Edge) error {
+			otherVertex, _ := graph.OppositeVertexOf(e.graph, edge, vertex)
 
 			if _, found := e.vertexData[otherVertex]; found {
 				if e.relaxVertexAgain(otherVertex, edge) {
@@ -88,8 +88,8 @@ func (e *bellmanFordExecutor) next() {
 	e.savePassData(improvedVertices)
 }
 
-func (e *bellmanFordExecutor) calculatePathCost(vertex gographt.Vertex, edge gographt.Edge) float64 {
-	other, _ := gographt.OppositeVertexOf(e.graph, edge, vertex)
+func (e *bellmanFordExecutor) calculatePathCost(vertex graph.Vertex, edge graph.Edge) float64 {
+	other, _ := graph.OppositeVertexOf(e.graph, edge, vertex)
 	prev := e.prevVertexData[other]
 
 	cost, _ := e.graph.WeightOf(edge)
@@ -100,9 +100,9 @@ func (e *bellmanFordExecutor) calculatePathCost(vertex gographt.Vertex, edge gog
 	return cost
 }
 
-func (e *bellmanFordExecutor) forEachEdgeOf(vertex gographt.Vertex, fn gographt.EdgeSetIterationFunc) {
-	var edges gographt.EdgeSet
-	if dg, ok := e.graph.(gographt.DirectedGraph); ok {
+func (e *bellmanFordExecutor) forEachEdgeOf(vertex graph.Vertex, fn graph.EdgeSetIterationFunc) {
+	var edges graph.EdgeSet
+	if dg, ok := e.graph.(graph.DirectedGraph); ok {
 		edges, _ = dg.OutgoingEdgesOf(vertex)
 	} else {
 		edges, _ = e.graph.EdgesOf(vertex)
@@ -111,8 +111,8 @@ func (e *bellmanFordExecutor) forEachEdgeOf(vertex gographt.Vertex, fn gographt.
 	edges.ForEach(fn)
 }
 
-func (e *bellmanFordExecutor) createSeenData(vertex gographt.Vertex, edge gographt.Edge, cost float64) *bellmanFordPathElement {
-	other, _ := gographt.OppositeVertexOf(e.graph, edge, vertex)
+func (e *bellmanFordExecutor) createSeenData(vertex graph.Vertex, edge graph.Edge, cost float64) *bellmanFordPathElement {
+	other, _ := graph.OppositeVertexOf(e.graph, edge, vertex)
 	prev := e.prevVertexData[other]
 
 	return &bellmanFordPathElement{
@@ -138,21 +138,21 @@ func (e *bellmanFordExecutor) encounterStartVertex() {
 	e.startVertexEncountered = true
 }
 
-func (e *bellmanFordExecutor) relaxVertex(vertex gographt.Vertex, edge gographt.Edge) {
+func (e *bellmanFordExecutor) relaxVertex(vertex graph.Vertex, edge graph.Edge) {
 	cost := e.calculatePathCost(vertex, edge)
 
 	e.vertexData[vertex] = e.createSeenData(vertex, edge, cost)
 }
 
-func (e *bellmanFordExecutor) relaxVertexAgain(vertex gographt.Vertex, edge gographt.Edge) bool {
+func (e *bellmanFordExecutor) relaxVertexAgain(vertex graph.Vertex, edge graph.Edge) bool {
 	cost := e.calculatePathCost(vertex, edge)
 
-	other, _ := gographt.OppositeVertexOf(e.graph, edge, vertex)
+	other, _ := graph.OppositeVertexOf(e.graph, edge, vertex)
 	el := e.prevVertexData[other]
 	return e.vertexData[vertex].improve(el, edge, cost)
 }
 
-func (e *bellmanFordExecutor) savePassData(improvedVertices []gographt.Vertex) {
+func (e *bellmanFordExecutor) savePassData(improvedVertices []graph.Vertex) {
 	for _, vertex := range improvedVertices {
 		clone := &bellmanFordPathElement{}
 		*clone = *e.vertexData[vertex]
@@ -164,27 +164,27 @@ func (e *bellmanFordExecutor) savePassData(improvedVertices []gographt.Vertex) {
 }
 
 type BellmanFordShortestPaths struct {
-	features gographt.GraphFeature
+	features graph.GraphFeature
 	executor *bellmanFordExecutor
 }
 
-func (bfsp *BellmanFordShortestPaths) Features() gographt.GraphFeature {
+func (bfsp *BellmanFordShortestPaths) Features() graph.GraphFeature {
 	return bfsp.features
 }
 
-func (bfsp *BellmanFordShortestPaths) EdgesTo(end gographt.Vertex) ([]gographt.Edge, error) {
+func (bfsp *BellmanFordShortestPaths) EdgesTo(end graph.Vertex) ([]graph.Edge, error) {
 	if !bfsp.executor.graph.ContainsVertex(end) {
-		return nil, &gographt.VertexNotFoundError{Vertex: end}
+		return nil, &graph.VertexNotFoundError{Vertex: end}
 	}
 
 	bfsp.executor.calculate()
 
 	el, found := bfsp.executor.vertexData[end]
 	if !found {
-		return nil, &gographt.NotConnectedError{Source: bfsp.executor.start, Target: end}
+		return nil, &graph.NotConnectedError{Source: bfsp.executor.start, Target: end}
 	}
 
-	var edges []gographt.Edge
+	var edges []graph.Edge
 	for el.prevEdge != nil {
 		edges = append(edges, el.prevEdge)
 		el = el.prevPathElement
@@ -198,9 +198,9 @@ func (bfsp *BellmanFordShortestPaths) EdgesTo(end gographt.Vertex) ([]gographt.E
 	return edges, nil
 }
 
-func (bfsp *BellmanFordShortestPaths) CostTo(end gographt.Vertex) (float64, error) {
+func (bfsp *BellmanFordShortestPaths) CostTo(end graph.Vertex) (float64, error) {
 	if !bfsp.executor.graph.ContainsVertex(end) {
-		return math.Inf(1), &gographt.VertexNotFoundError{Vertex: end}
+		return math.Inf(1), &graph.VertexNotFoundError{Vertex: end}
 	}
 
 	bfsp.executor.calculate()
@@ -213,15 +213,15 @@ func (bfsp *BellmanFordShortestPaths) CostTo(end gographt.Vertex) (float64, erro
 	return el.cost, nil
 }
 
-func BellmanFordShortestPathsOf(g gographt.Graph, start gographt.Vertex) *BellmanFordShortestPaths {
+func BellmanFordShortestPathsOf(g graph.Graph, start graph.Vertex) *BellmanFordShortestPaths {
 	return &BellmanFordShortestPaths{
 		features: g.Features() & BellmanFordSupportedFeatures,
 		executor: &bellmanFordExecutor{
 			graph: g,
 			start: start,
 
-			prevVertexData: make(map[gographt.Vertex]*bellmanFordPathElement),
-			vertexData:     make(map[gographt.Vertex]*bellmanFordPathElement),
+			prevVertexData: make(map[graph.Vertex]*bellmanFordPathElement),
+			vertexData:     make(map[graph.Vertex]*bellmanFordPathElement),
 		},
 	}
 }

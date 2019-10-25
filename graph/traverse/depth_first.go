@@ -8,25 +8,25 @@ package traverse
 import (
 	"reflect"
 
-	"github.com/reflect/gographt"
+	"github.com/puppetlabs/horsehead/v2/graph"
 )
 
 var depthFirstSentinel = struct{}{}
 
 type depthFirstStackElement struct {
-	vertex gographt.Vertex
+	vertex graph.Vertex
 
 	prevStackElement *depthFirstStackElement
 }
 
 type DepthFirstTraverser struct {
-	g     gographt.Graph
-	start gographt.Vertex
+	g     graph.Graph
+	start graph.Vertex
 }
 
-func (t *DepthFirstTraverser) forEachEdgeOf(vertex gographt.Vertex, fn gographt.EdgeSetIterationFunc) {
-	var edges gographt.EdgeSet
-	if dg, ok := t.g.(gographt.DirectedGraph); ok {
+func (t *DepthFirstTraverser) forEachEdgeOf(vertex graph.Vertex, fn graph.EdgeSetIterationFunc) {
+	var edges graph.EdgeSet
+	if dg, ok := t.g.(graph.DirectedGraph); ok {
 		edges, _ = dg.OutgoingEdgesOf(vertex)
 	} else {
 		edges, _ = t.g.EdgesOf(vertex)
@@ -35,12 +35,12 @@ func (t *DepthFirstTraverser) forEachEdgeOf(vertex gographt.Vertex, fn gographt.
 	edges.ForEach(fn)
 }
 
-func (t *DepthFirstTraverser) ForEach(fn func(vertex gographt.Vertex) error) error {
-	seen := make(map[gographt.Vertex]struct{})
+func (t *DepthFirstTraverser) ForEach(fn func(vertex graph.Vertex) error) error {
+	seen := make(map[graph.Vertex]struct{})
 
 	stack := &depthFirstStackElement{vertex: t.start}
 	for stack != nil {
-		var cur gographt.Vertex
+		var cur graph.Vertex
 		cur, stack = stack.vertex, stack.prevStackElement
 
 		if _, found := seen[cur]; found {
@@ -53,8 +53,8 @@ func (t *DepthFirstTraverser) ForEach(fn func(vertex gographt.Vertex) error) err
 			return err
 		}
 
-		t.forEachEdgeOf(cur, func(edge gographt.Edge) error {
-			next, _ := gographt.OppositeVertexOf(t.g, edge, cur)
+		t.forEachEdgeOf(cur, func(edge graph.Edge) error {
+			next, _ := graph.OppositeVertexOf(t.g, edge, cur)
 
 			stack = &depthFirstStackElement{
 				vertex:           next,
@@ -76,7 +76,7 @@ func (t *DepthFirstTraverser) ForEachInto(fn interface{}) error {
 		panic(ErrInvalidFuncSignature)
 	}
 
-	return t.ForEach(func(vertex gographt.Vertex) error {
+	return t.ForEach(func(vertex graph.Vertex) error {
 		p := reflect.ValueOf(vertex)
 		if !p.IsValid() {
 			p = reflect.Zero(fnt.In(0))
@@ -93,7 +93,7 @@ func (t *DepthFirstTraverser) ForEachInto(fn interface{}) error {
 	})
 }
 
-func NewDepthFirstTraverser(g gographt.Graph, start gographt.Vertex) *DepthFirstTraverser {
+func NewDepthFirstTraverser(g graph.Graph, start graph.Vertex) *DepthFirstTraverser {
 	return &DepthFirstTraverser{
 		g:     g,
 		start: start,

@@ -9,7 +9,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/reflect/gographt"
+	"github.com/puppetlabs/horsehead/v2/graph"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +27,7 @@ func TestTopologicalOrderTraverser(t *testing.T) {
 		"eat",
 	}
 
-	g := gographt.NewSimpleDirectedGraph()
+	g := graph.NewSimpleDirectedGraph()
 	for _, i := range rand.Perm(len(v)) {
 		g.AddVertex(v[i])
 	}
@@ -45,7 +45,7 @@ func TestTopologicalOrderTraverser(t *testing.T) {
 	g.Connect(v[6], v[8])
 
 	i := 0
-	err := NewTopologicalOrderTraverser(g).ForEach(func(vertex gographt.Vertex) error {
+	err := NewTopologicalOrderTraverser(g).ForEach(func(vertex graph.Vertex) error {
 		assert.Equal(t, v[i], vertex)
 		i++
 
@@ -56,7 +56,7 @@ func TestTopologicalOrderTraverser(t *testing.T) {
 }
 
 func TestTopologicalOrderTraverserWithDisconnectedRoots(t *testing.T) {
-	g := gographt.NewSimpleDirectedGraphWithFeatures(gographt.DeterministicIteration)
+	g := graph.NewSimpleDirectedGraphWithFeatures(graph.DeterministicIteration)
 
 	g.AddVertex("a")
 	g.AddVertex("b")
@@ -68,11 +68,11 @@ func TestTopologicalOrderTraverserWithDisconnectedRoots(t *testing.T) {
 
 	vertices, err := NewTopologicalOrderTraverser(g).Vertices()
 	assert.NoError(t, err)
-	assert.Equal(t, []gographt.Vertex{"a", 1, "b", 2}, vertices)
+	assert.Equal(t, []graph.Vertex{"a", 1, "b", 2}, vertices)
 }
 
 func TestTopologicalOrderTraverserForEachInto(t *testing.T) {
-	g := gographt.NewSimpleDirectedGraph()
+	g := graph.NewSimpleDirectedGraph()
 
 	v := []string{"a", "b", "c"}
 	for _, i := range rand.Perm(len(v)) {

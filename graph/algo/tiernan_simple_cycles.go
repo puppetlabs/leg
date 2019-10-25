@@ -8,17 +8,17 @@ package algo
 import (
 	"reflect"
 
-	"github.com/reflect/godat"
-	"github.com/reflect/gographt"
+	"github.com/puppetlabs/horsehead/v2/datastructure"
+	"github.com/puppetlabs/horsehead/v2/graph"
 )
 
 const (
-	TiernanSimpleCyclesSupportedFeatures = gographt.DeterministicIteration
+	TiernanSimpleCyclesSupportedFeatures = graph.DeterministicIteration
 )
 
 type TiernanSimpleCycles struct {
-	features gographt.GraphFeature
-	g        gographt.DirectedGraph
+	features graph.GraphFeature
+	g        graph.DirectedGraph
 }
 
 func (tsc *TiernanSimpleCycles) CyclesInto(into interface{}) {
@@ -45,30 +45,30 @@ func (tsc *TiernanSimpleCycles) CyclesInto(into interface{}) {
 	p.Set(slice)
 }
 
-func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
+func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]graph.Vertex) {
 	if tsc.g.Vertices().Count() == 0 {
 		return
 	}
 
-	var path []gographt.Vertex
-	pathSet := godat.NewHashSet() // set[]gographt.Vertex
+	var path []graph.Vertex
+	pathSet := datastructure.NewHashSet() // set[]graph.Vertex
 
-	blocked := make(map[gographt.Vertex]godat.Set) // map[gographt.Vertex]set[]gographt.Vertex
-	indices := make(map[gographt.Vertex]int)
+	blocked := make(map[graph.Vertex]datastructure.Set) // map[graph.Vertex]set[]graph.Vertex
+	indices := make(map[graph.Vertex]int)
 
 	i := 0
-	verticesLeft := make([]gographt.Vertex, tsc.g.Vertices().Count())
-	tsc.g.Vertices().ForEach(func(vertex gographt.Vertex) error {
+	verticesLeft := make([]graph.Vertex, tsc.g.Vertices().Count())
+	tsc.g.Vertices().ForEach(func(vertex graph.Vertex) error {
 		verticesLeft[i] = vertex
 
-		blocked[vertex] = godat.NewHashSet()
+		blocked[vertex] = datastructure.NewHashSet()
 		indices[vertex] = i
 		i++
 
 		return nil
 	})
 
-	var pathStart gographt.Vertex
+	var pathStart graph.Vertex
 	pathEnd := verticesLeft[0]
 	verticesLeft = verticesLeft[1:]
 
@@ -79,18 +79,18 @@ func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
 		// Path extension.
 		for {
 			edges, _ := tsc.g.OutgoingEdgesOf(pathEnd)
-			err := edges.ForEach(func(edge gographt.Edge) error {
+			err := edges.ForEach(func(edge graph.Edge) error {
 				target, _ := tsc.g.TargetVertexOf(edge)
 				if indices[target] > indices[path[0]] && !pathSet.Contains(target) && !blocked[pathEnd].Contains(target) {
 					path = append(path, target)
 					pathSet.Add(target)
 					pathEnd = target
-					return godat.ErrStopIteration
+					return datastructure.ErrStopIteration
 				}
 
 				return nil
 			})
-			if err == godat.ErrStopIteration {
+			if err == datastructure.ErrStopIteration {
 				// We found another extension. Repeat this search.
 				continue
 			}
@@ -101,7 +101,7 @@ func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
 		// Circuit confirmation.
 		pathStart = path[0]
 		if tsc.g.ContainsEdgeBetween(pathEnd, pathStart) {
-			cycle := make([]gographt.Vertex, len(path))
+			cycle := make([]graph.Vertex, len(path))
 			copy(cycle, path)
 
 			cycles = append(cycles, cycle)
@@ -125,7 +125,7 @@ func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
 			pathEnd = verticesLeft[0]
 			verticesLeft = verticesLeft[1:]
 
-			path = []gographt.Vertex{pathEnd}
+			path = []graph.Vertex{pathEnd}
 			pathSet.Clear()
 			pathSet.Add(pathEnd)
 
@@ -143,7 +143,7 @@ func (tsc *TiernanSimpleCycles) Cycles() (cycles [][]gographt.Vertex) {
 	return
 }
 
-func TiernanSimpleCyclesOf(g gographt.DirectedGraph) *TiernanSimpleCycles {
+func TiernanSimpleCyclesOf(g graph.DirectedGraph) *TiernanSimpleCycles {
 	return &TiernanSimpleCycles{
 		features: g.Features() & TiernanSimpleCyclesSupportedFeatures,
 		g:        g,

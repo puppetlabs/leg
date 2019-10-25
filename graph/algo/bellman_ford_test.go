@@ -6,14 +6,14 @@
 package algo
 
 import (
-	"github.com/reflect/gographt"
-
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/puppetlabs/horsehead/v2/graph"
+	"github.com/stretchr/testify/assert"
 )
 
-func CreateShortestPathsTestGraph() gographt.Graph {
-	g := gographt.NewSimpleWeightedGraph()
+func CreateShortestPathsTestGraph() graph.Graph {
+	g := graph.NewSimpleWeightedGraph()
 
 	g.AddVertex("A")
 	g.AddVertex("B")
@@ -37,7 +37,7 @@ func TestBellmanFordShortestPaths(t *testing.T) {
 
 	path, err := bfsp.EdgesTo("E")
 	assert.NoError(t, err)
-	assert.Equal(t, []gographt.Edge{2, 1, 3, 5}, path)
+	assert.Equal(t, []graph.Edge{2, 1, 3, 5}, path)
 
 	cost, err := bfsp.CostTo("E")
 	assert.NoError(t, err)

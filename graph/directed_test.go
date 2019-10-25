@@ -1,4 +1,4 @@
-package gographt
+package graph
 
 import (
 	"testing"

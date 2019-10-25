@@ -1,4 +1,4 @@
-package gographt
+package graph
 
 // A GraphFeature is a mathematically transparent option for a graph. Graph
 // features enable desireable application-specific functionality for a given

@@ -24,7 +24,7 @@
 // constructor methods are mutable. Algorithms that accept graphs will always
 // use the immutable interfaces and clone the graph if needed to perform
 // computations.
-package gographt
+package graph
 
 // A Vertex is the type of a node used in a graph.
 //
@@ -36,7 +36,7 @@ type Vertex interface{}
 // VertexSetIterationFunc is a callback function used by the ForEach method of a
 // vertex set.
 //
-// This function can return godat.StopIteration to break from the iteration.
+// This function can return datastructure.StopIteration to break from the iteration.
 type VertexSetIterationFunc func(vertex Vertex) error
 
 // A VertexSet is a read-only collection of vertices.
@@ -80,7 +80,7 @@ type Edge interface{}
 // EdgeSetIterationFunc is a callback function used by the ForEach method of an
 // edge set.
 //
-// This function can return godat.StopIteration to break from the iteration.
+// This function can return datastructure.StopIteration to break from the iteration.
 type EdgeSetIterationFunc func(edge Edge) error
 
 // An EdgeSet is a read-only collection of edges.
