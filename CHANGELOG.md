@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/puppetlabs/horsehead/compare/v2.2.0...v2.3.0) (2019-11-05)
+
+
+### Update
+
+* Add support for specifying the sensitivity to use to encode errors in httputil/api ([0da358bb55d6306c14e0058fb729df6b38dd63dd](https://github.com/puppetlabs/horsehead/commit/0da358bb55d6306c14e0058fb729df6b38dd63dd))
+
 # [2.2.0](https://github.com/puppetlabs/horsehead/compare/v2.1.2...v2.2.0) (2019-10-25)
 
 
