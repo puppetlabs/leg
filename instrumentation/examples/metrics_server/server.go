@@ -99,13 +99,15 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", mw.Wrap(testApp{m}))
 
+	log.Println("example server running at: http://localhost:2399/")
 	go http.ListenAndServe("localhost:2399", mux)
 
 	server := server.New(m, server.Options{
-		BindAddr: "localhost:2398",
-		Path:     "/metrics",
+		BindAddr: "localhost:3050",
+		Path:     "/",
 	})
 
+	log.Println("metrics server running at: http://localhost:3050/")
 	if err := server.Run(context.Background()); err != nil {
 		log.Fatal(err)
 	}
