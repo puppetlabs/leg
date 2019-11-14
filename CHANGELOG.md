@@ -1,3 +1,16 @@
+# [2.4.0](https://github.com/puppetlabs/horsehead/compare/v2.3.0...v2.4.0) (2019-11-14)
+
+
+### metrics
+
+* adds label override to example metrics server ([00b489e83ab265b23f43d7c55a4d134a28cc4d9d](https://github.com/puppetlabs/horsehead/commit/00b489e83ab265b23f43d7c55a4d134a28cc4d9d))
+* fixes panic when using WithLabels without passing in labels through ObserveDuration ([996564070c3b6eb5b86ee427e2cf4d43a9ec6a25](https://github.com/puppetlabs/horsehead/commit/996564070c3b6eb5b86ee427e2cf4d43a9ec6a25))
+* removes delegate field from prometheus timer metric ([afda64785a3f2459aa1eb86d77ef87a871c16682](https://github.com/puppetlabs/horsehead/commit/afda64785a3f2459aa1eb86d77ef87a871c16682))
+
+### Update
+
+* Updates metrics library ([332a70b6b29857b1365479920f0c12810aa4b172](https://github.com/puppetlabs/horsehead/commit/332a70b6b29857b1365479920f0c12810aa4b172))
+
 # [2.3.0](https://github.com/puppetlabs/horsehead/compare/v2.2.0...v2.3.0) (2019-11-05)
 
 
