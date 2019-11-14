@@ -48,6 +48,12 @@ func (t testApp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		random := rand.Intn(10)
 		<-time.After(time.Millisecond * time.Duration(random))
 	})
+
+	// label override
+	h := gcsTimer.Start()
+	random := rand.Intn(10)
+	<-time.After(time.Millisecond * time.Duration(random))
+	gcsTimer.ObserveDuration(h, metrics.NewLabel("backend", "backblaze"), metrics.NewLabel("action", "post"))
 }
 
 func main() {
