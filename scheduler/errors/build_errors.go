@@ -233,3 +233,58 @@ func NewProcessPanicErrorBuilder() *ProcessPanicErrorBuilder {
 func NewProcessPanicError() Error {
 	return NewProcessPanicErrorBuilder().Build()
 }
+
+// RecoveryDescriptorSection defines a section of errors with the following scope:
+// Recovery descriptor errors
+var RecoveryDescriptorSection = &impl.ErrorSection{
+	Key:   "recovery_descriptor",
+	Title: "Recovery descriptor errors",
+}
+
+// RecoveryDescriptorMaxRetriesReachedCode is the code for an instance of "max_retries_reached".
+const RecoveryDescriptorMaxRetriesReachedCode = "hsch_recovery_descriptor_max_retries_reached"
+
+// IsRecoveryDescriptorMaxRetriesReached tests whether a given error is an instance of "max_retries_reached".
+func IsRecoveryDescriptorMaxRetriesReached(err errawr.Error) bool {
+	return err != nil && err.Is(RecoveryDescriptorMaxRetriesReachedCode)
+}
+
+// IsRecoveryDescriptorMaxRetriesReached tests whether a given error is an instance of "max_retries_reached".
+func (External) IsRecoveryDescriptorMaxRetriesReached(err errawr.Error) bool {
+	return IsRecoveryDescriptorMaxRetriesReached(err)
+}
+
+// RecoveryDescriptorMaxRetriesReachedBuilder is a builder for "max_retries_reached" errors.
+type RecoveryDescriptorMaxRetriesReachedBuilder struct {
+	arguments impl.ErrorArguments
+}
+
+// Build creates the error for the code "max_retries_reached" from this builder.
+func (b *RecoveryDescriptorMaxRetriesReachedBuilder) Build() Error {
+	description := &impl.ErrorDescription{
+		Friendly:  "The max retries ({{max_retries}} have been reached.",
+		Technical: "The max retries ({{max_retries}} have been reached.",
+	}
+
+	return &impl.Error{
+		ErrorArguments:   b.arguments,
+		ErrorCode:        "max_retries_reached",
+		ErrorDescription: description,
+		ErrorDomain:      Domain,
+		ErrorMetadata:    &impl.ErrorMetadata{},
+		ErrorSection:     RecoveryDescriptorSection,
+		ErrorSensitivity: errawr.ErrorSensitivityNone,
+		ErrorTitle:       "Max retries reached",
+		Version:          1,
+	}
+}
+
+// NewRecoveryDescriptorMaxRetriesReachedBuilder creates a new error builder for the code "max_retries_reached".
+func NewRecoveryDescriptorMaxRetriesReachedBuilder(maxRetries int64) *RecoveryDescriptorMaxRetriesReachedBuilder {
+	return &RecoveryDescriptorMaxRetriesReachedBuilder{arguments: impl.ErrorArguments{"max_retries": impl.NewErrorArgument(maxRetries, "the configured max retries")}}
+}
+
+// NewRecoveryDescriptorMaxRetriesReached creates a new error with the code "max_retries_reached".
+func NewRecoveryDescriptorMaxRetriesReached(maxRetries int64) Error {
+	return NewRecoveryDescriptorMaxRetriesReachedBuilder(maxRetries).Build()
+}

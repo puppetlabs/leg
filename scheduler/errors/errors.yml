@@ -32,6 +32,21 @@ sections:
             description: the type of this descriptor
 
   #
+  # Recovery descriptor
+  #
+  recovery_descriptor:
+    title: Recovery descriptor errors
+    errors:
+      max_retries_reached:
+        title: Max retries reached
+        description: >
+          The max retries ({{max_retries}} have been reached.
+        arguments:
+          max_retries:
+            type: integer
+            description: the configured max retries
+
+  #
   # Process errors
   #
   process:

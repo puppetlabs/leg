@@ -29,18 +29,22 @@ func (d *mockErrorDescriptor) Run(ctx context.Context, pc chan<- Process) error 
 func TestRecoverySchedulerStops(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
-	descriptor := NewRecoveryDescriptor(&mockErrorDescriptor{
+	mock := &mockErrorDescriptor{
 		errCount: 10,
 		// make sure we never succeed
 		successAfterCount: 15,
-	})
+	}
+
+	opts := RecoveryDescriptorOptions{
+		MaxRetries: 10,
+	}
+	descriptor := NewRecoveryDescriptorWithOptions(mock, opts)
 
 	pc := make(chan Process)
 
 	defer cancel()
 
 	require.Error(t, descriptor.Run(ctx, pc))
-	require.Equal(t, 10, descriptor.currentRetries)
 }
 
 type mockRetryResetDescriptor struct {
@@ -73,16 +77,16 @@ func TestRecoverySchedulerRetryCountReset(t *testing.T) {
 		successDuration: successDuration,
 	}
 
-	descriptor := NewRecoveryDescriptorWithOptions(mock, RecoveryDescriptorOptions{
-		ResetRetriesTimerDuration: successDuration - (time.Millisecond * 500),
-	})
+	opts := RecoveryDescriptorOptions{
+		MaxRetries:        10,
+		ResetRetriesAfter: successDuration - (time.Millisecond * 500),
+	}
+	descriptor := NewRecoveryDescriptorWithOptions(mock, opts)
 
 	pc := make(chan Process)
 
 	defer cancel()
 
 	require.NoError(t, descriptor.Run(ctx, pc))
-
-	require.Equal(t, 0, descriptor.currentRetries)
 	require.Equal(t, 0, mock.count)
 }
