@@ -23,6 +23,8 @@ require (
 	github.com/puppetlabs/errawr-gen v1.0.1
 	github.com/puppetlabs/errawr-go/v2 v2.2.0
 	github.com/reflect/xparse v0.0.0-20171128034418-ab29bdc5e11c
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/objx v0.2.0 // indirect
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/text v0.3.0
+	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
