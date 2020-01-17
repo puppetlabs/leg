@@ -1,3 +1,22 @@
+# [2.5.0](https://github.com/puppetlabs/horsehead/compare/v2.4.0...v2.5.0) (2020-01-17)
+
+
+### chore
+
+* adds *.swp to .gitignore ([410cd51b8022e091c472a77fe75520039019f8fb](https://github.com/puppetlabs/horsehead/commit/410cd51b8022e091c472a77fe75520039019f8fb))
+
+### scheduler
+
+* adds backoff to RecoveryDescriptor ([61f9de47b617b08eadaaeb907cfd448d813354dc](https://github.com/puppetlabs/horsehead/commit/61f9de47b617b08eadaaeb907cfd448d813354dc))
+
+### Update
+
+* Scheduler: adds backoff and max retries to RecoveryDescriptor ([9f7d39211c9b69197bba3e09fad281b2e236ee52](https://github.com/puppetlabs/horsehead/commit/9f7d39211c9b69197bba3e09fad281b2e236ee52))
+
+### vendor
+
+* updates testify version ([01fad74b0b5826f3ef6a9ab750ad561b8bbe9236](https://github.com/puppetlabs/horsehead/commit/01fad74b0b5826f3ef6a9ab750ad561b8bbe9236))
+
 # [2.4.0](https://github.com/puppetlabs/horsehead/compare/v2.3.0...v2.4.0) (2019-11-14)
 
 
