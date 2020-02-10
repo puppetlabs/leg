@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/puppetlabs/horsehead/compare/v2.5.0...v2.6.0) (2020-02-10)
+
+
+### Update
+
+* Add noop metrics delegate for testing ([28e8bb7ea31a4f0587a144c4a27026da0a8e2305](https://github.com/puppetlabs/horsehead/commit/28e8bb7ea31a4f0587a144c4a27026da0a8e2305))
+
 # [2.5.0](https://github.com/puppetlabs/horsehead/compare/v2.4.0...v2.5.0) (2020-01-17)
 
 
