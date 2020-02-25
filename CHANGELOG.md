@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/puppetlabs/horsehead/compare/v2.6.0...v2.7.0) (2020-02-25)
+
+
+### Update
+
+* Add support for a generic interface type that supports binary data in our transfer package ([6b2565e44cb75c160337fd7a077cba6aff97ae5d](https://github.com/puppetlabs/horsehead/commit/6b2565e44cb75c160337fd7a077cba6aff97ae5d))
+
 # [2.6.0](https://github.com/puppetlabs/horsehead/compare/v2.5.0...v2.6.0) (2020-02-10)
 
 
