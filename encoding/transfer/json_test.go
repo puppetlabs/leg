@@ -116,3 +116,56 @@ func TestJSONOrStrMarshalUnmarshal(t *testing.T) {
 		})
 	}
 }
+
+func TestJSONInterfaceMarshalUnmarshal(t *testing.T) {
+	cases := []struct {
+		description string
+		input       interface{}
+		expected    string
+	}{
+		{
+			description: "String at top level",
+			input:       "This is a normal string",
+			expected:    `"This is a normal string"`,
+		},
+		{
+			description: "JSON object",
+			input: map[string]interface{}{
+				"a": []interface{}{
+					"b",
+					nil,
+					true,
+					1.23,
+				},
+				"b": "This is a normal string",
+			},
+			expected: `{"a":["b",null,true,1.23],"b":"This is a normal string"}`,
+		},
+		{
+			description: "Non-UTF-8 string embedded in JSON structure",
+			input: map[string]interface{}{
+				"a": []interface{}{
+					"Hello, \x90\xA2\x8A\x45",
+					"This is a normal string",
+				},
+				"b": "Goodbye, \x90!",
+			},
+			expected: `{"a":[{"$encoding":"base64","data":"SGVsbG8sIJCiikU="},"This is a normal string"],"b":{"$encoding":"base64","data":"R29vZGJ5ZSwgkCE="}}`,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.description, func(t *testing.T) {
+			j := transfer.JSONInterface{Data: c.input}
+
+			js, err := json.Marshal(j)
+			require.NoError(t, err)
+			require.JSONEq(t, c.expected, string(js))
+
+			var ju transfer.JSONInterface
+			require.NoError(t, json.Unmarshal(js, &ju))
+
+			require.Equal(t, c.input, ju.Data)
+		})
+	}
+}
