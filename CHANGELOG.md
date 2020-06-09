@@ -1,3 +1,10 @@
+# [2.8.0](https://github.com/puppetlabs/horsehead/compare/v2.7.0...v2.8.0) (2020-06-09)
+
+
+### Update
+
+* http/api.CORSBuilder: adds AllowOrigins for setting origins that are allowed ([c10aefdd5d4d4c2f07da3ead34aa5754e7be26d6](https://github.com/puppetlabs/horsehead/commit/c10aefdd5d4d4c2f07da3ead34aa5754e7be26d6))
+
 # [2.7.0](https://github.com/puppetlabs/horsehead/compare/v2.6.0...v2.7.0) (2020-02-25)
 
 
