@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCORSBuilder(t *testing.T) {
+func TestCORSBuilderPreflightHandler(t *testing.T) {
 	handler := NewCORSBuilder().
 		AllowOrigins("http://example.com", "http://app.example.com").
 		AllowHeaderPrefix("horsehead-").
-		AllowHeaders("X-Custom-Header").Build()
+		AllowHeaders("X-Custom-Header").PreflightHandler()
 
 	req, err := http.NewRequest(http.MethodOptions, "http://example.com", nil)
 	require.NoError(t, err)
@@ -28,6 +28,7 @@ func TestCORSBuilder(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, result.StatusCode)
 	require.Equal(t, "http://app.example.com", result.Header.Get("Access-Control-Allow-Origin"))
+	require.Equal(t, "Origin", result.Header.Get("Vary"))
 	require.Equal(t, "Horsehead-Custom-Header, X-Custom-Header", result.Header.Get("Access-Control-Allow-Headers"))
 	require.Equal(t, strings.Join(corsDefaultAllowedMethods, ", "), result.Header.Get("Access-Control-Allow-Methods"))
 
@@ -44,4 +45,27 @@ func TestCORSBuilder(t *testing.T) {
 
 		require.Equal(t, http.StatusMethodNotAllowed, result.StatusCode)
 	}
+}
+
+func TestCORSBuilderMiddleware(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
+
+	cm := NewCORSBuilder().
+		AllowOrigins("http://example.com", "http://app.example.com").
+		AllowHeaderPrefix("horsehead-").
+		AllowHeaders("X-Custom-Header").Middleware(handler)
+
+	req, err := http.NewRequest(http.MethodGet, "http://example.com", nil)
+	require.NoError(t, err)
+
+	req.Header.Set("Origin", "http://app.example.com")
+
+	resp := httptest.NewRecorder()
+
+	cm.ServeHTTP(resp, req)
+	result := resp.Result()
+
+	require.Equal(t, http.StatusOK, result.StatusCode)
+	require.Equal(t, "http://app.example.com", result.Header.Get("Access-Control-Allow-Origin"))
+	require.Equal(t, "Origin", result.Header.Get("Vary"))
 }
