@@ -1,3 +1,10 @@
+# [2.9.0](https://github.com/puppetlabs/horsehead/compare/v2.8.0...v2.9.0) (2020-06-11)
+
+
+### Update
+
+* Splits out preflight and middleware-enabled CORS handlers ([2ad1cceec574000a16ddade63be23b4a83bedf23](https://github.com/puppetlabs/horsehead/commit/2ad1cceec574000a16ddade63be23b4a83bedf23))
+
 # [2.8.0](https://github.com/puppetlabs/horsehead/compare/v2.7.0...v2.8.0) (2020-06-09)
 
 
