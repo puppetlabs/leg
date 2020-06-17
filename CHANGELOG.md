@@ -1,3 +1,10 @@
+# [2.10.0](https://github.com/puppetlabs/horsehead/compare/v2.9.0...v2.10.0) (2020-06-17)
+
+
+### New
+
+* Import utilities from other programs ([2086c81fc4226b2ba4c9ad8cbc52741b613f8cf2](https://github.com/puppetlabs/horsehead/commit/2086c81fc4226b2ba4c9ad8cbc52741b613f8cf2))
+
 # [2.9.0](https://github.com/puppetlabs/horsehead/compare/v2.8.0...v2.9.0) (2020-06-11)
 
 
