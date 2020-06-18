@@ -39,7 +39,7 @@ func (r *Reporter) doReport(act activity.Activity) {
 }
 
 func (r *Reporter) doReportLoop() {
-	for {
+	for r.open {
 		// this little trick makes it such that the activity reporting channel will
 		// get drained before we shut down. the continue statement will make
 		// control jump back to the top of the loop and hit this first select.
@@ -55,7 +55,7 @@ func (r *Reporter) doReportLoop() {
 			r.doReport(act)
 			continue
 		case <-r.shutdown:
-			break
+			return
 		}
 	}
 }

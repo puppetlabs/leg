@@ -110,7 +110,7 @@ func WaitGroupNotify(wg *sync.WaitGroup) <-chan bool {
 	ch := make(chan bool)
 
 	go func() {
-		wg.Done()
+		wg.Wait()
 		ch <- true
 	}()
 
