@@ -24,9 +24,7 @@ type Reporter struct {
 	delegates []Delegate
 }
 
-func (r *Reporter) doReport(act activity.Activity) error {
-	var lastErr error
-
+func (r *Reporter) doReport(act activity.Activity) {
 	for _, d := range r.delegates {
 		// we don't immediately abandon ship in case only one of the delegates has
 		// an issue, thus we cant still get activity data to some services.
@@ -35,28 +33,29 @@ func (r *Reporter) doReport(act activity.Activity) error {
 		// it's probably not really worth worrying about. one possibility would be
 		// to log the relevant errors but meh...
 		if err := d.Report(act); err != nil {
-			lastErr = err
+			log(context.Background()).Error("failed to report activity", "error", err, "user_id", act.UserID)
 		}
 	}
-
-	return lastErr
 }
 
 func (r *Reporter) doReportLoop() {
 	for {
-		// TODO: The reporter can be shut down without delivering all of it's
-		// pending activities. We should find a way around that.
-		act := <-r.ch
-
-		if err := r.doReport(act); err != nil {
-			log(context.Background()).Error("failed to report activity", "error", err, "user_id", act.UserID)
+		// this little trick makes it such that the activity reporting channel will
+		// get drained before we shut down. the continue statement will make
+		// control jump back to the top of the loop and hit this first select.
+		select {
+		case act := <-r.ch:
+			r.doReport(act)
+			continue
+		default:
 		}
 
 		select {
+		case act := <-r.ch:
+			r.doReport(act)
+			continue
 		case <-r.shutdown:
 			break
-		default:
-			// noop
 		}
 	}
 }
