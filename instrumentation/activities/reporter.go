@@ -2,24 +2,12 @@ package activities
 
 import (
 	"context"
-	"sync"
-	"time"
 
 	"github.com/puppetlabs/horsehead/v2/instrumentation/activities/activity"
-)
-
-var (
-	DefaultReportTimeout = 2 * time.Second
+	"github.com/puppetlabs/horsehead/v2/scheduler"
 )
 
 type Reporter struct {
-	// ReportTimeout is the amount of time clients will wait when attempting to
-	// report activities to activity services.
-	ReportTimeout time.Duration
-
-	shutdown  chan struct{}
-	open      bool
-	mut       sync.RWMutex
 	ch        chan activity.Activity
 	delegates []Delegate
 }
@@ -34,60 +22,41 @@ func (r *Reporter) doReport(act activity.Activity) {
 	}
 }
 
-func (r *Reporter) doReportLoop() {
-	for r.open {
-		// this little trick makes it such that the activity reporting channel will
-		// get drained before we shut down. the continue statement will make
-		// control jump back to the top of the loop and hit this first select.
-		select {
-		case act := <-r.ch:
-			r.doReport(act)
-			continue
-		default:
-		}
-
-		select {
-		case act := <-r.ch:
-			r.doReport(act)
-			continue
-		case <-r.shutdown:
-			return
-		}
-	}
-}
-
-func (r *Reporter) Report(act activity.Activity) error {
-	r.mut.RLock()
-	defer r.mut.RUnlock()
-
-	if !r.open {
-		return ErrReporterShutdown
-	}
-
+func (r *Reporter) Report(ctx context.Context, act activity.Activity) error {
 	select {
 	case r.ch <- act:
 		return nil
-	case <-time.After(r.ReportTimeout):
-		return ErrReportTimeout
+	case <-ctx.Done():
+		return ctx.Err()
 	}
 }
 
-// Close terminates delivery of activity information to external services.
-func (r *Reporter) Close() error {
-	r.mut.Lock()
-	defer r.mut.Unlock()
+func (r *Reporter) Run(ctx context.Context, pc chan<- scheduler.Process) error {
+	for {
+		select {
+		case <-ctx.Done():
+			// we want to drain the remaining activities to report before shutting
+			// down.
+			for {
+				select {
+				case act := <-r.ch:
+					r.doReport(act)
+				default:
+					break
+				}
+			}
 
-	r.shutdown <- struct{}{}
-	r.open = false
-
-	close(r.shutdown)
-	close(r.ch)
-
-	for _, d := range r.delegates {
-		d.Close()
+			return nil
+		case act := <-r.ch:
+			r.doReport(act)
+		}
 	}
+}
 
-	return nil
+// Scheduler instantiates a scheduler that can be used for scheduling this work
+// directly.
+func (r *Reporter) Scheduler() scheduler.Lifecycle {
+	return scheduler.NewSegment(1, []scheduler.Descriptor{r})
 }
 
 // AddDelegate adds a new delegate to the set of delegates to report activities
@@ -101,13 +70,8 @@ func (r *Reporter) AddDelegate(d Delegate) {
 // automatically as part of this.
 func NewReporter() *Reporter {
 	r := &Reporter{
-		ReportTimeout: DefaultReportTimeout,
-		ch:            make(chan activity.Activity, 8),
-		shutdown:      make(chan struct{}),
-		open:          true,
+		ch: make(chan activity.Activity, 8),
 	}
-
-	go r.doReportLoop()
 
 	return r
 }

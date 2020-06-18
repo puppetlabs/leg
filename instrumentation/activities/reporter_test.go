@@ -1,12 +1,14 @@
 package activities
 
 import (
+	"context"
 	"errors"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/puppetlabs/horsehead/v2/instrumentation/activities/activity"
+	"github.com/puppetlabs/horsehead/v2/scheduler"
 )
 
 func TestReporter(t *testing.T) {
@@ -15,20 +17,21 @@ func TestReporter(t *testing.T) {
 		wg.Add(1)
 
 		reporter := NewReporter()
-		defer reporter.Close()
 
 		reporter.AddDelegate(DelegateFunc(func(activity.Activity) error {
 			wg.Done()
 			return nil
 		}))
 
-		reporter.Report(NewActivity("abc123", "user-created"))
+		reporter.Scheduler().Start(scheduler.LifecycleStartOptions{})
+
+		reporter.Report(context.Background(), NewActivity("abc123", "user-created"))
 
 		select {
 		case <-WaitGroupNotify(&wg):
 			// noop
 		case <-time.After(50 * time.Millisecond):
-			t.Failed()
+			t.FailNow()
 		}
 	})
 
@@ -37,7 +40,6 @@ func TestReporter(t *testing.T) {
 		wg.Add(2)
 
 		reporter := NewReporter()
-		defer reporter.Close()
 
 		reporter.AddDelegate(DelegateFunc(func(activity.Activity) error {
 			wg.Done()
@@ -49,13 +51,15 @@ func TestReporter(t *testing.T) {
 			return nil
 		}))
 
-		reporter.Report(NewActivity("abc123", "user-created"))
+		reporter.Scheduler().Start(scheduler.LifecycleStartOptions{})
+
+		reporter.Report(context.Background(), NewActivity("abc123", "user-created"))
 
 		select {
 		case <-WaitGroupNotify(&wg):
 			// noop
 		case <-time.After(50 * time.Millisecond):
-			t.Failed()
+			t.FailNow()
 		}
 	})
 
@@ -64,7 +68,6 @@ func TestReporter(t *testing.T) {
 		wg.Add(1)
 
 		reporter := NewReporter()
-		defer reporter.Close()
 
 		reporter.AddDelegate(DelegateFunc(func(activity.Activity) error {
 			wg.Done()
@@ -75,13 +78,15 @@ func TestReporter(t *testing.T) {
 			return errors.New("oopsies")
 		}))
 
-		reporter.Report(NewActivity("abc123", "user-created"))
+		reporter.Scheduler().Start(scheduler.LifecycleStartOptions{})
+
+		reporter.Report(context.Background(), NewActivity("abc123", "user-created"))
 
 		select {
 		case <-WaitGroupNotify(&wg):
 			// noop
 		case <-time.After(50 * time.Millisecond):
-			t.Failed()
+			t.FailNow()
 		}
 	})
 }
