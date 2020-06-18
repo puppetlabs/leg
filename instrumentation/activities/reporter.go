@@ -28,10 +28,6 @@ func (r *Reporter) doReport(act activity.Activity) {
 	for _, d := range r.delegates {
 		// we don't immediately abandon ship in case only one of the delegates has
 		// an issue, thus we cant still get activity data to some services.
-		//
-		// not really sure what to do if multiple errors occur with delegates and
-		// it's probably not really worth worrying about. one possibility would be
-		// to log the relevant errors but meh...
 		if err := d.Report(act); err != nil {
 			log(context.Background()).Error("failed to report activity", "error", err, "user_id", act.UserID)
 		}
