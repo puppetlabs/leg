@@ -1,3 +1,14 @@
+# [2.11.0](https://github.com/puppetlabs/horsehead/compare/v2.10.0...v2.11.0) (2020-06-22)
+
+
+### Build
+
+* Remove vendor directory ([321b22757c559b049f71f5f4503f342c19ecf702](https://github.com/puppetlabs/horsehead/commit/321b22757c559b049f71f5f4503f342c19ecf702))
+
+### New
+
+* Add Intercom support ([bd7d922b95c6a92f7544b61ba31b6809fbb8beb3](https://github.com/puppetlabs/horsehead/commit/bd7d922b95c6a92f7544b61ba31b6809fbb8beb3))
+
 # [2.10.0](https://github.com/puppetlabs/horsehead/compare/v2.9.0...v2.10.0) (2020-06-17)
 
 
