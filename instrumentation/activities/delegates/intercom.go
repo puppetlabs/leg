@@ -20,10 +20,6 @@ func (d *Intercom) Report(act activity.Activity) error {
 	})
 }
 
-func (d *Intercom) Close() error {
-	return nil
-}
-
 func NewIntercom(appID, apiKey string) *Intercom {
 	return &Intercom{
 		client: intercom.NewClient(appID, apiKey),
