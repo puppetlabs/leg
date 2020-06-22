@@ -42,11 +42,9 @@ func (r *Reporter) Run(ctx context.Context, pc chan<- scheduler.Process) error {
 				case act := <-r.ch:
 					r.doReport(act)
 				default:
-					break
+					return nil
 				}
 			}
-
-			return nil
 		case act := <-r.ch:
 			r.doReport(act)
 		}
