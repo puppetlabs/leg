@@ -10,6 +10,7 @@ require (
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
+	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/uuid v1.0.0
 	github.com/gorilla/websocket v1.4.0
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec
@@ -26,5 +27,6 @@ require (
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.26.0
+	gopkg.in/intercom/intercom-go.v2 v2.0.0-20200217143803-6ffc0627261a
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
