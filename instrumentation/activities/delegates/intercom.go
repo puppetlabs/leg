@@ -20,9 +20,16 @@ func (d *Intercom) Report(act activity.Activity) error {
 	})
 }
 
-func NewIntercom(appID, apiKey string) *Intercom {
+func NewIntercom(accessToken string) *Intercom {
+	// Intercom has changed around how authentication works with their API.
+	// Historically, they've required an app ID and an API key. They have a new,
+	// improved system that only requires an access token. To not break the
+	// relevant interface, they've used this methodology for using an access
+	// token only.
+	client := intercom.NewClient(accessToken, "")
+
 	return &Intercom{
-		client: intercom.NewClient(appID, apiKey),
+		client: client,
 	}
 }
 

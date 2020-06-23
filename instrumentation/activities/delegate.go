@@ -12,6 +12,6 @@ type Delegate interface {
 
 // NewIntercomDelegate instantiates a delegate for reporting
 // activities to Intercom.
-func NewIntercomDelegate(appID, apiKey string) Delegate {
-	return delegates.NewIntercom(appID, apiKey)
+func NewIntercomDelegate(accessToken string) Delegate {
+	return delegates.NewIntercom(accessToken)
 }
