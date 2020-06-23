@@ -1,3 +1,14 @@
+# [2.12.0](https://github.com/puppetlabs/horsehead/compare/v2.11.1...v2.12.0) (2020-06-23)
+
+
+### feat
+
+* Use token-based auth with Intercom ([ff10479de6353a81a17cd05e5f1a3d607d8e1be7](https://github.com/puppetlabs/horsehead/commit/ff10479de6353a81a17cd05e5f1a3d607d8e1be7))
+
+### New
+
+* Use access token authentication with Intercom ([e27685d22582529a0ee71253b0eb9a9add3b3010](https://github.com/puppetlabs/horsehead/commit/e27685d22582529a0ee71253b0eb9a9add3b3010))
+
 ## [2.11.1](https://github.com/puppetlabs/horsehead/compare/v2.11.0...v2.11.1) (2020-06-23)
 
 
