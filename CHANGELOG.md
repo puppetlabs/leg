@@ -1,3 +1,10 @@
+## [2.11.1](https://github.com/puppetlabs/horsehead/compare/v2.11.0...v2.11.1) (2020-06-23)
+
+
+### Fix
+
+* Respect control termination in activity reporting. ([aa4da115236c56e9a2f6dbd798ae3b0b4711eec8](https://github.com/puppetlabs/horsehead/commit/aa4da115236c56e9a2f6dbd798ae3b0b4711eec8))
+
 # [2.11.0](https://github.com/puppetlabs/horsehead/compare/v2.10.0...v2.11.0) (2020-06-22)
 
 
