@@ -1,3 +1,10 @@
+# [2.13.0](https://github.com/puppetlabs/horsehead/compare/v2.12.0...v2.13.0) (2020-06-25)
+
+
+### Update
+
+* Adds Content-Security-Policy middleware builder ([f0b5949fb58660bc37980a9927e68eaec5e63553](https://github.com/puppetlabs/horsehead/commit/f0b5949fb58660bc37980a9927e68eaec5e63553))
+
 # [2.12.0](https://github.com/puppetlabs/horsehead/compare/v2.11.1...v2.12.0) (2020-06-23)
 
 
