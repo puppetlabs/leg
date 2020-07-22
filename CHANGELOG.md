@@ -1,3 +1,14 @@
+# [2.14.0](https://github.com/puppetlabs/horsehead/compare/v2.13.0...v2.14.0) (2020-07-22)
+
+
+### Chore
+
+* Update CODEOWNERS ([533be4e4cddc2d8e7e3c457ba765be11b3ee4922](https://github.com/puppetlabs/horsehead/commit/533be4e4cddc2d8e7e3c457ba765be11b3ee4922))
+
+### New
+
+* Add support for reporting activities to Segment ([d0350ed9480cd1b18d0b456d0f46affead936533](https://github.com/puppetlabs/horsehead/commit/d0350ed9480cd1b18d0b456d0f46affead936533))
+
 # [2.13.0](https://github.com/puppetlabs/horsehead/compare/v2.12.0...v2.13.0) (2020-06-25)
 
 
