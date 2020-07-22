@@ -15,3 +15,9 @@ type Delegate interface {
 func NewIntercomDelegate(accessToken string) Delegate {
 	return delegates.NewIntercom(accessToken)
 }
+
+// NewSegmentDelegate instantiates a delegate for reporting activities to
+// Segment, which will then send them to other integrations.
+func NewSegmentDelegate(writeKey string) Delegate {
+	return delegates.NewSegment(writeKey)
+}

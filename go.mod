@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/storage v1.9.0
 	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973 // indirect
+	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/certifi/gocertifi v0.0.0-20180118203423-deb3ae2ef261 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-stack/stack v1.8.0 // indirect
@@ -24,9 +25,12 @@ require (
 	github.com/puppetlabs/errawr-gen v1.0.1
 	github.com/puppetlabs/errawr-go/v2 v2.2.0
 	github.com/reflect/xparse v0.0.0-20171128034418-ab29bdc5e11c
+	github.com/segmentio/backo-go v0.0.0-20200129164019-23eae7c10bd3 // indirect
 	github.com/stretchr/testify v1.4.0
+	github.com/xtgo/uuid v0.0.0-20140804021211-a0b114877d4c // indirect
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.26.0
 	gopkg.in/intercom/intercom-go.v2 v2.0.0-20200217143803-6ffc0627261a
+	gopkg.in/segmentio/analytics-go.v3 v3.1.0
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
