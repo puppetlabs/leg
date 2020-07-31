@@ -14,6 +14,7 @@ type Segment struct {
 
 func (d *Segment) Report(act activity.Activity) error {
 	track := analytics.Track{
+		MessageId:  act.ID,
 		UserId:     act.UserID,
 		Event:      act.Name,
 		Timestamp:  act.OccuredAt,
