@@ -13,7 +13,6 @@ type Intercom struct {
 
 func (d *Intercom) Report(act activity.Activity) error {
 	return d.client.Events.Save(&intercom.Event{
-		ID:        act.ID,
 		UserID:    act.UserID,
 		EventName: act.Name,
 		CreatedAt: act.OccuredAt.Unix(),
