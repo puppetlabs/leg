@@ -1,3 +1,15 @@
+# [2.15.0](https://github.com/puppetlabs/horsehead/compare/v2.14.0...v2.15.0) (2020-08-03)
+
+
+### new
+
+* Add support for reporting unique IDs for activities ([ba0d4924266ef19f66d3cad1527c266c39f7354a](https://github.com/puppetlabs/horsehead/commit/ba0d4924266ef19f66d3cad1527c266c39f7354a))
+* Helper for generating identifiers. ([295814264f95e06feb97ce34c3ab2261792bd5c0](https://github.com/puppetlabs/horsehead/commit/295814264f95e06feb97ce34c3ab2261792bd5c0))
+
+### New
+
+* Add support for reporting Activity IDs to upstreams ([140868de477494e98a30981927410f7b39d8c2ee](https://github.com/puppetlabs/horsehead/commit/140868de477494e98a30981927410f7b39d8c2ee))
+
 # [2.14.0](https://github.com/puppetlabs/horsehead/compare/v2.13.0...v2.14.0) (2020-07-22)
 
 
