@@ -11,7 +11,7 @@ import (
 type Capturer struct {
 	tags []trackers.Tag
 
-	ReporterRecorders chan *ReporterRecorder
+	ReporterRecorders []*ReporterRecorder
 }
 
 func (c Capturer) WithNewTrace() trackers.Capturer {
@@ -51,7 +51,7 @@ func (c Capturer) Capture(err error) trackers.Reporter {
 		tags: c.tags,
 	}
 
-	c.ReporterRecorders <- rr
+	c.ReporterRecorders = append(c.ReporterRecorders, rr)
 
 	return rr
 }
@@ -65,7 +65,5 @@ func (c Capturer) Middleware() trackers.Middleware {
 }
 
 func NewCapturer() *Capturer {
-	return &Capturer{
-		ReporterRecorders: make(chan *ReporterRecorder),
-	}
+	return &Capturer{}
 }
