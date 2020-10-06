@@ -7,8 +7,8 @@ import (
 )
 
 type ReporterRecorder struct {
-	err  error
-	tags []trackers.Tag
+	Err  error
+	Tags []trackers.Tag
 }
 
 func (r ReporterRecorder) WithNewTrace() trackers.Reporter {
@@ -21,7 +21,7 @@ func (r ReporterRecorder) WithTrace(t *trackers.Trace) trackers.Reporter {
 
 func (r ReporterRecorder) WithTags(tags ...trackers.Tag) trackers.Reporter {
 	return &ReporterRecorder{
-		tags: append(append([]trackers.Tag{}, r.tags...), tags...),
+		Tags: append(append([]trackers.Tag{}, r.Tags...), tags...),
 	}
 }
 

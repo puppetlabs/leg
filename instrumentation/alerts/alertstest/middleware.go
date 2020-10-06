@@ -11,14 +11,14 @@ type Middleware struct {
 	c *Capturer
 }
 
-func (m Middleware) WithTags(tags ...trackers.Tag) trackers.Middleware {
+func (m *Middleware) WithTags(tags ...trackers.Tag) trackers.Middleware {
 	return m
 }
 
-func (m Middleware) WithUser(u trackers.User) trackers.Middleware {
+func (m *Middleware) WithUser(u trackers.User) trackers.Middleware {
 	return m
 }
 
-func (m Middleware) Wrap(target http.Handler) http.Handler {
+func (m *Middleware) Wrap(target http.Handler) http.Handler {
 	return httputil.Wrap(target, httputil.WrapStatic(m.c))
 }
