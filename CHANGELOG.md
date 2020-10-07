@@ -1,3 +1,14 @@
+# [2.16.0](https://github.com/puppetlabs/horsehead/compare/v2.15.0...v2.16.0) (2020-10-07)
+
+
+### alertstest
+
+* swaps out recorder channel for slice ([7fc54ee74397bc8b2a81022fa2ca46fa52c2bd24](https://github.com/puppetlabs/horsehead/commit/7fc54ee74397bc8b2a81022fa2ca46fa52c2bd24))
+
+### Update
+
+* adds alertstest capturer implementation to test error capturing in unit and integration test ([45ae71e738fd0e81166e010b4a9cb96d6fa83f8d](https://github.com/puppetlabs/horsehead/commit/45ae71e738fd0e81166e010b4a9cb96d6fa83f8d))
+
 # [2.15.0](https://github.com/puppetlabs/horsehead/compare/v2.14.0...v2.15.0) (2020-08-03)
 
 
