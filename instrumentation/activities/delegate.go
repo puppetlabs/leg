@@ -1,7 +1,7 @@
 package activities
 
-import "github.com/puppetlabs/horsehead/v2/instrumentation/activities/delegates"
-import "github.com/puppetlabs/horsehead/v2/instrumentation/activities/activity"
+import "github.com/puppetlabs/leg/instrumentation/activities/delegates"
+import "github.com/puppetlabs/leg/instrumentation/activities/activity"
 
 // Delegate represents a manager for reporting activities to a given
 // service.

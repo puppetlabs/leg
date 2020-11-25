@@ -3,8 +3,8 @@ package noop
 import (
 	"net/http"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/internal/httputil"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/leg/instrumentation/alerts/internal/httputil"
+	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
 )
 
 type Middleware struct {

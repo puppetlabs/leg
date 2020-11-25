@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/puppetlabs/horsehead/v2/netutil"
-	"github.com/puppetlabs/horsehead/v2/scheduler/errors"
+	"github.com/puppetlabs/leg/netutil"
+	"github.com/puppetlabs/leg/scheduler/errors"
 )
 
 const (

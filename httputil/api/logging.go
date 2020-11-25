@@ -3,11 +3,11 @@ package api
 import (
 	"context"
 
-	logging "github.com/puppetlabs/horsehead/v2/logging"
+	logging "github.com/puppetlabs/leg/logging"
 )
 
 var (
-	logger = logging.Builder().At("horsehead", "httputil", "api")
+	logger = logging.Builder().At("leg", "httputil", "api")
 )
 
 func log(ctx context.Context) logging.Logger {

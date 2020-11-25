@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/puppetlabs/horsehead/v2/scheduler"
+	"github.com/puppetlabs/leg/scheduler"
 )
 
 func ExampleScheduler() {

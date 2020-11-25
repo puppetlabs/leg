@@ -2,7 +2,7 @@ package prometheus
 
 import (
 	prom "github.com/prometheus/client_golang/prometheus"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/leg/instrumentation/metrics/collectors"
 )
 
 func convertLabels(labels []collectors.Label) prom.Labels {

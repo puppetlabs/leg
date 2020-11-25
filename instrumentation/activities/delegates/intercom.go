@@ -3,7 +3,7 @@ package delegates
 import (
 	intercom "gopkg.in/intercom/intercom-go.v2"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/activities/activity"
+	"github.com/puppetlabs/leg/instrumentation/activities/activity"
 )
 
 // Intercom manages reporting activity information to Intercom.

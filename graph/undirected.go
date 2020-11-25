@@ -6,7 +6,7 @@
 package graph
 
 import (
-	"github.com/puppetlabs/horsehead/v2/datastructure"
+	"github.com/puppetlabs/leg/datastructure"
 )
 
 // UndirectedGraphSupportedFeatures are the features supported by all undirected

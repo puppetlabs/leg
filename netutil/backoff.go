@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/puppetlabs/horsehead/v2/netutil/errors"
+	"github.com/puppetlabs/leg/netutil/errors"
 )
 
 // Maybe this will be useful at some point?

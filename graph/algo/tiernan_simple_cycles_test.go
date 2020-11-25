@@ -8,7 +8,7 @@ package algo
 import (
 	"testing"
 
-	"github.com/puppetlabs/horsehead/v2/graph"
+	"github.com/puppetlabs/leg/graph"
 	"github.com/stretchr/testify/assert"
 )
 

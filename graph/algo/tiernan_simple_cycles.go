@@ -8,8 +8,8 @@ package algo
 import (
 	"reflect"
 
-	"github.com/puppetlabs/horsehead/v2/datastructure"
-	"github.com/puppetlabs/horsehead/v2/graph"
+	"github.com/puppetlabs/leg/datastructure"
+	"github.com/puppetlabs/leg/graph"
 )
 
 const (

@@ -1,6 +1,6 @@
 package request
 
-import "github.com/pborman/uuid"
+import "github.com/google/uuid"
 
 type Request struct {
 	Identifier string
@@ -8,6 +8,6 @@ type Request struct {
 
 func New() *Request {
 	return &Request{
-		Identifier: uuid.New(),
+		Identifier: uuid.New().String(),
 	}
 }

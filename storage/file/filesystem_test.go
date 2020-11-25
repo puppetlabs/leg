@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/puppetlabs/horsehead/v2/storage"
-	"github.com/puppetlabs/horsehead/v2/storage/testutils"
+	"github.com/puppetlabs/leg/storage"
+	"github.com/puppetlabs/leg/storage/testutils"
 	"github.com/stretchr/testify/require"
 )
 

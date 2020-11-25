@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/puppetlabs/horsehead/v2/sqlutil"
+	"github.com/puppetlabs/leg/sqlutil"
 	"github.com/stretchr/testify/require"
 )
 

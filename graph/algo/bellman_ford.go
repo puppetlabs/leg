@@ -8,7 +8,7 @@ package algo
 import (
 	"math"
 
-	"github.com/puppetlabs/horsehead/v2/graph"
+	"github.com/puppetlabs/leg/graph"
 )
 
 const (

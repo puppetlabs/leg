@@ -3,8 +3,8 @@ package activities
 import (
 	"context"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/activities/activity"
-	"github.com/puppetlabs/horsehead/v2/scheduler"
+	"github.com/puppetlabs/leg/instrumentation/activities/activity"
+	"github.com/puppetlabs/leg/scheduler"
 )
 
 type Reporter struct {

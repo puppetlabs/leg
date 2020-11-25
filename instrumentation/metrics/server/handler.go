@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics"
+	"github.com/puppetlabs/leg/instrumentation/metrics"
 )
 
 // Handler returns metrics in the style of the configured delegate (i.e. prometheus)

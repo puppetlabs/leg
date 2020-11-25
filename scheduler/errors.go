@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
-	"github.com/puppetlabs/horsehead/v2/scheduler/errors"
+	"github.com/puppetlabs/leg/scheduler/errors"
 )
 
 func coerceError(r interface{}) (err errawr.Error) {

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/puppetlabs/horsehead/v2/encoding/transfer"
+	"github.com/puppetlabs/leg/encoding/transfer"
 	"github.com/stretchr/testify/require"
 )
 

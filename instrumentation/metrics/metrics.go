@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/errors"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/collectors"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/delegates"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/internal/noop"
-	"github.com/puppetlabs/horsehead/v2/logging"
+	"github.com/puppetlabs/leg/instrumentation/errors"
+	"github.com/puppetlabs/leg/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/leg/instrumentation/metrics/delegates"
+	"github.com/puppetlabs/leg/instrumentation/metrics/internal/noop"
+	"github.com/puppetlabs/leg/logging"
 )
 
 type errorBehavior int

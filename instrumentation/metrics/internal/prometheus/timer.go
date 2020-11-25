@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	prom "github.com/prometheus/client_golang/prometheus"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/leg/instrumentation/metrics/collectors"
 )
 
 type Timer struct {

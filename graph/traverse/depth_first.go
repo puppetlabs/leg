@@ -8,7 +8,7 @@ package traverse
 import (
 	"reflect"
 
-	"github.com/puppetlabs/horsehead/v2/graph"
+	"github.com/puppetlabs/leg/graph"
 )
 
 var depthFirstSentinel = struct{}{}

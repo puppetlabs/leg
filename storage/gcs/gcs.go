@@ -7,7 +7,7 @@ import (
 	"path"
 
 	gcstorage "cloud.google.com/go/storage"
-	"github.com/puppetlabs/horsehead/v2/storage"
+	"github.com/puppetlabs/leg/storage"
 	"google.golang.org/api/googleapi"
 )
 

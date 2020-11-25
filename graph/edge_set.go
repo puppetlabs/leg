@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"github.com/puppetlabs/horsehead/v2/datastructure"
+	"github.com/puppetlabs/leg/datastructure"
 )
 
 type unenforcedSliceEdgeSet []Edge

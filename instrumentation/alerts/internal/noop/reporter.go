@@ -3,7 +3,7 @@ package noop
 import (
 	"context"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
 )
 
 type Reporter struct{}

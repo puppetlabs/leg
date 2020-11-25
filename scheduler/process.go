@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
-	logging "github.com/puppetlabs/horsehead/v2/logging"
-	"github.com/puppetlabs/horsehead/v2/request"
-	"github.com/puppetlabs/horsehead/v2/scheduler/errors"
+	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
+	logging "github.com/puppetlabs/leg/logging"
+	"github.com/puppetlabs/leg/request"
+	"github.com/puppetlabs/leg/scheduler/errors"
 )
 
 // Process is the primary unit of work for external users of the scheduler. It

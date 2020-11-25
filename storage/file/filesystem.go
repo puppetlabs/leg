@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/puppetlabs/horsehead/v2/storage"
+	"github.com/puppetlabs/leg/storage"
 )
 
 const (

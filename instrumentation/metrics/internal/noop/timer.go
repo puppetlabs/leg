@@ -1,6 +1,6 @@
 package noop
 
-import "github.com/puppetlabs/horsehead/v2/instrumentation/metrics/collectors"
+import "github.com/puppetlabs/leg/instrumentation/metrics/collectors"
 
 type Timer struct{}
 

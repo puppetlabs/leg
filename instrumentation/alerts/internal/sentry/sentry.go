@@ -2,8 +2,8 @@ package sentry
 
 import (
 	raven "github.com/getsentry/raven-go"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/errors"
+	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/leg/instrumentation/errors"
 )
 
 type Sentry struct {

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/puppetlabs/errawr-go/v2/pkg/testutil"
-	"github.com/puppetlabs/horsehead/v2/scheduler"
+	"github.com/puppetlabs/leg/scheduler"
 	"github.com/stretchr/testify/assert"
 )
 

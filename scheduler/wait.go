@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 
-	"github.com/puppetlabs/horsehead/v2/scheduler/errors"
+	"github.com/puppetlabs/leg/scheduler/errors"
 )
 
 // WaitContext waits until the given lifecycle completes or the context is done,

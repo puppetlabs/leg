@@ -5,8 +5,8 @@ import (
 
 	prom "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/errors"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/leg/instrumentation/errors"
+	"github.com/puppetlabs/leg/instrumentation/metrics/collectors"
 )
 
 type Prometheus struct {

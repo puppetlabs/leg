@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
 )
 
 type WrapFunc func(r *http.Request) trackers.Capturer

@@ -3,7 +3,7 @@ package stringutil_test
 import (
 	"testing"
 
-	"github.com/puppetlabs/horsehead/v2/stringutil"
+	"github.com/puppetlabs/leg/stringutil"
 	"github.com/stretchr/testify/assert"
 )
 

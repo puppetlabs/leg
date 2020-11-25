@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/activities/activity"
-	"github.com/puppetlabs/horsehead/v2/scheduler"
+	"github.com/puppetlabs/leg/instrumentation/activities/activity"
+	"github.com/puppetlabs/leg/scheduler"
 )
 
 func TestReporter(t *testing.T) {

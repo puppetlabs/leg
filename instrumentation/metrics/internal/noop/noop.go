@@ -3,7 +3,7 @@ package noop
 import (
 	"net/http"
 
-	"github.com/puppetlabs/horsehead/v2/instrumentation/metrics/collectors"
+	"github.com/puppetlabs/leg/instrumentation/metrics/collectors"
 )
 
 type Noop struct{}

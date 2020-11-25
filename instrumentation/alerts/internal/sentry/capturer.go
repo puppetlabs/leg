@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	raven "github.com/getsentry/raven-go"
-	"github.com/puppetlabs/horsehead/v2/instrumentation/alerts/trackers"
+	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
 )
 
 type Capturer struct {

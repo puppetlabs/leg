@@ -28,8 +28,8 @@ func TestNewNamespace(t *testing.T) {
 				require.NoError(t, os.Setenv("XDG_CONFIG_HOME", "/tmp/"))
 			},
 			dirType:   DirTypeConfig,
-			namespace: []string{testID, "horsehead", "config-dir-test"},
-			expected:  filepath.Join("/tmp", testID, "horsehead", "config-dir-test"),
+			namespace: []string{testID, "leg", "config-dir-test"},
+			expected:  filepath.Join("/tmp", testID, "leg", "config-dir-test"),
 		},
 		{
 			description: "can create cache dirs with XDG var set",
@@ -37,8 +37,8 @@ func TestNewNamespace(t *testing.T) {
 				require.NoError(t, os.Setenv("XDG_CACHE_HOME", "/tmp/"))
 			},
 			dirType:   DirTypeCache,
-			namespace: []string{testID, "horsehead", "cache-dir-test"},
-			expected:  filepath.Join("/tmp", testID, "horsehead", "cache-dir-test"),
+			namespace: []string{testID, "leg", "cache-dir-test"},
+			expected:  filepath.Join("/tmp", testID, "leg", "cache-dir-test"),
 		},
 		{
 			description: "can create data dirs with XDG var set",
@@ -46,8 +46,8 @@ func TestNewNamespace(t *testing.T) {
 				require.NoError(t, os.Setenv("XDG_DATA_HOME", "/tmp/"))
 			},
 			dirType:   DirTypeData,
-			namespace: []string{testID, "horsehead", "data-dir-test"},
-			expected:  filepath.Join("/tmp", testID, "horsehead", "data-dir-test"),
+			namespace: []string{testID, "leg", "data-dir-test"},
+			expected:  filepath.Join("/tmp", testID, "leg", "data-dir-test"),
 		},
 		{
 			description: "can create config dirs",
@@ -55,8 +55,8 @@ func TestNewNamespace(t *testing.T) {
 				require.NoError(t, os.Setenv("XDG_CONFIG_HOME", ""))
 			},
 			dirType:   DirTypeConfig,
-			namespace: []string{testID, "horsehead", "config-dir-test"},
-			expected:  filepath.Join(os.Getenv("HOME"), ".config", testID, "horsehead", "config-dir-test"),
+			namespace: []string{testID, "leg", "config-dir-test"},
+			expected:  filepath.Join(os.Getenv("HOME"), ".config", testID, "leg", "config-dir-test"),
 		},
 		{
 			description: "can create cache dirs",
@@ -64,8 +64,8 @@ func TestNewNamespace(t *testing.T) {
 				require.NoError(t, os.Setenv("XDG_CACHE_HOME", ""))
 			},
 			dirType:   DirTypeCache,
-			namespace: []string{testID, "horsehead", "cache-dir-test"},
-			expected:  filepath.Join(os.Getenv("HOME"), ".cache", testID, "horsehead", "cache-dir-test"),
+			namespace: []string{testID, "leg", "cache-dir-test"},
+			expected:  filepath.Join(os.Getenv("HOME"), ".cache", testID, "leg", "cache-dir-test"),
 		},
 		{
 			description: "can create data dirs",
@@ -73,8 +73,8 @@ func TestNewNamespace(t *testing.T) {
 				require.NoError(t, os.Setenv("XDG_DATA_HOME", ""))
 			},
 			dirType:   DirTypeData,
-			namespace: []string{testID, "horsehead", "data-dir-test"},
-			expected:  filepath.Join(os.Getenv("HOME"), ".local", "share", testID, "horsehead", "data-dir-test"),
+			namespace: []string{testID, "leg", "data-dir-test"},
+			expected:  filepath.Join(os.Getenv("HOME"), ".local", "share", testID, "leg", "data-dir-test"),
 		},
 	}
 

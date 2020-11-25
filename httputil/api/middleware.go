@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/puppetlabs/horsehead/v2/logging"
-	"github.com/puppetlabs/horsehead/v2/request"
+	"github.com/puppetlabs/leg/logging"
+	"github.com/puppetlabs/leg/request"
 )
 
 func RequestMiddleware(next http.Handler) http.Handler {
