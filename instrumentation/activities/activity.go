@@ -1,5 +1,6 @@
 package activities
 
+import "strings"
 import "time"
 import "github.com/puppetlabs/leg/instrumentation/activities/activity"
 
@@ -11,4 +12,8 @@ func NewActivity(userID, name string) activity.Activity {
 		Metadata:  make(activity.ActivityMetadata),
 		OccuredAt: time.Now(),
 	}
+}
+
+func Identifier(comps ...string) string {
+	return strings.Join(comps, "-")
 }

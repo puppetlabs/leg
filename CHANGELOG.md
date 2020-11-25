@@ -1,3 +1,37 @@
+# [2.16.0](https://github.com/puppetlabs/horsehead/compare/v2.15.0...v2.16.0) (2020-10-07)
+
+
+### alertstest
+
+* swaps out recorder channel for slice ([7fc54ee74397bc8b2a81022fa2ca46fa52c2bd24](https://github.com/puppetlabs/horsehead/commit/7fc54ee74397bc8b2a81022fa2ca46fa52c2bd24))
+
+### Update
+
+* adds alertstest capturer implementation to test error capturing in unit and integration test ([45ae71e738fd0e81166e010b4a9cb96d6fa83f8d](https://github.com/puppetlabs/horsehead/commit/45ae71e738fd0e81166e010b4a9cb96d6fa83f8d))
+
+# [2.15.0](https://github.com/puppetlabs/horsehead/compare/v2.14.0...v2.15.0) (2020-08-03)
+
+
+### new
+
+* Add support for reporting unique IDs for activities ([ba0d4924266ef19f66d3cad1527c266c39f7354a](https://github.com/puppetlabs/horsehead/commit/ba0d4924266ef19f66d3cad1527c266c39f7354a))
+* Helper for generating identifiers. ([295814264f95e06feb97ce34c3ab2261792bd5c0](https://github.com/puppetlabs/horsehead/commit/295814264f95e06feb97ce34c3ab2261792bd5c0))
+
+### New
+
+* Add support for reporting Activity IDs to upstreams ([140868de477494e98a30981927410f7b39d8c2ee](https://github.com/puppetlabs/horsehead/commit/140868de477494e98a30981927410f7b39d8c2ee))
+
+# [2.14.0](https://github.com/puppetlabs/horsehead/compare/v2.13.0...v2.14.0) (2020-07-22)
+
+
+### Chore
+
+* Update CODEOWNERS ([533be4e4cddc2d8e7e3c457ba765be11b3ee4922](https://github.com/puppetlabs/horsehead/commit/533be4e4cddc2d8e7e3c457ba765be11b3ee4922))
+
+### New
+
+* Add support for reporting activities to Segment ([d0350ed9480cd1b18d0b456d0f46affead936533](https://github.com/puppetlabs/horsehead/commit/d0350ed9480cd1b18d0b456d0f46affead936533))
+
 # [2.13.0](https://github.com/puppetlabs/horsehead/compare/v2.12.0...v2.13.0) (2020-06-25)
 
 
