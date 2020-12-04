@@ -1,26 +1,29 @@
-// Portions of this file are derived from a Steiner tree approximation
-// algorithm written by the University of Southern California.
+// Portions of this file are derived from a Steiner tree approximation algorithm
+// written by the University of Southern California.
 //
 // https://github.com/usc-isi-i2/Web-Karma/blob/cef35dcb1a5042d1e8fabbbd61cb731a78c64454/karma-common/src/main/java/edu/isi/karma/modeling/alignment/SteinerTree.java
 //
 // Copyright 2012 University of Southern California
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not
+// use this file except in compliance with the License. You may obtain a copy of
+// the License at
 //
-// 	http://www.apache.org/licenses/LICENSE-2.0
+//  http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations under
+// the License.
 //
-// This code was developed by the Information Integration Group as part
-// of the Karma project at the Information Sciences Institute of the
-// University of Southern California.  For more information, publications,
-// and related projects, please see: http://www.isi.edu/integration
+// This code was developed by the Information Integration Group as part of the
+// Karma project at the Information Sciences Institute of the University of
+// Southern California.  For more information, publications, and related
+// projects, please see: http://www.isi.edu/integration
+//
+// A copy of the full license document is included in this distribution in the
+// file `approx_steiner_tree.go.LICENSE`.
 
 package algo
 

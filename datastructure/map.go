@@ -1,9 +1,11 @@
-// Portions of this file are derived from GoDS, a data structure library for
-// Go.
+// Portions of this file are derived from GoDS, a data structure library for Go.
 //
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
 //
 // https://github.com/emirpasic/gods/blob/52d942a0538c185239fa3737047f297d983ac3e0/maps/maps.go
+//
+// Licensed under a two-clause BSD-style license. A copy of the full license
+// document is included in this distribution in the file `map.go.LICENSE`.
 
 package datastructure
 

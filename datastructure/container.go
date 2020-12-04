@@ -1,9 +1,11 @@
-// Portions of this file are derived from GoDS, a data structure library for
-// Go.
+// Portions of this file are derived from GoDS, a data structure library for Go.
 //
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
 //
 // https://github.com/emirpasic/gods/blob/213367f1ca932600ce530ae11c8a8cc444e3a6da/containers/containers.go
+//
+// Licensed under a two-clause BSD-style license. A copy of the full license
+// document is included in this distribution in the file `container.go.LICENSE`.
 
 package datastructure
 

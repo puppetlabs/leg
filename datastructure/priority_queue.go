@@ -2,6 +2,10 @@
 // provided in the Go documentation.
 //
 // https://golang.org/pkg/container/heap/
+//
+// Licensed under a three-clause BSD-style license. A copy of the full license
+// document is included in this distribution in the file
+// `priority_queue.go.LICENSE`.
 
 package datastructure
 
