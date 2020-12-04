@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "check: shellcheck"
+(
+  shopt -s globstar nullglob
+  shellcheck -- scripts/**/* **/*.sh
+)
+
+while read -r relay_leg_moddir; do
+  echo "check: lint: ${relay_leg_moddir#./}"
+  (
+    cd "${relay_leg_moddir}"
+    set -x
+    exec golangci-lint run --issues-exit-code 0
+  )
+done < <( find . -mindepth 2 -name go.mod -printf '%h\n' )
