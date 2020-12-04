@@ -51,7 +51,7 @@ func (s *Segment) Start(opts LifecycleStartOptions) StartedLifecycle {
 	pc := make(chan Process)
 
 	// Bind the lifecycle all the way up here so we can close it in the worker.
-	var slc StartedLifecycle
+	ch := make(chan StartedLifecycle, 1)
 
 	worker := SchedulableFunc(func(ctx context.Context, er ErrorReporter) {
 		for {
@@ -67,7 +67,10 @@ func (s *Segment) Start(opts LifecycleStartOptions) StartedLifecycle {
 				// exit, but we want to handle any stragglers left on the
 				// process channel, so we'll just close the lifecycle itself
 				// rather than closing the channel or blindly exiting.
-				slc.Close()
+				if slc, ok := <-ch; ok {
+					slc.Close()
+					close(ch)
+				}
 			}
 		}
 	})
@@ -84,7 +87,10 @@ func (s *Segment) Start(opts LifecycleStartOptions) StartedLifecycle {
 		WithErrorBehavior(s.processErrorBehavior)
 
 	// We aggregate them into one scheduler that end users can manage.
-	slc = NewParent(ds, ps).WithErrorBehavior(ErrorBehaviorCollect).Start(opts)
+	slc := NewParent(ds, ps).WithErrorBehavior(ErrorBehaviorCollect).Start(opts)
+
+	// Let the worker know that we have the lifecycle now.
+	ch <- slc
 
 	return slc
 }

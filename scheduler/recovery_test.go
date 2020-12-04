@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/puppetlabs/leg/scheduler/errors"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,13 +31,13 @@ func TestRecoverySchedulerStops(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
 	mock := &mockErrorDescriptor{
-		errCount: 10,
+		errCount: 5,
 		// make sure we never succeed
 		successAfterCount: 15,
 	}
 
 	opts := RecoveryDescriptorOptions{
-		MaxRetries: 10,
+		MaxRetries: 5,
 	}
 	descriptor := NewRecoveryDescriptorWithOptions(mock, opts)
 
@@ -44,7 +45,9 @@ func TestRecoverySchedulerStops(t *testing.T) {
 
 	defer cancel()
 
-	require.Error(t, descriptor.Run(ctx, pc))
+	err := descriptor.Run(ctx, pc)
+	require.NotNil(t, err)
+	require.Equal(t, "max_retries_reached", err.(errors.Error).Code())
 }
 
 type mockRetryResetDescriptor struct {

@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-#relay_go_test_args=( -race )
+relay_go_test_args=( -race )
 
 if ! command -v gotestsum >/dev/null 2>&1; then
   relay_go_test_command=( go test "${relay_go_test_args[@]}" ./... )
 else
-  relay_go_test_command=( gotestsum -f testname --no-summary output --rerun-fails --packages ./... -- "${relay_go_test_args[@]}" )
+  relay_go_test_command=( gotestsum -f testname --no-summary output --packages ./... -- "${relay_go_test_args[@]}" )
 fi
 
 while read -r relay_leg_moddir; do
