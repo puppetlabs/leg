@@ -27,7 +27,6 @@ github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kB
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
-github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054/go.mod h1:sGbDF6GwGcLpkNXPUTkMRoywsNa/ol15pxFe6ERfguA=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec/go.mod h1:jMjuTZXRI4dUb/I5gc9Hdhagfvm9+RyrPryS/auMzxE=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
@@ -253,6 +252,10 @@ github.com/puppetlabs/errawr-go/v2 v2.2.0 h1:HiX2K0PoZCwe2F2ZPf4QF3xeNzNNuov3QCw
 github.com/puppetlabs/errawr-go/v2 v2.2.0/go.mod h1:SJ1lTqOW0HcfqVPS/F7kSrUAc4o/6DfjBatQ5TTS/JU=
 github.com/puppetlabs/leg/lifecycle v0.1.0 h1:JA8rc9RM8IK9b/WyMbusUns1cKRdoJ7UprVT8Si9fAc=
 github.com/puppetlabs/leg/lifecycle v0.1.0/go.mod h1:s9t5loXdUM48/iJijw0NZzuvTQncKaM8f40Z+YQxmX8=
+github.com/puppetlabs/leg/netutil v0.1.0/go.mod h1:ycY6MSkOndHh5azh5z66HH9IS8F04ajr5sncFd0OWC4=
+github.com/puppetlabs/leg/request v0.1.0 h1:4Eb9Ssk/Surjxyevh5i7PZjqarrCblpLWavPBLnxEio=
+github.com/puppetlabs/leg/request v0.1.0/go.mod h1:rLKkF3VdNg//iXBSTs+6Eir05BQR15rx3JNWTKiWzLI=
+github.com/puppetlabs/leg/scheduler v0.1.1/go.mod h1:GHW93E/UCuG3FRzzavqHBKyopI6At7iOhAdd/65ogTw=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=

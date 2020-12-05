@@ -255,10 +255,13 @@ github.com/puppetlabs/errawr-gen v1.0.1/go.mod h1:tv4cnckPnxd51XksuKix1KVFWvoYit
 github.com/puppetlabs/errawr-go/v2 v2.1.0/go.mod h1:TFKBrNpfPDG8ta8/NfaqpC+hMMsJqd9xKvBJDRgHFCQ=
 github.com/puppetlabs/errawr-go/v2 v2.2.0 h1:HiX2K0PoZCwe2F2ZPf4QF3xeNzNNuov3QCwZprsNcqI=
 github.com/puppetlabs/errawr-go/v2 v2.2.0/go.mod h1:SJ1lTqOW0HcfqVPS/F7kSrUAc4o/6DfjBatQ5TTS/JU=
-github.com/puppetlabs/leg/instrumentation v0.1.0 h1:Tk4lV0KE6Bclhj5CcgLKXIK+qWyKbKmye+GeS+AH9gU=
-github.com/puppetlabs/leg/instrumentation v0.1.0/go.mod h1:SrW32MXEdscHKjjd9YcCb3SEME/RHQdSX2eh07NtG6o=
+github.com/puppetlabs/leg/logging v0.1.0 h1:G8M2w3izYEtoaH+d3rIJZ9iLX2oW2T/jO+J4l+T0Ieo=
+github.com/puppetlabs/leg/logging v0.1.0/go.mod h1:aKJqsCJCwfWznz66k5yZMoWN3gCahYEa0gsCQXwKUlM=
+github.com/puppetlabs/leg/netutil v0.1.0 h1:wwzh5eEGxEKu555r6W0DnAAlBkM/DqbS3BnWUDhWksU=
+github.com/puppetlabs/leg/netutil v0.1.0/go.mod h1:ycY6MSkOndHh5azh5z66HH9IS8F04ajr5sncFd0OWC4=
 github.com/puppetlabs/leg/request v0.1.0 h1:4Eb9Ssk/Surjxyevh5i7PZjqarrCblpLWavPBLnxEio=
 github.com/puppetlabs/leg/request v0.1.0/go.mod h1:rLKkF3VdNg//iXBSTs+6Eir05BQR15rx3JNWTKiWzLI=
+github.com/puppetlabs/leg/scheduler v0.1.1/go.mod h1:GHW93E/UCuG3FRzzavqHBKyopI6At7iOhAdd/65ogTw=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=

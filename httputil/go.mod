@@ -6,7 +6,7 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/puppetlabs/errawr-gen v1.0.1
 	github.com/puppetlabs/errawr-go/v2 v2.2.0
-	github.com/puppetlabs/leg/instrumentation v0.1.0
+	github.com/puppetlabs/leg/instrumentation v0.1.1
 	github.com/puppetlabs/leg/lifecycle v0.1.0
 	github.com/puppetlabs/leg/logging v0.1.0
 	github.com/puppetlabs/leg/request v0.1.0
@@ -17,7 +17,4 @@ require (
 replace (
 	github.com/puppetlabs/leg/instrumentation => ../instrumentation
 	github.com/puppetlabs/leg/logging => ../logging
-	github.com/puppetlabs/leg/netutil => ../netutil
-	github.com/puppetlabs/leg/request => ../request
-	github.com/puppetlabs/leg/scheduler => ../scheduler
 )
