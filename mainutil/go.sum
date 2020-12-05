@@ -34,6 +34,10 @@ github.com/puppetlabs/errawr-gen v1.0.1/go.mod h1:tv4cnckPnxd51XksuKix1KVFWvoYit
 github.com/puppetlabs/errawr-go/v2 v2.1.0/go.mod h1:TFKBrNpfPDG8ta8/NfaqpC+hMMsJqd9xKvBJDRgHFCQ=
 github.com/puppetlabs/errawr-go/v2 v2.2.0 h1:HiX2K0PoZCwe2F2ZPf4QF3xeNzNNuov3QCwZprsNcqI=
 github.com/puppetlabs/errawr-go/v2 v2.2.0/go.mod h1:SJ1lTqOW0HcfqVPS/F7kSrUAc4o/6DfjBatQ5TTS/JU=
+github.com/puppetlabs/leg/lifecycle v0.1.0 h1:JA8rc9RM8IK9b/WyMbusUns1cKRdoJ7UprVT8Si9fAc=
+github.com/puppetlabs/leg/lifecycle v0.1.0/go.mod h1:s9t5loXdUM48/iJijw0NZzuvTQncKaM8f40Z+YQxmX8=
+github.com/puppetlabs/leg/logging v0.1.0 h1:G8M2w3izYEtoaH+d3rIJZ9iLX2oW2T/jO+J4l+T0Ieo=
+github.com/puppetlabs/leg/logging v0.1.0/go.mod h1:aKJqsCJCwfWznz66k5yZMoWN3gCahYEa0gsCQXwKUlM=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=
 github.com/serenize/snaker v0.0.0-20171002133257-c7a77c38c398 h1:BbvM3zbEZXBScbJawRAPLkmc44D1KUi/zR5NIBPOWMI=

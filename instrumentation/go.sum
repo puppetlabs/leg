@@ -264,6 +264,8 @@ github.com/puppetlabs/errawr-gen v1.0.1/go.mod h1:tv4cnckPnxd51XksuKix1KVFWvoYit
 github.com/puppetlabs/errawr-go/v2 v2.1.0/go.mod h1:TFKBrNpfPDG8ta8/NfaqpC+hMMsJqd9xKvBJDRgHFCQ=
 github.com/puppetlabs/errawr-go/v2 v2.2.0 h1:HiX2K0PoZCwe2F2ZPf4QF3xeNzNNuov3QCwZprsNcqI=
 github.com/puppetlabs/errawr-go/v2 v2.2.0/go.mod h1:SJ1lTqOW0HcfqVPS/F7kSrUAc4o/6DfjBatQ5TTS/JU=
+github.com/puppetlabs/leg/scheduler v0.1.0 h1:fctaCoVayUYx9Nx0miWetMHIBD0dT0P9PsuzqoOgXMU=
+github.com/puppetlabs/leg/scheduler v0.1.0/go.mod h1:MLfAsmK5o19hpK59ARjmc5M8nAkyAEF3pMywLjCXaug=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=
