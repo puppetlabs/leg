@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.1.5] - 2020-12-04
+
+### Fixed
+
+* Removed unnecessary `replace` directives in Go module definition.
+
 ## [0.1.4] - 2020-12-04
 
 ### Fixed
@@ -36,7 +42,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/instrumentation/v0.1.4...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/instrumentation/v0.1.5...HEAD
+[0.1.4]: https://github.com/puppetlabs/leg/compare/instrumentation/v0.1.4...instrumentation/v0.1.5
 [0.1.4]: https://github.com/puppetlabs/leg/compare/instrumentation/v0.1.3...instrumentation/v0.1.4
 [0.1.3]: https://github.com/puppetlabs/leg/compare/instrumentation/v0.1.2...instrumentation/v0.1.3
 [0.1.2]: https://github.com/puppetlabs/leg/compare/instrumentation/v0.1.1...instrumentation/v0.1.2
