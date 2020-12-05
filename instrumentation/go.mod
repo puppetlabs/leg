@@ -10,9 +10,12 @@ require (
 	github.com/puppetlabs/errawr-go/v2 v2.2.0
 	github.com/puppetlabs/leg/logging v0.1.0
 	github.com/puppetlabs/leg/netutil v0.1.0
-	github.com/puppetlabs/leg/scheduler v0.1.2
+	github.com/puppetlabs/leg/scheduler v0.1.4
 	gopkg.in/intercom/intercom-go.v2 v2.0.0-20200217143803-6ffc0627261a
 	gopkg.in/segmentio/analytics-go.v3 v3.1.0
 )
 
-replace github.com/puppetlabs/leg/instrumentation => ./
+replace (
+	github.com/puppetlabs/leg/instrumentation => ./
+	github.com/puppetlabs/leg/scheduler => ../scheduler
+)

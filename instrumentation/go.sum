@@ -270,8 +270,6 @@ github.com/puppetlabs/leg/netutil v0.1.0 h1:wwzh5eEGxEKu555r6W0DnAAlBkM/DqbS3BnW
 github.com/puppetlabs/leg/netutil v0.1.0/go.mod h1:ycY6MSkOndHh5azh5z66HH9IS8F04ajr5sncFd0OWC4=
 github.com/puppetlabs/leg/request v0.1.0 h1:4Eb9Ssk/Surjxyevh5i7PZjqarrCblpLWavPBLnxEio=
 github.com/puppetlabs/leg/request v0.1.0/go.mod h1:rLKkF3VdNg//iXBSTs+6Eir05BQR15rx3JNWTKiWzLI=
-github.com/puppetlabs/leg/scheduler v0.1.2 h1:XfPtBPXav7qvVBMylm4YrlaPhhr+gqDvzqzBK5x6Q+A=
-github.com/puppetlabs/leg/scheduler v0.1.2/go.mod h1:BcEIN6aHENkv75X5FucFaUQMKchj6m5nFE+1leobOrc=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=
