@@ -109,7 +109,7 @@ func testMinimumDistance(t *testing.T, rng rand.Rand, dists []float64, points []
 		generationStart := time.Now()
 		for i := 0; i < len(points); i++ {
 			x, y := gen(), gen()
-			points[i] = point(complex(float64(x), float64(y)))
+			points[i] = point(complex(x, y))
 		}
 		log.Printf("[%s] [#%d] Generated points in %s", t.Name(), di, time.Since(generationStart))
 
