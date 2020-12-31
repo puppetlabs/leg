@@ -141,7 +141,7 @@ func Wait(ctx context.Context, work WorkFunc, opts ...WaitOption) (err error) {
 	}
 }
 
-// WaitAsync runs a given work function in a separate goroutine, but otherwise
+// WaitAsync runs a given work function in a separate Goroutine, but otherwise
 // behaves identically to Wait.
 func WaitAsync(ctx context.Context, work WorkFunc, opts ...WaitOption) <-chan error {
 	ch := make(chan error, 1)

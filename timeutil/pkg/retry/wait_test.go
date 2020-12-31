@@ -2,7 +2,6 @@ package retry_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -140,37 +139,44 @@ func TestWaitAsync(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	c := testclock.NewFakeClock(time.Now())
+	fc := testclock.NewFakeClock(time.Now())
+	defer func() {
+		assert.False(t, fc.HasWaiters())
+	}()
+
+	tcc := clock.NewTimerCallbackClock(
+		k8sext.NewClock(fc),
+		func(d time.Duration) {
+			fc.Step(d)
+		},
+	)
+
+	wt := make(chan int)
 
 	i := 0
 	ch := retry.WaitAsync(ctx, func(ctx context.Context) (bool, error) {
 		i++
+		wt <- i
 		return i >= 3, fmt.Errorf("boom %d", i)
-	}, retry.WithClock(k8sext.NewClock(c)))
+	}, retry.WithClock(tcc))
 
-	for j := 0; j < 3; j++ {
-		// Move the clock forward.
-		c.Step(1 * time.Minute)
-
-		// TODO: This can probably block forever if the wait logic is broken.
-		// Not sure about this kind of meta-testing.
-		require.NoError(t, retry.Wait(ctx, func(ctx context.Context) (bool, error) {
-			if !c.HasWaiters() {
-				return false, errors.New("retry did not wait for timer")
-			}
-			return true, nil
-		}))
-
-		// Still channel should be empty.
+	for j := 1; j <= 3; j++ {
+		// Channel should be empty.
 		select {
-		case <-ch:
-			require.Fail(t, "asynchronous retry returned early", "attempt #%d", j)
+		case err := <-ch:
+			require.Fail(t, "asynchronous retry returned early", "attempt #%d, error %+v", j, err)
 		default:
 		}
-	}
 
-	// Move the clock forward one last time.
-	c.Step(1 * time.Minute)
+		// Wait for more work (i.e., we've gone through one cycle of waiting on
+		// the internal timer in Wait()).
+		select {
+		case ci := <-wt:
+			assert.Equal(t, j, ci)
+		case <-ctx.Done():
+			require.Fail(t, "asynchronous retry did not wake up", "attempt #%d", j)
+		}
+	}
 
 	select {
 	case err := <-ch:

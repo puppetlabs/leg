@@ -86,8 +86,8 @@ func JitterWithRandFactory(rf rand.Factory) JitterOption {
 
 // Jitter creates a rule factory that applies a random jitter to a portion of
 // the duration. The percentage to apply jitter to should be expressed as an
-// integer between 0 and 1, inclusive, where 1 means that the entire duration is
-// subject to jitter.
+// decimal number between 0 and 1, inclusive, where 1 means that the entire
+// duration is subject to jitter.
 func Jitter(pct float64, opts ...JitterOption) RuleFactory {
 	o := &JitterOptions{
 		RandFactory: rand.DefaultFactory,
