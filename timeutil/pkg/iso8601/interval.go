@@ -168,7 +168,7 @@ func (i *Interval) UnmarshalText(text []byte) error {
 
 // ParseInterval parses the given string according to the ISO 8601 time interval
 // representation.
-func ParseInterval(text string) (Interval, error) {
-	var i Interval
-	return i, i.parse(text)
+func ParseInterval(text string) (i Interval, err error) {
+	err = i.parse(text)
+	return
 }

@@ -167,7 +167,7 @@ func (d Duration) String() string {
 }
 
 func (d *Duration) parseInitial(s string) (rest string, err error) {
-	if len(s) == 0 {
+	if s == "" {
 		err = io.EOF
 		return
 	} else if s[0] != 'P' {
@@ -200,7 +200,7 @@ func (d *Duration) parseWeek(s string) (rest string, err error) {
 }
 
 func (d *Duration) parseDate(s string) (rest string, err error) {
-	if len(s) == 0 {
+	if s == "" {
 		return
 	} else if d.weeks != nil {
 		err = ErrInvalidDurationFormat
@@ -215,7 +215,7 @@ func (d *Duration) parseDate(s string) (rest string, err error) {
 }
 
 func (d *Duration) parseTime(s string) (rest string, err error) {
-	if len(s) == 0 {
+	if s == "" {
 		if d.IsZero() {
 			// We must have a date or a time. Otherwise not to spec.
 			err = ErrInvalidDurationFormat
@@ -262,7 +262,7 @@ func (d *Duration) UnmarshalText(text []byte) error {
 
 // ParseDuration parses the given string according to the ISO 8601 duration
 // representation.
-func ParseDuration(text string) (Duration, error) {
-	var d Duration
-	return d, d.parse(text)
+func ParseDuration(text string) (d Duration, err error) {
+	err = d.parse(text)
+	return
 }

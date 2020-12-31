@@ -1,0 +1,18 @@
+package backoff
+
+import (
+	"time"
+)
+
+// Generator produces new durations based on a particular algorithm.
+type Generator interface {
+	// Next returns the next duration to back off by.
+	Next() (time.Duration, error)
+}
+
+// GeneratorFactory provides a Goroutine-safe factory for creating generators of
+// a particular algorithm.
+type GeneratorFactory interface {
+	// New creates a generator with this factory's configuration.
+	New() (Generator, error)
+}
