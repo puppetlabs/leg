@@ -28,8 +28,8 @@ func (lgf *linearGeneratorFactory) New() (Generator, error) {
 	}, nil
 }
 
-// Linear creates a backoff factory that uses the specified step value to use to
-// increase the backoff amount each time.
+// Linear creates a generator factory that uses the specified step value to use
+// to increase the backoff amount each time.
 func Linear(step time.Duration) GeneratorFactory {
 	return &linearGeneratorFactory{
 		step: step,
