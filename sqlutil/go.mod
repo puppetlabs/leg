@@ -15,3 +15,5 @@ require (
 	google.golang.org/protobuf v1.24.0 // indirect
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
+
+replace github.com/puppetlabs/leg/lifecycle => ../lifecycle
