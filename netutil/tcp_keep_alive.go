@@ -7,10 +7,9 @@ import (
 
 // https://github.com/golang/go/blob/c80e0d374ba3caf8ee32c6fe4a5474fa33928086/src/net/http/server.go
 //
-// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted
-// connections. It's used by ListenAndServe and ListenAndServeTLS so
-// dead TCP connections (e.g. closing laptop mid-download) eventually
-// go away.
+// tcpKeepAliveListener sets TCP keep-alive timeouts on accepted connections.
+// It's used by ListenAndServe and ListenAndServeTLS so dead TCP connections
+// (e.g. closing laptop mid-download) eventually go away.
 type TCPKeepAliveListener struct {
 	*net.TCPListener
 }
@@ -20,8 +19,12 @@ func (ln TCPKeepAliveListener) Accept() (c net.Conn, err error) {
 	if err != nil {
 		return
 	}
-	tc.SetKeepAlive(true)
-	tc.SetKeepAlivePeriod(3 * time.Minute)
+	if err := tc.SetKeepAlive(true); err != nil {
+		return nil, err
+	}
+	if err := tc.SetKeepAlivePeriod(3 * time.Minute); err != nil {
+		return nil, err
+	}
 	return tc, nil
 }
 
