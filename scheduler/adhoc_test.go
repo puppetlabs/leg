@@ -2,12 +2,11 @@ package scheduler_test
 
 import (
 	"context"
+	"fmt"
 	"sync/atomic"
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/errawr-go/v2/pkg/errawr"
-	"github.com/puppetlabs/errawr-go/v2/pkg/testutil"
 	"github.com/puppetlabs/leg/scheduler"
 	"github.com/stretchr/testify/assert"
 )
@@ -59,10 +58,10 @@ func TestAdhocErrors(t *testing.T) {
 		WithErrorBehavior(scheduler.ErrorBehaviorDrop)
 
 	p1 := as.Submit(scheduler.DescribeProcessFunc("p1", func(ctx context.Context) error {
-		return testutil.NewStubError("p1")
+		return fmt.Errorf("test error in p1")
 	}))
 	p2 := as.Submit(scheduler.DescribeProcessFunc("p2", func(ctx context.Context) error {
-		panic(testutil.NewStubError("p2"))
+		panic("test error in p2")
 	}))
 
 	slc := lc.Start(scheduler.LifecycleStartOptions{})
@@ -73,24 +72,14 @@ func TestAdhocErrors(t *testing.T) {
 
 	select {
 	case err := <-p1:
-		switch rerr := err.(type) {
-		case errawr.Error:
-			assert.Equal(t, "p1", rerr.Code())
-		default:
-			assert.Fail(t, "p1 did not return an error")
-		}
+		assert.EqualError(t, err, "test error in p1")
 	case <-ctx.Done():
 		assert.Fail(t, "p1 context expired")
 	}
 
 	select {
 	case err := <-p2:
-		switch rerr := err.(type) {
-		case errawr.Error:
-			assert.Equal(t, "p2", rerr.Code())
-		default:
-			assert.Fail(t, "p2 did not return an error")
-		}
+		assert.EqualError(t, err, "panic: test error in p2")
 	case <-ctx.Done():
 		assert.Fail(t, "p2 context expired")
 	}

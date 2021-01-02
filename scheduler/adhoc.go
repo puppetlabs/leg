@@ -19,7 +19,7 @@ func (ap *adhocProcess) Description() string {
 func (ap *adhocProcess) Run(ctx context.Context) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			err = coerceError(r)
+			err = coercePanic(r)
 
 			// Re-panic after we capture the error.
 			defer panic(r)

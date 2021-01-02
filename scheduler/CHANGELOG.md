@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* Updated the recovery descriptor to take a timeutil backoff, which provides considerably more flexibility in the way backoffs and retries are performed.
+* Removed dependency on errawr since there's a very minimal chance the APIs in this module will be used for anything outward-facing.
+
 ## [0.1.5] - 2020-12-04
 
 ### Fixed

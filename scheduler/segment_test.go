@@ -2,10 +2,10 @@ package scheduler_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/errawr-go/v2/pkg/testutil"
 	"github.com/puppetlabs/leg/scheduler"
 	"github.com/stretchr/testify/assert"
 )
@@ -52,10 +52,10 @@ func TestErrorBehaviorCollect(t *testing.T) {
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
 		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
-			return testutil.NewStubError("boom 1")
+			return fmt.Errorf("boom 1")
 		})),
 		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
-			return testutil.NewStubError("boom 2")
+			return fmt.Errorf("boom 2")
 		})),
 	}).WithErrorBehavior(scheduler.ErrorBehaviorCollect)
 
@@ -70,7 +70,7 @@ func TestErrorBehaviorTerminate(t *testing.T) {
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
 		scheduler.NewIntervalDescriptor(10*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
-			return testutil.NewStubError("boom")
+			return fmt.Errorf("boom")
 		})),
 		scheduler.NewIntervalDescriptor(10*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
 			select {
@@ -118,7 +118,7 @@ func TestErrorBehaviorDrop(t *testing.T) {
 
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
 		scheduler.NewImmediateDescriptor(scheduler.ProcessFunc(func(ctx context.Context) error {
-			return testutil.NewStubError("boom")
+			return fmt.Errorf("boom")
 		})),
 	}).WithErrorBehavior(scheduler.ErrorBehaviorDrop)
 
@@ -136,7 +136,7 @@ func TestProcessErrorBehaviorTerminate(t *testing.T) {
 	// errors.
 	lc := scheduler.NewSegment(2, []scheduler.Descriptor{
 		scheduler.NewIntervalDescriptor(2*time.Second, scheduler.ProcessFunc(func(ctx context.Context) error {
-			return testutil.NewStubError("boom")
+			return fmt.Errorf("boom")
 		})),
 	}).
 		WithDescriptorErrorBehavior(scheduler.ErrorBehaviorCollect).

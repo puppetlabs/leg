@@ -2,13 +2,10 @@ package scheduler
 
 import (
 	"context"
-	"fmt"
-	"reflect"
 
 	"github.com/puppetlabs/leg/instrumentation/alerts/trackers"
 	logging "github.com/puppetlabs/leg/logging"
 	"github.com/puppetlabs/leg/request"
-	"github.com/puppetlabs/leg/scheduler/errors"
 )
 
 // Process is the primary unit of work for external users of the scheduler. It
@@ -25,7 +22,11 @@ type Process interface {
 }
 
 func processError(req *request.Request, p Process, err error) error {
-	return errors.NewLifecycleProcessError(req.Identifier, p.Description()).WithCause(err)
+	return &ProcessError{
+		Request: req,
+		Process: p,
+		Cause:   err,
+	}
 }
 
 // SchedulableProcess makes the given process conform to the Schedulable
@@ -54,7 +55,7 @@ func SchedulableProcess(p Process) Schedulable {
 		})
 		if err != nil {
 			log(ctx).Crit("process panic()!", "error", err)
-			er.Put(processError(req, p, coerceError(err)))
+			er.Put(processError(req, p, coercePanic(err)))
 		}
 	})
 }
@@ -106,7 +107,10 @@ type Descriptor interface {
 }
 
 func descriptorError(desc Descriptor, err error) error {
-	return errors.NewLifecycleDescriptorError(fmt.Sprintf("%v", reflect.TypeOf(desc))).WithCause(err)
+	return &DescriptorError{
+		Descriptor: desc,
+		Cause:      err,
+	}
 }
 
 // SchedulableDescriptor adapts a descriptor to the Schedulable interface.

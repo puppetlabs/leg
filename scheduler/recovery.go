@@ -5,122 +5,130 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/puppetlabs/leg/netutil"
-	"github.com/puppetlabs/leg/scheduler/errors"
+	"github.com/puppetlabs/leg/timeutil/pkg/backoff"
+	"github.com/puppetlabs/leg/timeutil/pkg/clock"
+	"github.com/puppetlabs/leg/timeutil/pkg/retry"
 )
 
-const (
-	defaultBackoffMultiplier = time.Millisecond * 5
-	defaultResetRetriesAfter = time.Second * 10
+// DefaultRecoveryDescriptorBackoffFactory is an exponential backoff starting at
+// 5 milliseconds with a factor of 2, a 10 second cap, and full jitter using the
+// default RNG. It automatically resets the backoff after 30 seconds of
+// inactivity.
+var DefaultRecoveryDescriptorBackoffFactory = backoff.Build(
+	backoff.ResetAfter(
+		backoff.Build(
+			backoff.Exponential(5*time.Millisecond, 2.0),
+			backoff.NonSliding,
+		),
+		30*time.Second,
+	),
+	backoff.MaxBound(10*time.Second),
+	backoff.FullJitter(),
 )
 
-// RecoveryDescriptorOptions contains fields that allow backoff and retry parameters
-// to be set.
+// RecoveryDescriptorOptions contains fields that allow backoff and retry
+// parameters to be set.
 type RecoveryDescriptorOptions struct {
-	// BackoffMultiplier is the timing multiplier between attempts using netutil.Backoff.
-	//
-	// Default: 5ms
-	BackoffMultiplier time.Duration
-	// MaxRetries is the max times the RecoveryDescriptor should attempt to run the delegate
-	// descriptor during a reset retries duration. If this option is <= 0 then it means
-	// retry inifinitly; however, the backoff multiplier still applies.
-	//
-	// Default: 0
-	MaxRetries int
-	// ResetRetriesAfter is the time it takes to reset the retry count when running
-	// a delegate descriptor.
-	//
-	// Default: 10s
-	ResetRetriesAfter time.Duration
+	// BackoffFactory is the backoff algorithm to use when a guarded descriptor
+	// fails. If not specified, a sensibile default
+	// (DefaultRecoveryDescriptorBackoffFactory) is used.
+	BackoffFactory *backoff.Factory
+
+	// Clock is the clock implementation used to perform the backoff.
+	Clock clock.Clock
+}
+
+// RecoveryDescriptorOption is a setter for one or more recovery descriptor
+// options.
+type RecoveryDescriptorOption interface {
+	// ApplyToRecoveryDescriptorOptions configures the specified recovery
+	// descriptor options for this option.
+	ApplyToRecoveryDescriptorOptions(target *RecoveryDescriptorOptions)
+}
+
+// ApplyOptions runs each of the given options against this options struct.
+func (o *RecoveryDescriptorOptions) ApplyOptions(opts []RecoveryDescriptorOption) {
+	for _, opt := range opts {
+		opt.ApplyToRecoveryDescriptorOptions(o)
+	}
+}
+
+// RecoveryDescriptorOptionFunc allows a function to be used as a recovery
+// descriptor option.
+type RecoveryDescriptorOptionFunc func(target *RecoveryDescriptorOptions)
+
+var _ RecoveryDescriptorOption = RecoveryDescriptorOptionFunc(nil)
+
+// ApplyToRecoveryDescriptorOptions configures the specified recovery descriptor
+// options by calling this function.
+func (rdof RecoveryDescriptorOptionFunc) ApplyToRecoveryDescriptorOptions(target *RecoveryDescriptorOptions) {
+	rdof(target)
+}
+
+// RecoveryDescriptorWithBackoffFactory changes the backoff algorithm to the
+// specified one.
+func RecoveryDescriptorWithBackoffFactory(bf *backoff.Factory) RecoveryDescriptorOption {
+	return RecoveryDescriptorOptionFunc(func(target *RecoveryDescriptorOptions) {
+		target.BackoffFactory = bf
+	})
+}
+
+// RecoveryDescriptorWithClock changes the backoff clock to the specified one.
+func RecoveryDescriptorWithClock(c clock.Clock) RecoveryDescriptorOption {
+	return RecoveryDescriptorOptionFunc(func(target *RecoveryDescriptorOptions) {
+		target.Clock = c
+	})
 }
 
 // RecoveryDescriptor wraps a given descriptor so that it restarts if the
 // descriptor itself fails. This is useful for descriptors that work off of
 // external information (APIs, events, etc.).
 type RecoveryDescriptor struct {
-	delegate   Descriptor
-	backoff    netutil.Backoff
-	maxRetries int
-	resetAfter time.Duration
+	delegate       Descriptor
+	backoffFactory *backoff.Factory
+	clock          clock.Clock
 }
 
 var _ Descriptor = &RecoveryDescriptor{}
-
-func (rd *RecoveryDescriptor) runOnce(ctx context.Context, pc chan<- Process) (bool, error) {
-	err := rd.delegate.Run(ctx, pc)
-
-	select {
-	case <-ctx.Done():
-		return false, err
-	default:
-	}
-
-	if err != nil {
-		log(ctx).Warn("restarting failing descriptor", "descriptor", reflect.TypeOf(rd.delegate).String(), "error", err)
-	}
-
-	return true, nil
-}
 
 // Run delegates work to another descriptor, catching any errors are restarting
 // the descriptor immediately if an error occurs. It might return a max retries error.
 // It only terminates when the context is done or the max retries have been exceeded.
 func (rd *RecoveryDescriptor) Run(ctx context.Context, pc chan<- Process) error {
-	var retries int
-
-	for {
-		start := time.Now()
-
-		if cont, err := rd.runOnce(ctx, pc); err != nil {
-			return err
-		} else if !cont {
-			break
-		}
-
-		if time.Now().Sub(start) >= rd.resetAfter {
-			retries = 0
-		}
-
-		if rd.maxRetries > 0 && retries == rd.maxRetries {
-			log(ctx).Error("max retries reached; stopping descriptor", "descriptor", reflect.TypeOf(rd.delegate).String())
-			return errors.NewRecoveryDescriptorMaxRetriesReached(int64(rd.maxRetries))
-		}
-
-		retries++
-
-		if err := rd.backoff.Backoff(ctx, retries); err != nil {
-			return err
-		}
+	waitOptions := []retry.WaitOption{retry.WithBackoffFactory(rd.backoffFactory)}
+	if rd.clock != nil {
+		waitOptions = append(waitOptions, retry.WithClock(rd.clock))
 	}
 
-	return nil
+	return retry.Wait(ctx, func(ctx context.Context) (bool, error) {
+		err := rd.delegate.Run(ctx, pc)
+
+		// We'll eat the context error here as we don't want to propagate it.
+		select {
+		case <-ctx.Done():
+			return true, err
+		default:
+		}
+
+		if err != nil {
+			log(ctx).Warn("restarting failing descriptor", "descriptor", reflect.TypeOf(rd.delegate).String(), "error", err)
+		}
+
+		return err == nil, err
+	}, waitOptions...)
 }
 
 // NewRecoveryDescriptor creates a new recovering descriptor wrapping the given
 // delegate descriptor. Default backoff and retry parameters will be used.
-func NewRecoveryDescriptor(delegate Descriptor) *RecoveryDescriptor {
-	return NewRecoveryDescriptorWithOptions(delegate, RecoveryDescriptorOptions{})
-}
-
-// NewRecoveryDescriptorWithOptions creates a new recovering descriptor wrapping the
-// given delegate descriptor. It takes RecoveryDescriptorOptions to tune backoff and retry
-// parameters.
-func NewRecoveryDescriptorWithOptions(delegate Descriptor, opts RecoveryDescriptorOptions) *RecoveryDescriptor {
-	if opts.BackoffMultiplier == 0 {
-		opts.BackoffMultiplier = defaultBackoffMultiplier
+func NewRecoveryDescriptor(delegate Descriptor, opts ...RecoveryDescriptorOption) *RecoveryDescriptor {
+	o := &RecoveryDescriptorOptions{
+		BackoffFactory: DefaultRecoveryDescriptorBackoffFactory,
 	}
-
-	if opts.ResetRetriesAfter == 0 {
-		opts.ResetRetriesAfter = defaultResetRetriesAfter
-	}
-
-	// TODO migrate to backoff's NextRun once implemented
-	backoff := &netutil.ExponentialBackoff{Multiplier: opts.BackoffMultiplier}
+	o.ApplyOptions(opts)
 
 	return &RecoveryDescriptor{
-		delegate:   delegate,
-		backoff:    backoff,
-		maxRetries: opts.MaxRetries,
-		resetAfter: opts.ResetRetriesAfter,
+		delegate:       delegate,
+		backoffFactory: o.BackoffFactory,
+		clock:          o.Clock,
 	}
 }

@@ -53,3 +53,10 @@ func MaxAttempts(max uint64) RuleFactory {
 		max: max,
 	}
 }
+
+// MaxRetries for a given maximum count is the same as calling
+// MaxAttempts(max+1). Sometimes it's easier to think in terms of retries,
+// though.
+func MaxRetries(max uint64) RuleFactory {
+	return MaxAttempts(max + 1)
+}
