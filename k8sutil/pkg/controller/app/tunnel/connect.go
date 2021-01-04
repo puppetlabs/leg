@@ -8,12 +8,14 @@ import (
 	"os"
 
 	"github.com/google/uuid"
+	corev1obj "github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/api/corev1"
 	"github.com/puppetlabs/leg/timeutil/pkg/retry"
 	"github.com/rancher/remotedialer"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/portforward"
 	"k8s.io/client-go/transport/spdy"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // WithHTTPConnection forwards the service provided by the given HTTP tunnel to
@@ -24,6 +26,11 @@ import (
 func WithHTTPConnection(ctx context.Context, cfg *rest.Config, h *HTTP, targetURL string, fn func(ctx context.Context)) (err error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
+
+	cl, err := client.New(cfg, client.Options{})
+	if err != nil {
+		return err
+	}
 
 	kc, err := kubernetes.NewForConfig(cfg)
 	if err != nil {
@@ -102,6 +109,11 @@ func WithHTTPConnection(ctx context.Context, cfg *rest.Config, h *HTTP, targetUR
 			)
 		}
 	}()
+
+	// Wait for service.
+	if _, err := corev1obj.NewEndpointsBoundPoller(corev1obj.NewEndpoints(h.Service)).Load(ctx, cl); err != nil {
+		return err
+	}
 
 	fn(ctx)
 	return

@@ -35,14 +35,14 @@ func TestHTTPS(t *testing.T) {
 			tun, err := tunnel.ApplyHTTPS(ctx, eit.ControllerClient, client.ObjectKey{Namespace: ns.GetName(), Name: "tunnel"})
 			require.NoError(t, err)
 
-			// Wait for service.
-			_, err = corev1obj.NewEndpointsBoundPoller(corev1obj.NewEndpoints(tun.TLSProxy.Service)).Load(ctx, eit.ControllerClient)
-			require.NoError(t, err)
-
 			cert, err := tun.CertificateAuthorityPEM()
 			require.NoError(t, err)
 
 			require.NoError(t, tunnel.WithHTTPConnection(ctx, eit.RESTConfig, tun.HTTP, srv.URL, func(ctx context.Context) {
+				// Wait for service.
+				_, err = corev1obj.NewEndpointsBoundPoller(corev1obj.NewEndpoints(tun.TLSProxy.Service)).Load(ctx, eit.ControllerClient)
+				require.NoError(t, err)
+
 				script := fmt.Sprintf(`
 mkdir -p /etc/ssl/certs
 cat >>/etc/ssl/certs/ca-certificates.crt <<'EOT'
