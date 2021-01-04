@@ -9,14 +9,17 @@ cache:
 env:
   global:
   - GO111MODULE: 'on'
+  - KUBECONFIG: /tmp/kubeconfig
 before_script:
 - |
   (
     cd
     go get \
+      github.com/rancher/k3d/v3@v3.4.0 \
       gotest.tools/gotestsum \
       github.com/golangci/golangci-lint/cmd/golangci-lint@v1.33.0
   )
+- k3d cluster create --no-rollback leg-test
 script:
 - scripts/check
-- scripts/test
+- LEG_K8SUTIL_TEST_E2E_KUBECONFIG="${KUBECONFIG}" scripts/test
