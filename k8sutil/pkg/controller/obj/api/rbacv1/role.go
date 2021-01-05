@@ -25,8 +25,8 @@ var _ lifecycle.Loader = &Role{}
 var _ lifecycle.Ownable = &Role{}
 var _ lifecycle.Persister = &Role{}
 
-func (r *Role) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, r.Object)
+func (r *Role) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, r.Object, opts...)
 }
 
 func (r *Role) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

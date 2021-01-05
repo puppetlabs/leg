@@ -110,13 +110,21 @@ func GetIgnoreNotFound(ctx context.Context, cl client.Client, key client.ObjectK
 	return true, nil
 }
 
-func DeleteIgnoreNotFound(ctx context.Context, cl client.Client, obj client.Object) (bool, error) {
+func DeleteIgnoreNotFound(ctx context.Context, cl client.Client, obj client.Object, opts ...lifecycle.DeleteOption) (bool, error) {
 	if !Exists(obj) {
 		return false, nil
 	}
 
+	o := &lifecycle.DeleteOptions{}
+	o.ApplyOptions(opts)
+
+	var copts []client.DeleteOption
+	if o.PropagationPolicy != "" {
+		copts = append(copts, client.PropagationPolicy(o.PropagationPolicy))
+	}
+
 	klog.Infof("deleting %T %s", obj, client.ObjectKeyFromObject(obj))
-	if err := cl.Delete(ctx, obj); errors.IsNotFound(err) {
+	if err := cl.Delete(ctx, obj, copts...); errors.IsNotFound(err) {
 		return false, nil
 	} else if err != nil {
 		return false, err

@@ -37,8 +37,8 @@ var _ lifecycle.Loader = &Secret{}
 var _ lifecycle.Ownable = &Secret{}
 var _ lifecycle.Persister = &Secret{}
 
-func (s *Secret) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, s.Object)
+func (s *Secret) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, s.Object, opts...)
 }
 
 func (s *Secret) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

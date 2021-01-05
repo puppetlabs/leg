@@ -31,8 +31,8 @@ var _ lifecycle.Loader = &Pod{}
 var _ lifecycle.Ownable = &Pod{}
 var _ lifecycle.Persister = &Pod{}
 
-func (p *Pod) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, p.Object)
+func (p *Pod) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, p.Object, opts...)
 }
 
 func (p *Pod) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

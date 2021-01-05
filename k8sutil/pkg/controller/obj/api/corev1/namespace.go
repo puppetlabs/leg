@@ -24,8 +24,8 @@ var _ lifecycle.LabelAnnotatableFrom = &Namespace{}
 var _ lifecycle.Loader = &Namespace{}
 var _ lifecycle.Persister = &Namespace{}
 
-func (n *Namespace) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, n.Object)
+func (n *Namespace) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, n.Object, opts...)
 }
 
 func (n *Namespace) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

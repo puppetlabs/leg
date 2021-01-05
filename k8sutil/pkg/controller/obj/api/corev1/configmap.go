@@ -26,8 +26,8 @@ var _ lifecycle.Ownable = &ConfigMap{}
 var _ lifecycle.Owner = &ConfigMap{}
 var _ lifecycle.Persister = &ConfigMap{}
 
-func (cm *ConfigMap) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, cm.Object)
+func (cm *ConfigMap) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, cm.Object, opts...)
 }
 
 func (cm *ConfigMap) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

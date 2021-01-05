@@ -26,8 +26,8 @@ var _ lifecycle.Loader = &Service{}
 var _ lifecycle.Ownable = &Service{}
 var _ lifecycle.Persister = &Service{}
 
-func (s *Service) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, s.Object)
+func (s *Service) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, s.Object, opts...)
 }
 
 func (s *Service) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

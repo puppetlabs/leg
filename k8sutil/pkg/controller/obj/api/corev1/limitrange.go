@@ -25,8 +25,8 @@ var _ lifecycle.Loader = &LimitRange{}
 var _ lifecycle.Ownable = &LimitRange{}
 var _ lifecycle.Persister = &LimitRange{}
 
-func (lr *LimitRange) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, lr.Object)
+func (lr *LimitRange) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, lr.Object, opts...)
 }
 
 func (lr *LimitRange) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

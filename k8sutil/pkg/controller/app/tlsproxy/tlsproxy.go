@@ -41,8 +41,8 @@ var _ lifecycle.Loader = &TLSProxy{}
 var _ lifecycle.Ownable = &TLSProxy{}
 var _ lifecycle.Persister = &TLSProxy{}
 
-func (tp *TLSProxy) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return tp.OwnerConfigMap.Delete(ctx, cl)
+func (tp *TLSProxy) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return tp.OwnerConfigMap.Delete(ctx, cl, opts...)
 }
 
 func (tp *TLSProxy) Load(ctx context.Context, cl client.Client) (bool, error) {

@@ -28,8 +28,8 @@ var _ lifecycle.Loader = &HTTP{}
 var _ lifecycle.Ownable = &HTTP{}
 var _ lifecycle.Persister = &HTTP{}
 
-func (h *HTTP) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return h.OwnerConfigMap.Delete(ctx, cl)
+func (h *HTTP) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return h.OwnerConfigMap.Delete(ctx, cl, opts...)
 }
 
 func (h *HTTP) Load(ctx context.Context, cl client.Client) (bool, error) {

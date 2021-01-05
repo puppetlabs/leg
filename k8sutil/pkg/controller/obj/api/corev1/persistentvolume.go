@@ -25,8 +25,8 @@ var _ lifecycle.Loader = &PersistentVolume{}
 var _ lifecycle.Ownable = &PersistentVolume{}
 var _ lifecycle.LabelAnnotatableFrom = &PersistentVolume{}
 
-func (pv *PersistentVolume) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, pv.Object)
+func (pv *PersistentVolume) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, pv.Object, opts...)
 }
 
 func (pv *PersistentVolume) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

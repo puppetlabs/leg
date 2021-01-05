@@ -25,8 +25,8 @@ var _ lifecycle.Loader = &PersistentVolumeClaim{}
 var _ lifecycle.Ownable = &PersistentVolumeClaim{}
 var _ lifecycle.Persister = &PersistentVolumeClaim{}
 
-func (pvc *PersistentVolumeClaim) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, pvc.Object)
+func (pvc *PersistentVolumeClaim) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, pvc.Object, opts...)
 }
 
 func (pvc *PersistentVolumeClaim) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

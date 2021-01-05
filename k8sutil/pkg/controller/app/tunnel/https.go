@@ -27,8 +27,8 @@ var _ lifecycle.Loader = &HTTPS{}
 var _ lifecycle.Ownable = &HTTPS{}
 var _ lifecycle.Persister = &HTTPS{}
 
-func (h *HTTPS) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return h.OwnerConfigMap.Delete(ctx, cl)
+func (h *HTTPS) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return h.OwnerConfigMap.Delete(ctx, cl, opts...)
 }
 
 func (h *HTTPS) Load(ctx context.Context, cl client.Client) (bool, error) {

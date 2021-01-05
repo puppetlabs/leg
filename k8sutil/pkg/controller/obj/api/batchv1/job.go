@@ -25,8 +25,8 @@ var _ lifecycle.Loader = &Job{}
 var _ lifecycle.Ownable = &Job{}
 var _ lifecycle.Persister = &Job{}
 
-func (j *Job) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, j.Object)
+func (j *Job) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, j.Object, opts...)
 }
 
 func (j *Job) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {

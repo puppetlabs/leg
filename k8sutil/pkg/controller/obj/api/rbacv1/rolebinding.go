@@ -25,8 +25,8 @@ var _ lifecycle.Loader = &RoleBinding{}
 var _ lifecycle.Ownable = &RoleBinding{}
 var _ lifecycle.Persister = &RoleBinding{}
 
-func (rb *RoleBinding) Delete(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, rb.Object)
+func (rb *RoleBinding) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
+	return helper.DeleteIgnoreNotFound(ctx, cl, rb.Object, opts...)
 }
 
 func (rb *RoleBinding) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
