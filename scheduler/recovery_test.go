@@ -6,8 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/leg/scheduler/errors"
+	"github.com/puppetlabs/leg/timeutil/pkg/backoff"
+	"github.com/puppetlabs/leg/timeutil/pkg/clock"
+	"github.com/puppetlabs/leg/timeutil/pkg/clock/k8sext"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	testclock "k8s.io/apimachinery/pkg/util/clock"
 )
 
 type mockErrorDescriptor struct {
@@ -36,60 +40,81 @@ func TestRecoverySchedulerStops(t *testing.T) {
 		successAfterCount: 15,
 	}
 
-	opts := RecoveryDescriptorOptions{
-		MaxRetries: 5,
-	}
-	descriptor := NewRecoveryDescriptorWithOptions(mock, opts)
+	descriptor := NewRecoveryDescriptor(mock, RecoveryDescriptorWithBackoffFactory(
+		backoff.Build(
+			backoff.Immediate,
+			backoff.MaxRetries(5),
+		),
+	))
 
 	pc := make(chan Process)
 
 	defer cancel()
 
 	err := descriptor.Run(ctx, pc)
-	require.NotNil(t, err)
-	require.Equal(t, "max_retries_reached", err.(errors.Error).Code())
+	assert.Equal(t, &backoff.MaxAttemptsReachedError{N: 6}, err)
+	assert.Equal(t, -1, mock.errCount)
 }
 
 type mockRetryResetDescriptor struct {
 	count           int
+	fc              *testclock.FakeClock
 	successDuration time.Duration
-	cancel          context.CancelFunc
 }
 
 func (d *mockRetryResetDescriptor) Run(ctx context.Context, pc chan<- Process) error {
-	if d.count == 0 {
-		<-time.After(d.successDuration)
-		d.cancel()
-		return nil
+	if d.count%5 == 0 {
+		d.fc.Step(d.successDuration)
 	}
 
-	err := fmt.Errorf("err count %d", d.count)
-	d.count--
+	if d.count >= 0 {
+		err := fmt.Errorf("err count %d", d.count)
+		d.count--
+		return err
+	}
 
-	return err
+	return nil
 }
 
 func TestRecoverySchedulerRetryCountReset(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	successDuration := time.Second * 1
+	fc := testclock.NewFakeClock(time.Now())
+	dc := clock.NewTimerCallbackClock(
+		k8sext.NewClock(fc),
+		func(d time.Duration) { fc.Step(d) },
+	)
+
+	successDuration := 5 * time.Second
 
 	mock := &mockRetryResetDescriptor{
-		count:           5,
-		cancel:          cancel,
+		count:           14,
+		fc:              fc,
 		successDuration: successDuration,
 	}
 
-	opts := RecoveryDescriptorOptions{
-		MaxRetries:        10,
-		ResetRetriesAfter: successDuration - (time.Millisecond * 500),
-	}
-	descriptor := NewRecoveryDescriptorWithOptions(mock, opts)
+	descriptor := NewRecoveryDescriptor(
+		mock,
+		RecoveryDescriptorWithBackoffFactory(
+			backoff.Build(
+				backoff.ResetAfter(
+					backoff.Build(
+						backoff.Constant(250*time.Millisecond),
+						backoff.MaxRetries(10),
+					),
+					successDuration-(500*time.Millisecond),
+					backoff.ResetAfterWithClock(dc),
+				),
+			),
+		),
+		RecoveryDescriptorWithClock(dc),
+	)
 
 	pc := make(chan Process)
 
 	defer cancel()
 
 	require.NoError(t, descriptor.Run(ctx, pc))
-	require.Equal(t, 0, mock.count)
+	require.Equal(t, -1, mock.count)
 }

@@ -50,7 +50,12 @@ func (sd *savepointDelegate) Rollback() error {
 func (sd *savepointDelegate) Commit() error {
 	_, err := sd.v.tx.ExecContext(sd.ctx, fmt.Sprintf("RELEASE SAVEPOINT tx_%d", sd.v.c))
 	if err != nil {
-		sd.Rollback()
+		if rerr := sd.Rollback(); rerr != nil {
+			return &RollbackError{
+				Trigger: err,
+				Cause:   rerr,
+			}
+		}
 		return err
 	}
 
@@ -93,13 +98,28 @@ func WithTx(ctx context.Context, db *sql.DB, fn func(ctx context.Context, tx *sq
 
 	defer func() {
 		if p := recover(); p != nil {
-			d.Rollback()
+			if rerr := d.Rollback(); rerr != nil {
+				err, ok := p.(error)
+				if !ok {
+					err = fmt.Errorf("%+v", p)
+				}
+
+				panic(&RollbackError{
+					Trigger: &PanicError{Cause: err},
+					Cause:   rerr,
+				})
+			}
 			panic(p)
 		}
 	}()
 
 	if err := fn(ctx, v.tx); err != nil {
-		d.Rollback()
+		if rerr := d.Rollback(); rerr != nil {
+			return &RollbackError{
+				Trigger: err,
+				Cause:   rerr,
+			}
+		}
 		return err
 	}
 

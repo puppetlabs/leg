@@ -34,7 +34,6 @@ type startedScheduler struct {
 	cancel        context.CancelFunc
 	children      []chan struct{}
 	waiter        chan struct{}
-	errs          []error
 	errorHandler  ErrorHandler
 	eventHandlers []SchedulerEventHandler
 }

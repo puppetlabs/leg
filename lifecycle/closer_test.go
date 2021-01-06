@@ -8,6 +8,7 @@ import (
 
 	"github.com/puppetlabs/leg/lifecycle"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCloserWithoutTrigger(t *testing.T) {
@@ -103,6 +104,6 @@ func TestCloserPropagatesErrors(t *testing.T) {
 	defer cancel()
 
 	err := c.Do(ctx)
-	assert.NotNil(t, err)
-	assert.Len(t, err.Causes(), 3)
+	require.IsType(t, &lifecycle.CloseError{}, err)
+	assert.Len(t, err.(*lifecycle.CloseError).Causes, 3)
 }

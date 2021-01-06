@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"sync"
 	"time"
-
-	"github.com/puppetlabs/leg/lifecycle/errors"
 )
 
 type (
@@ -29,7 +27,7 @@ type Closer struct {
 	mut sync.RWMutex
 }
 
-func (c *Closer) Do(ctx context.Context) errors.Error {
+func (c *Closer) Do(ctx context.Context) error {
 	// Early check without lock.
 	select {
 	case <-c.Done():
@@ -70,7 +68,7 @@ func (c *Closer) Do(ctx context.Context) errors.Error {
 						err = fmt.Errorf("%+v", r)
 					}
 
-					c.errs = append(c.errs, errors.NewCloserPanicError().WithCause(err))
+					c.errs = append(c.errs, &PanicError{Cause: err})
 				}
 			}()
 
@@ -90,7 +88,7 @@ func (c *Closer) Done() <-chan struct{} {
 	return c.doneCh
 }
 
-func (c *Closer) Err() errors.Error {
+func (c *Closer) Err() error {
 	select {
 	case <-c.Done():
 	default:
@@ -101,19 +99,11 @@ func (c *Closer) Err() errors.Error {
 	case 0:
 		return nil
 	case 1:
-		if err, ok := c.errs[0].(errors.Error); ok {
-			return err
-		}
-
-		fallthrough
+		return c.errs[0]
 	default:
-		cerr := errors.NewCloserError()
-
-		for _, err := range c.errs {
-			cerr = cerr.WithCause(err)
+		return &CloseError{
+			Causes: c.errs,
 		}
-
-		return cerr
 	}
 }
 
@@ -130,8 +120,8 @@ func (c *Closer) wait() {
 	c.whenCh <- errs
 
 	// Invoke completion. This will be a no-op if we're already in Do() in
-	// another goroutine.
-	c.Do(context.Background())
+	// another goroutine. Any error will be made available in Err().
+	_ = c.Do(context.Background())
 }
 
 type CloserBuilder struct {
@@ -196,7 +186,7 @@ func (cb CloserBuilder) Build() *Closer {
 							perr = fmt.Errorf("%+v", r)
 						}
 
-						err = errors.NewCloserPanicError().WithCause(perr)
+						err = &PanicError{Cause: perr}
 					}
 				}()
 

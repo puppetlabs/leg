@@ -8,6 +8,7 @@ import (
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/puppetlabs/leg/sqlutil"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +24,9 @@ func TestTxSimple(t *testing.T) {
 	mock.ExpectCommit()
 
 	require.NoError(t, sqlutil.WithTx(ctx, db, func(ctx context.Context, tx *sql.Tx) error {
-		_, err := tx.QueryContext(ctx, "SELECT 1")
+		rows, err := tx.QueryContext(ctx, "SELECT 1")
+		require.NotNil(t, rows)
+		defer rows.Close()
 		return err
 	}))
 
@@ -90,7 +93,8 @@ func TestTxSimpleRollback(t *testing.T) {
 	mock.ExpectRollback()
 
 	require.NotNil(t, sqlutil.WithTx(ctx, db, func(ctx context.Context, tx *sql.Tx) error {
-		_, err := tx.QueryContext(ctx, "SELECT 1")
+		rows, err := tx.QueryContext(ctx, "SELECT 1")
+		assert.Nil(t, rows)
 		return err
 	}))
 

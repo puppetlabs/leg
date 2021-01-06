@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* Remove the backoff and wait functionality in this package. It has been superseded by the more comprehensive functionality in the timeutil module.
+
 ## [0.1.0] - 2020-12-04
 
 ### Changed

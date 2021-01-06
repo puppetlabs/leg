@@ -2,17 +2,15 @@ package scheduler
 
 import (
 	"context"
-
-	"github.com/puppetlabs/leg/scheduler/errors"
 )
 
-// WaitContext waits until the given lifecycle completes or the context is done,
-// returning hsch_lifecycle_timeout_error in the latter case.
+// WaitContext waits until the given lifecycle completes or the context is done.
+// If the context is canceled first, the context error is returned.
 func WaitContext(ctx context.Context, lc StartedLifecycle) error {
 	select {
 	case <-lc.Done():
 	case <-ctx.Done():
-		return errors.NewLifecycleTimeoutError().WithCause(ctx.Err())
+		return ctx.Err()
 	}
 
 	return nil

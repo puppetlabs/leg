@@ -7,3 +7,5 @@ require (
 	github.com/puppetlabs/leg/lifecycle v0.1.0
 	github.com/puppetlabs/leg/logging v0.1.0
 )
+
+replace github.com/puppetlabs/leg/lifecycle => ../lifecycle
