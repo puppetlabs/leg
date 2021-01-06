@@ -7,11 +7,7 @@ require (
 	github.com/puppetlabs/leg/instrumentation v0.1.4
 	github.com/puppetlabs/leg/logging v0.1.0
 	github.com/puppetlabs/leg/request v0.1.0
-	github.com/puppetlabs/leg/timeutil v0.0.0-00010101000000-000000000000
+	github.com/puppetlabs/leg/timeutil v0.2.0
 	github.com/stretchr/testify v1.6.1
 	k8s.io/apimachinery v0.20.1
 )
-
-replace github.com/puppetlabs/leg/timeutil => ../timeutil
-
-replace github.com/puppetlabs/leg/mathutil => ../mathutil

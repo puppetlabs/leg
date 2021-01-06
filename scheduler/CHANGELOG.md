@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-01-06
+
 ### Changed
 
 * Updated the recovery descriptor to take a timeutil backoff, which provides considerably more flexibility in the way backoffs and retries are performed.
@@ -47,7 +49,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.5...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.0...HEAD
+[0.2.0]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.5...scheduler/v0.2.0
 [0.1.5]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.4...scheduler/v0.1.5
 [0.1.4]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.3...scheduler/v0.1.4
 [0.1.3]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.2...scheduler/v0.1.3
