@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.1.4] - 2021-01-06
+
+### Build
+
+* Updated dependency on Leg lifecycle package.
+
 ## [0.1.3] - 2020-12-04
 
 ### Fixed
@@ -30,7 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.4...HEAD
+[0.1.3]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.3...httputil/v0.1.4
 [0.1.3]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.2...httputil/v0.1.3
 [0.1.2]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.1...httputil/v0.1.2
 [0.1.1]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.0...httputil/v0.1.1
