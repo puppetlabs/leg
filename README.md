@@ -24,6 +24,8 @@ configuration, and documentation (like this file) only.
 * [`instrumentation`](instrumentation): Integration with error reporting and
   metrics services.
 * [`jsonutil`](jsonutil): Extra data types for JSON data.
+* [`k8sutil`](k8sutil): Kubernetes controller framework and support utilities
+  for client operations.
 * [`lifecycle`](lifecycle): Support for running and gracefully stopping
   services within a context boundary.
 * [`logging`](logging): Standardized logging interface for Relay projects.
