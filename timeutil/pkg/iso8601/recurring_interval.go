@@ -127,7 +127,7 @@ func (ri RecurringInterval) MarshalText() ([]byte, error) {
 }
 
 func (ri *RecurringInterval) parseInitial(s string) (rest string, err error) {
-	if len(s) == 0 {
+	if s == "" {
 		err = ErrInvalidRecurringIntervalFormat
 		return
 	} else if s[0] != 'R' {
@@ -145,14 +145,14 @@ func (ri *RecurringInterval) parseRepetitions(s string) (rest string, err error)
 		buf.WriteByte(s[i])
 	}
 
-	if len := buf.Len(); len > 0 {
+	if n := buf.Len(); n > 0 {
 		repetitions, err := strconv.ParseInt(buf.String(), 10, 32)
 		if err != nil {
 			return s, err
 		}
 
 		ri.repetitions = int(repetitions)
-		return s[len:], nil
+		return s[n:], nil
 	}
 
 	return s, nil
@@ -200,7 +200,7 @@ func (ri *RecurringInterval) UnmarshalText(text []byte) error {
 
 // ParseRecurringInterval parses the given string according to the ISO 8601
 // recurring time interval representation.
-func ParseRecurringInterval(text string) (RecurringInterval, error) {
-	var ri RecurringInterval
-	return ri, ri.parse(text)
+func ParseRecurringInterval(text string) (ri RecurringInterval, err error) {
+	err = ri.parse(text)
+	return
 }

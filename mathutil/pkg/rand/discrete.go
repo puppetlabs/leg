@@ -54,7 +54,7 @@ func Uint64N(rng Rand, n uint64) (uint64, error) {
 	return r, nil
 }
 
-// Uint64Between returns, as a uint64, a pseudo-random number in [hi,lo).
+// Uint64Between returns, as a uint64, a pseudo-random number in [lo,hi).
 func Uint64Between(rng Rand, lo, hi uint64) (uint64, error) {
 	if lo >= hi {
 		return 0, ErrImpossible
@@ -95,7 +95,7 @@ func Float64(rng Rand) (r float64, err error) {
 	}
 }
 
-// Float64Between returns, as a float64, a pseudo-random number between [hi,lo).
+// Float64Between returns, as a float64, a pseudo-random number between [lo,hi).
 func Float64Between(rng Rand, lo, hi float64) (float64, error) {
 	if lo >= hi {
 		return 0, ErrImpossible

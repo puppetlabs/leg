@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/leg/timeutil/iso8601"
+	"github.com/puppetlabs/leg/timeutil/pkg/iso8601"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
