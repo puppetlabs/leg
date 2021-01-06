@@ -29,6 +29,7 @@ configuration, and documentation (like this file) only.
 * [`logging`](logging): Standardized logging interface for Relay projects.
 * [`mainutil`](mainutil): Support for managing a set of concurrent processes
   with automatic signal processing and process termination.
+* [`mathutil`](mathutil): Additions to the Go standard library's math packages.
 * [`netutil`](netutil): Additions to the Go standard library's networking
   packages.
 * [`request`](request): Standardized support for passing rudimentary tracing
