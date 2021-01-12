@@ -44,7 +44,7 @@ func (d *Deployment) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (d *Deployment) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, d.Object, owner)
+	return helper.Own(d.Object, owner)
 }
 
 func (d *Deployment) Persist(ctx context.Context, cl client.Client) error {

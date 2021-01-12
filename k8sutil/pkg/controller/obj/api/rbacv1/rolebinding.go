@@ -38,7 +38,7 @@ func (rb *RoleBinding) Load(ctx context.Context, cl client.Client) (bool, error)
 }
 
 func (rb *RoleBinding) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, rb.Object, owner)
+	return helper.Own(rb.Object, owner)
 }
 
 func (rb *RoleBinding) Persist(ctx context.Context, cl client.Client) error {

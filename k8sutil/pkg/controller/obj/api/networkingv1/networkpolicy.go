@@ -38,7 +38,7 @@ func (np *NetworkPolicy) Load(ctx context.Context, cl client.Client) (bool, erro
 }
 
 func (np *NetworkPolicy) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, np.Object, owner)
+	return helper.Own(np.Object, owner)
 }
 
 func (np *NetworkPolicy) Persist(ctx context.Context, cl client.Client) error {

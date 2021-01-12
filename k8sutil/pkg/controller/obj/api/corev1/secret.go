@@ -50,7 +50,7 @@ func (s *Secret) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (s *Secret) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, s.Object, owner)
+	return helper.Own(s.Object, owner)
 }
 
 func (s *Secret) Persist(ctx context.Context, cl client.Client) error {

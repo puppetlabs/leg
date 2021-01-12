@@ -32,3 +32,16 @@ func (inlaf IgnoreNilLabelAnnotatableFrom) LabelAnnotateFrom(ctx context.Context
 }
 
 var _ LabelAnnotatableFrom = &IgnoreNilLabelAnnotatableFrom{}
+
+// Label uses any LabelAnnotatableFrom object to assign the given label.
+func Label(ctx context.Context, target LabelAnnotatableFrom, key, value string) {
+	target.LabelAnnotateFrom(ctx, &metav1.ObjectMeta{
+		Labels: map[string]string{key: value},
+	})
+}
+
+// LabelManagedBy sets the "app.kubernetes.io/managed-by" label to a particular
+// value.
+func LabelManagedBy(ctx context.Context, target LabelAnnotatableFrom, value string) {
+	Label(ctx, target, "app.kubernetes.io/managed-by", value)
+}

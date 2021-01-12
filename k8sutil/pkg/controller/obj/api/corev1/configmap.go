@@ -39,7 +39,7 @@ func (cm *ConfigMap) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (cm *ConfigMap) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, cm.Object, owner)
+	return helper.Own(cm.Object, owner)
 }
 
 func (cm *ConfigMap) Own(ctx context.Context, other lifecycle.Ownable) error {

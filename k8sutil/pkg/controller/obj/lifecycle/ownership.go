@@ -39,6 +39,24 @@ type OwnablePersister interface {
 	Persister
 }
 
+// IgnoreNilOwnablePersister combines IgnoreNilOwnable and IgnoreNilPersister.
+type IgnoreNilOwnablePersister struct {
+	OwnablePersister
+}
+
+// Owned sets the ownerReferences controller for this entity to the given
+// object, or does nothing if the underlying entity is nil or an interface with
+// a nil value.
+func (inop IgnoreNilOwnablePersister) Owned(ctx context.Context, owner TypedObject) error {
+	return IgnoreNilOwnable{inop.OwnablePersister}.Owned(ctx, owner)
+}
+
+// Persist saves this entity using the given client, or does nothing if the
+// underlying entity is nil or is an interface with a nil value.
+func (inop IgnoreNilOwnablePersister) Persist(ctx context.Context, cl client.Client) error {
+	return IgnoreNilPersister{inop.OwnablePersister}.Persist(ctx, cl)
+}
+
 // OwnablePersisters allows a collection of ownable persisters to be used as a
 // single entity.
 type OwnablePersisters []OwnablePersister
