@@ -2,6 +2,7 @@ package errmark
 
 import (
 	"errors"
+	"reflect"
 )
 
 // Rule tests an error against an arbitrary condition.
@@ -32,6 +33,16 @@ func RuleExact(want error) Rule {
 func RuleIs(want error) Rule {
 	return RuleFunc(func(err error) bool {
 		return errors.Is(err, want)
+	})
+}
+
+// RuleType matches an error if errors.As() would return true for a target of a
+// pointer to the type given.
+func RuleType(want interface{}) Rule {
+	// This will give us a pointer to whatever type is wanted.
+	candidate := reflect.New(reflect.ValueOf(want).Type()).Interface()
+	return RuleFunc(func(err error) bool {
+		return errors.As(err, candidate)
 	})
 }
 

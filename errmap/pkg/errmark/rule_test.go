@@ -3,6 +3,7 @@ package errmark_test
 import (
 	"errors"
 	"fmt"
+	"net"
 	"testing"
 
 	"github.com/puppetlabs/leg/errmap/pkg/errmark"
@@ -12,6 +13,7 @@ import (
 func TestRules(t *testing.T) {
 	e1 := errors.New("e1")
 	e2 := errors.New("e2")
+	e3 := &net.OpError{}
 
 	m := errmark.NewMarker("test")
 
@@ -49,6 +51,18 @@ func TestRules(t *testing.T) {
 			Name:     "Is does not match",
 			Rule:     errmark.RuleIs(e1),
 			Error:    e2,
+			Expected: false,
+		},
+		{
+			Name:     "Type match",
+			Rule:     errmark.RuleType(&net.OpError{}),
+			Error:    e3,
+			Expected: true,
+		},
+		{
+			Name:     "Type does not match",
+			Rule:     errmark.RuleType(&net.OpError{}),
+			Error:    e1,
 			Expected: false,
 		},
 		{
