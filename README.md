@@ -15,6 +15,8 @@ configuration, and documentation (like this file) only.
   Go standard library.
 * [`encoding`](encoding): Seamless transports for non-Unicode data over strings
   or JSON.
+* [`errmap`](errmap): An extension to Go 1.13's new error features that allows
+  wrapping behavior to be customized. Support for semantic grouping of errors.
 * [`graph`](graph): Directed and undirected graph data structures and
   algorithms.
 * [`hashutil`](hashutil): Standardized structures for working with the standard
