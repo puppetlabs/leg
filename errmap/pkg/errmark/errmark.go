@@ -16,6 +16,10 @@ type markedError struct {
 var _ errmap.MapApplicator = &markedError{}
 
 func (e *markedError) Error() string {
+	if MarkedShort(e) {
+		return e.base.Error()
+	}
+
 	return fmt.Sprintf("%s: %v", strings.Join(e.markers.Names(), ": "), e.base)
 }
 
