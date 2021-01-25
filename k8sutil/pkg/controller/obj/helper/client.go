@@ -5,7 +5,7 @@ import (
 
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
