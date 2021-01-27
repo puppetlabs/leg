@@ -69,7 +69,7 @@ func Patch(ctx context.Context, cl client.Client, upd, orig client.Object, opts 
 	upd.SetName(o.ObjectKey.Name)
 
 	klog.Infof("patching %T %s", upd, client.ObjectKeyFromObject(upd))
-	return cl.Patch(ctx, upd, client.MergeFrom(orig))
+	return cl.Patch(ctx, upd, client.MergeFromWithOptions(orig, client.MergeFromWithOptimisticLock{}))
 }
 
 type Patcher struct {
