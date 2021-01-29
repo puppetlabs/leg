@@ -15,6 +15,7 @@ import (
 	appsv1obj "github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/api/appsv1"
 	corev1obj "github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/api/corev1"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
+	"github.com/puppetlabs/leg/k8sutil/pkg/internal/tls"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -124,7 +125,11 @@ func Configure(tp *TLSProxy, addr string) (*TLSProxy, error) {
 	}
 
 	if tp.Secret.Object.Data["tls.key"] == nil || tp.Secret.Object.Data["tls.crt"] == nil {
-		bundle, err := generateTLSCertificateBundle(tp.Service.DNSName())
+		bundle, err := tls.GenerateCertificateBundle(
+			tls.CertificateBundleWithOrganization("Puppet"),
+			tls.CertificateBundleWithCACommonName("Temporary TLS Proxy Root CA"),
+			tls.CertificateBundleWithCertificateDNSNames{tp.Service.DNSName()},
+		)
 		if err != nil {
 			return nil, err
 		}

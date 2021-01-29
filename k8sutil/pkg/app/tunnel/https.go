@@ -5,7 +5,7 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/puppetlabs/leg/k8sutil/pkg/controller/app/tlsproxy"
+	"github.com/puppetlabs/leg/k8sutil/pkg/app/tlsproxy"
 	corev1obj "github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/api/corev1"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"

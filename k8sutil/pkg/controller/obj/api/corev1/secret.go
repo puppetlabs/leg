@@ -263,6 +263,10 @@ func (ts *TLSSecret) Certificate() (tls.Certificate, error) {
 func NewTLSSecret(key client.ObjectKey) *TLSSecret {
 	s := NewSecret(key)
 	s.Object.Type = corev1.SecretTypeTLS
+	s.Object.Data = map[string][]byte{
+		"tls.key": nil,
+		"tls.crt": nil,
+	}
 
 	return &TLSSecret{
 		Secret: s,

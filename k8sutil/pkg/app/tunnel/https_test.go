@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/puppetlabs/leg/k8sutil/pkg/controller/app/tunnel"
+	"github.com/puppetlabs/leg/k8sutil/pkg/app/tunnel"
 	corev1obj "github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/api/corev1"
 	"github.com/puppetlabs/leg/k8sutil/pkg/internal/testutil"
 	"github.com/puppetlabs/leg/k8sutil/pkg/test/endtoend"
