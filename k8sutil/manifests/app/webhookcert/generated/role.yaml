@@ -12,7 +12,19 @@ rules:
   - mutatingwebhookconfigurations
   - validatingwebhookconfigurations
   verbs:
+  - get
+  - list
   - update
+  - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: webhookcert-controller
+  namespace: default
+rules:
 - apiGroups:
   - ""
   resources:

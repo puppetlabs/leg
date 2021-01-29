@@ -18,8 +18,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
-// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch
-// +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=validatingwebhookconfigurations;mutatingwebhookconfigurations,verbs=update
+// +kubebuilder:rbac:namespace=default,groups=core,resources=secrets,verbs=get;list;watch
+// +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=validatingwebhookconfigurations;mutatingwebhookconfigurations,verbs=get;list;watch;update
 
 type Reconciler struct {
 	cl                                  client.Client
@@ -66,7 +66,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 	for _, name := range r.validatingWebhookConfigurationNames {
 		vwc := admissionregistrationv1obj.NewValidatingWebhookConfiguration(name)
 		if _, err := (lifecycle.RequiredLoader{Loader: vwc}).Load(ctx, r.cl); err != nil {
-			klog.ErrorS(err, "webhook certificate reconciler: failed to load ValidatingWebhookConfiguration %q", name)
+			klog.ErrorS(err, "webhook certificate reconciler: failed to load configuration", "validatingwebhookconfiguration", name)
 			requeue = true
 			continue
 		}
@@ -76,18 +76,18 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 		}
 
 		if err := vwc.Persist(ctx, r.cl); err != nil {
-			klog.ErrorS(err, "webhook certificate reconciler: failed to persist ValidatingWebhookConfiguration %q", name)
+			klog.ErrorS(err, "webhook certificate reconciler: failed to persist configuration", "validatingwebhookconfiguration", name)
 			requeue = true
 			continue
 		}
 
-		klog.V(4).InfoS("webhook certificate reconciler: updated CA bundle for ValidatingWebhookConfiguration %q", name)
+		klog.V(4).InfoS("webhook certificate reconciler: updated CA bundle", "validatingwebhookconfiguration", name)
 	}
 
 	for _, name := range r.mutatingWebhookConfigurationNames {
 		mwc := admissionregistrationv1obj.NewMutatingWebhookConfiguration(name)
 		if _, err := (lifecycle.RequiredLoader{Loader: mwc}).Load(ctx, r.cl); err != nil {
-			klog.ErrorS(err, "webhook certificate reconciler: failed to load MutatingWebhookConfiguration %q", name)
+			klog.ErrorS(err, "webhook certificate reconciler: failed to load", "mutatingwebhookconfiguration", name)
 			requeue = true
 			continue
 		}
@@ -97,12 +97,12 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 		}
 
 		if err := mwc.Persist(ctx, r.cl); err != nil {
-			klog.ErrorS(err, "webhook certificate reconciler: failed to persist MutatingWebhookConfiguration %q", name)
+			klog.ErrorS(err, "webhook certificate reconciler: failed to persist", "mutatingwebhookconfiguration", name)
 			requeue = true
 			continue
 		}
 
-		klog.V(4).InfoS("webhook certificate reconciler: updated CA bundle for MutatingWebhookConfiguration %q", name)
+		klog.V(4).InfoS("webhook certificate reconciler: updated CA bundle", "mutatingwebhookconfiguration", name)
 	}
 
 	return reconcile.Result{Requeue: requeue}, nil
