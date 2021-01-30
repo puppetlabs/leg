@@ -2,7 +2,6 @@ package webhookcert
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/pem"
 	"fmt"
 
@@ -59,8 +58,6 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 		caBundle = append(caBundle, certPEM...)
 	}
 
-	encodedCABundle := []byte(base64.StdEncoding.EncodeToString(caBundle))
-
 	var requeue bool
 
 	for _, name := range r.validatingWebhookConfigurationNames {
@@ -72,7 +69,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 		}
 
 		for i := range vwc.Object.Webhooks {
-			vwc.Object.Webhooks[i].ClientConfig.CABundle = encodedCABundle
+			vwc.Object.Webhooks[i].ClientConfig.CABundle = caBundle
 		}
 
 		if err := vwc.Persist(ctx, r.cl); err != nil {
@@ -93,7 +90,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 		}
 
 		for i := range mwc.Object.Webhooks {
-			mwc.Object.Webhooks[i].ClientConfig.CABundle = encodedCABundle
+			mwc.Object.Webhooks[i].ClientConfig.CABundle = caBundle
 		}
 
 		if err := mwc.Persist(ctx, r.cl); err != nil {
