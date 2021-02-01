@@ -33,7 +33,7 @@ func TestReconcilerSetsCertificateInSecret(t *testing.T) {
 			})
 			require.NoError(t, err)
 
-			selfsignedsecret.AddReconcilerToManager(mgr, secretKey, "Puppet", "sss.example.com")
+			require.NoError(t, selfsignedsecret.AddReconcilerToManager(mgr, secretKey, "Puppet", "sss.example.com"))
 
 			var wg sync.WaitGroup
 			defer wg.Wait()

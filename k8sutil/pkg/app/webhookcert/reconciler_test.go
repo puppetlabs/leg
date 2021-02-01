@@ -54,8 +54,8 @@ func TestReconcilerUpdatesCABundle(t *testing.T) {
 			})
 			require.NoError(t, err)
 
-			selfsignedsecret.AddReconcilerToManager(mgr, secret.Key, "Puppet", "test.webhookcert.example.com")
-			webhookcert.AddReconcilerToManager(mgr, secret.Key, webhookcert.WithValidatingWebhookConfiguration(vwc.Name))
+			require.NoError(t, selfsignedsecret.AddReconcilerToManager(mgr, secret.Key, "Puppet", "test.webhookcert.example.com"))
+			require.NoError(t, webhookcert.AddReconcilerToManager(mgr, secret.Key, webhookcert.WithValidatingWebhookConfiguration(vwc.Name)))
 
 			var wg sync.WaitGroup
 			defer wg.Wait()
