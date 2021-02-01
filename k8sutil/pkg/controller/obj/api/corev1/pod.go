@@ -13,6 +13,7 @@ import (
 
 var (
 	ErrPodTerminated = errors.New("pod terminated")
+	ErrPodRunning    = errors.New("pod running")
 	ErrPodWaiting    = errors.New("pod waiting to start")
 )
 
@@ -104,6 +105,23 @@ func NewPodRunningPoller(pod *Pod) lifecycle.RetryLoader {
 			return true, nil
 		case pod.Terminated():
 			return true, ErrPodTerminated
+		default:
+			return false, ErrPodWaiting
+		}
+	})
+}
+
+func NewPodTerminatedPoller(pod *Pod) lifecycle.RetryLoader {
+	return lifecycle.NewRetryLoader(pod, func(ok bool, err error) (bool, error) {
+		if !ok || err != nil {
+			return ok, err
+		}
+
+		switch {
+		case pod.Terminated():
+			return true, nil
+		case pod.Running():
+			return false, ErrPodRunning
 		default:
 			return false, ErrPodWaiting
 		}
