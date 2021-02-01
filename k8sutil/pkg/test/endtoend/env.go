@@ -140,10 +140,61 @@ type Environment struct {
 	closer *lifecycle.Closer
 }
 
+func (e *Environment) setUp() error {
+	mapper, err := apiutil.NewDynamicRESTMapper(e.RESTConfig)
+	if err != nil {
+		return err
+	}
+	e.RESTMapper = mapper
+
+	controllerClient, err := client.New(e.RESTConfig, client.Options{
+		Scheme: e.Scheme,
+		Mapper: mapper,
+	})
+	if err != nil {
+		return err
+	}
+	e.ControllerClient = controllerClient
+
+	staticClient, err := kubernetes.NewForConfig(e.RESTConfig)
+	if err != nil {
+		return err
+	}
+	e.StaticClient = staticClient
+
+	dynamicClient, err := dynamic.NewForConfig(e.RESTConfig)
+	if err != nil {
+		return err
+	}
+	e.DynamicClient = dynamicClient
+
+	return nil
+}
+
 // Close terminates the connection to this cluster and cleans up resources
 // created by the connection.
 func (e *Environment) Close(ctx context.Context) error {
 	return e.closer.Do(ctx)
+}
+
+// Impersonate creates an Environment that uses the given configuration for
+// impersonating a user or service account. Its lifetime is the same as the
+// parent environment.
+func (e *Environment) Impersonate(ic rest.ImpersonationConfig) (*Environment, error) {
+	cfg := rest.CopyConfig(e.RESTConfig)
+	cfg.Impersonate = ic
+
+	ce := &Environment{
+		Scheme:     e.Scheme,
+		RESTConfig: cfg,
+
+		closer: lifecycle.NewCloserBuilder().Build(),
+	}
+	if err := ce.setUp(); err != nil {
+		return nil, err
+	}
+
+	return ce, nil
 }
 
 // NewEnvironment establishes a connection to the cluster given by the relevant
@@ -185,39 +236,17 @@ func NewEnvironment(opts ...EnvironmentOption) (e *Environment, err error) {
 	}
 	cb.Require(env.Stop)
 
-	mapper, err := apiutil.NewDynamicRESTMapper(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	controllerClient, err := client.New(cfg, client.Options{
-		Scheme: o.ClientScheme,
-		Mapper: mapper,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	staticClient, err := kubernetes.NewForConfig(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	dynamicClient, err := dynamic.NewForConfig(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Environment{
-		Scheme:           o.ClientScheme,
-		RESTConfig:       cfg,
-		RESTMapper:       mapper,
-		ControllerClient: controllerClient,
-		StaticClient:     staticClient,
-		DynamicClient:    dynamicClient,
+	e = &Environment{
+		Scheme:     o.ClientScheme,
+		RESTConfig: cfg,
 
 		closer: cb.Build(),
-	}, nil
+	}
+	if err := e.setUp(); err != nil {
+		return nil, err
+	}
+
+	return e, nil
 }
 
 // WithEnvironment runs a function with a connection to a cluster and then tears
