@@ -51,9 +51,28 @@ func AnyDNSLabelName(raw string) string {
 	return mapped
 }
 
+// AnyDNSLabelNameSuffixed calls AnyDNSLabelName ensuring that the entirety of
+// the given suffix is retained if possible.
+func AnyDNSLabelNameSuffixed(prefix, suffix string) string {
+	remaining := 63 - len(suffix)
+	if remaining <= 0 {
+		return AnyDNSLabelName(suffix)
+	}
+	if remaining < len(prefix) {
+		prefix = prefix[:remaining]
+	}
+	return AnyDNSLabelName(prefix + suffix)
+}
+
 // MetaName normalizes a Kubernetes metadata name field.
 func MetaName(raw string) string {
 	return AnyDNSLabelName(raw)
+}
+
+// MetaNameSuffixed normalizes a Kubernetes metadata name field ensuring that
+// the entirety of the given suffix is retained if possible.
+func MetaNameSuffixed(prefix, suffix string) string {
+	return AnyDNSLabelNameSuffixed(prefix, suffix)
 }
 
 // MetaGenerateName normalizes a Kubernetes metadata generateName field. It is

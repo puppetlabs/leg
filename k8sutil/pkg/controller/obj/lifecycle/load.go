@@ -108,11 +108,11 @@ func (rl *retryLoader) Load(ctx context.Context, cl client.Client) (bool, error)
 }
 
 func (rl *retryLoader) WithWaitOptions(opts ...retry.WaitOption) Loader {
-	return LoaderFunc(func(ctx context.Context, cl client.Client) (ok bool, err error) {
-		err = retry.Wait(ctx, func(ctx context.Context) (bool, error) {
+	return LoaderFunc(func(ctx context.Context, cl client.Client) (bool, error) {
+		err := retry.Wait(ctx, func(ctx context.Context) (bool, error) {
 			return rl.mapper(rl.delegate.Load(ctx, cl))
 		}, opts...)
-		return
+		return err == nil, err
 	})
 }
 

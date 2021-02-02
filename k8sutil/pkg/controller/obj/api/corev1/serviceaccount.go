@@ -43,7 +43,7 @@ func (sa *ServiceAccount) Load(ctx context.Context, cl client.Client) (bool, err
 }
 
 func (sa *ServiceAccount) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, sa.Object, owner)
+	return helper.Own(sa.Object, owner)
 }
 
 func (sa *ServiceAccount) Persist(ctx context.Context, cl client.Client) error {

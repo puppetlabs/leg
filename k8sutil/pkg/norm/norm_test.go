@@ -65,3 +65,36 @@ func TestNorm(t *testing.T) {
 		})
 	}
 }
+
+func TestNormSuffixed(t *testing.T) {
+	tests := []struct {
+		Func           func(string, string) string
+		Prefix, Suffix string
+		Expected       string
+	}{
+		{
+			Func:     norm.AnyDNSLabelNameSuffixed,
+			Prefix:   "foo",
+			Suffix:   "bar",
+			Expected: "foobar",
+		},
+		{
+			Func:     norm.AnyDNSLabelNameSuffixed,
+			Prefix:   strings.Repeat("foo", 100),
+			Suffix:   "bar",
+			Expected: strings.Repeat("foo", 20) + "bar",
+		},
+		{
+			Func:     norm.AnyDNSLabelNameSuffixed,
+			Prefix:   strings.Repeat("foo", 100),
+			Suffix:   strings.Repeat("bar", 100),
+			Expected: strings.Repeat("bar", 21),
+		},
+	}
+	for _, test := range tests {
+		name := fmt.Sprintf("%s(%q, %q)", runtime.FuncForPC(reflect.ValueOf(test.Func).Pointer()).Name(), test.Prefix, test.Suffix)
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, test.Expected, test.Func(test.Prefix, test.Suffix))
+		})
+	}
+}

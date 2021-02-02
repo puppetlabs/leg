@@ -39,7 +39,7 @@ func (s *Service) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (s *Service) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, s.Object, owner)
+	return helper.Own(s.Object, owner)
 }
 
 func (s *Service) Persist(ctx context.Context, cl client.Client) error {

@@ -38,7 +38,7 @@ func (r *Role) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (r *Role) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, r.Object, owner)
+	return helper.Own(r.Object, owner)
 }
 
 func (r *Role) Persist(ctx context.Context, cl client.Client) error {

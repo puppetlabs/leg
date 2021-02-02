@@ -6,6 +6,7 @@ import (
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -38,7 +39,7 @@ func (j *Job) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (j *Job) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, j.Object, owner)
+	return helper.Own(j.Object, owner)
 }
 
 func (j *Job) Persist(ctx context.Context, cl client.Client) error {
@@ -50,6 +51,37 @@ func (j *Job) Copy() *Job {
 		Key:    j.Key,
 		Object: j.Object.DeepCopy(),
 	}
+}
+
+func (j *Job) Condition(typ batchv1.JobConditionType) (batchv1.JobCondition, bool) {
+	for _, cond := range j.Object.Status.Conditions {
+		if cond.Type == typ {
+			return cond, true
+		}
+	}
+	return batchv1.JobCondition{Type: typ}, false
+}
+
+func (j *Job) CompleteCondition() (batchv1.JobCondition, bool) {
+	return j.Condition(batchv1.JobComplete)
+}
+
+func (j *Job) FailedCondition() (batchv1.JobCondition, bool) {
+	return j.Condition(batchv1.JobFailed)
+}
+
+func (j *Job) Complete() bool {
+	cc, ok := j.CompleteCondition()
+	return ok && cc.Status == corev1.ConditionTrue
+}
+
+func (j *Job) Failed() bool {
+	fc, ok := j.FailedCondition()
+	return ok && fc.Status == corev1.ConditionTrue
+}
+
+func (j *Job) Succeeded() bool {
+	return j.Complete() && !j.Failed()
 }
 
 func NewJob(key client.ObjectKey) *Job {

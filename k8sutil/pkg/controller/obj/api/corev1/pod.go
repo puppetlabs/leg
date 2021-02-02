@@ -13,6 +13,7 @@ import (
 
 var (
 	ErrPodTerminated = errors.New("pod terminated")
+	ErrPodRunning    = errors.New("pod running")
 	ErrPodWaiting    = errors.New("pod waiting to start")
 )
 
@@ -44,7 +45,7 @@ func (p *Pod) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (p *Pod) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, p.Object, owner)
+	return helper.Own(p.Object, owner)
 }
 
 func (p *Pod) Persist(ctx context.Context, cl client.Client) error {
@@ -104,6 +105,23 @@ func NewPodRunningPoller(pod *Pod) lifecycle.RetryLoader {
 			return true, nil
 		case pod.Terminated():
 			return true, ErrPodTerminated
+		default:
+			return false, ErrPodWaiting
+		}
+	})
+}
+
+func NewPodTerminatedPoller(pod *Pod) lifecycle.RetryLoader {
+	return lifecycle.NewRetryLoader(pod, func(ok bool, err error) (bool, error) {
+		if !ok || err != nil {
+			return ok, err
+		}
+
+		switch {
+		case pod.Terminated():
+			return true, nil
+		case pod.Running():
+			return false, ErrPodRunning
 		default:
 			return false, ErrPodWaiting
 		}

@@ -38,7 +38,7 @@ func (lr *LimitRange) Load(ctx context.Context, cl client.Client) (bool, error) 
 }
 
 func (lr *LimitRange) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, lr.Object, owner)
+	return helper.Own(lr.Object, owner)
 }
 
 func (lr *LimitRange) Persist(ctx context.Context, cl client.Client) error {

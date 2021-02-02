@@ -38,7 +38,7 @@ func (pv *PersistentVolume) Load(ctx context.Context, cl client.Client) (bool, e
 }
 
 func (pv *PersistentVolume) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, pv.Object, owner)
+	return helper.Own(pv.Object, owner)
 }
 
 func (pv *PersistentVolume) Persist(ctx context.Context, cl client.Client) error {

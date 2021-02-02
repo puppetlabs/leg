@@ -5,7 +5,7 @@ import (
 
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -69,7 +69,7 @@ func Patch(ctx context.Context, cl client.Client, upd, orig client.Object, opts 
 	upd.SetName(o.ObjectKey.Name)
 
 	klog.Infof("patching %T %s", upd, client.ObjectKeyFromObject(upd))
-	return cl.Patch(ctx, upd, client.MergeFrom(orig))
+	return cl.Patch(ctx, upd, client.MergeFromWithOptions(orig, client.MergeFromWithOptimisticLock{}))
 }
 
 type Patcher struct {

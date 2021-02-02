@@ -50,7 +50,7 @@ func (s *Secret) Load(ctx context.Context, cl client.Client) (bool, error) {
 }
 
 func (s *Secret) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, s.Object, owner)
+	return helper.Own(s.Object, owner)
 }
 
 func (s *Secret) Persist(ctx context.Context, cl client.Client) error {
@@ -263,6 +263,10 @@ func (ts *TLSSecret) Certificate() (tls.Certificate, error) {
 func NewTLSSecret(key client.ObjectKey) *TLSSecret {
 	s := NewSecret(key)
 	s.Object.Type = corev1.SecretTypeTLS
+	s.Object.Data = map[string][]byte{
+		"tls.key": nil,
+		"tls.crt": nil,
+	}
 
 	return &TLSSecret{
 		Secret: s,

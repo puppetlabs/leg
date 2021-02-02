@@ -23,6 +23,7 @@ var _ lifecycle.Deleter = &PersistentVolumeClaim{}
 var _ lifecycle.LabelAnnotatableFrom = &PersistentVolumeClaim{}
 var _ lifecycle.Loader = &PersistentVolumeClaim{}
 var _ lifecycle.Ownable = &PersistentVolumeClaim{}
+var _ lifecycle.Owner = &PersistentVolumeClaim{}
 var _ lifecycle.Persister = &PersistentVolumeClaim{}
 
 func (pvc *PersistentVolumeClaim) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
@@ -38,7 +39,11 @@ func (pvc *PersistentVolumeClaim) Load(ctx context.Context, cl client.Client) (b
 }
 
 func (pvc *PersistentVolumeClaim) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(ctx, pvc.Object, owner)
+	return helper.Own(pvc.Object, owner)
+}
+
+func (pvc *PersistentVolumeClaim) Own(ctx context.Context, other lifecycle.Ownable) error {
+	return other.Owned(ctx, lifecycle.TypedObject{GVK: PersistentVolumeClaimKind, Object: pvc.Object})
 }
 
 func (pvc *PersistentVolumeClaim) Persist(ctx context.Context, cl client.Client) error {
