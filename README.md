@@ -25,7 +25,8 @@ configuration, and documentation (like this file) only.
   responses. Supporting algorithms for working with HTTP servers.
 * [`instrumentation`](instrumentation): Integration with error reporting and
   metrics services.
-* [`jsonutil`](jsonutil): Extra data types for JSON data.
+* [`jsonutil`](jsonutil): Extra data types for JSON data and support for
+  JSONPath queries.
 * [`k8sutil`](k8sutil): Kubernetes controller framework and support utilities
   for client operations.
 * [`lifecycle`](lifecycle): Support for running and gracefully stopping
