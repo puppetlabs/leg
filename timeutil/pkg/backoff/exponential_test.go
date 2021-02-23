@@ -1,6 +1,7 @@
 package backoff_test
 
 import (
+	"context"
 	"math"
 	"testing"
 	"time"
@@ -11,6 +12,8 @@ import (
 )
 
 func TestExponential(t *testing.T) {
+	ctx := context.Background()
+
 	g, err := backoff.Exponential(10*time.Second, 60.0).New()
 	require.NoError(t, err)
 
@@ -26,13 +29,15 @@ func TestExponential(t *testing.T) {
 		math.MaxInt64,
 	}
 	for i, step := range expected {
-		wait, err := g.Next()
+		wait, err := g.Next(ctx)
 		require.NoError(t, err)
 		assert.Equal(t, step, wait, "step #%d", i)
 	}
 }
 
 func TestDecorrelatedExponential(t *testing.T) {
+	ctx := context.Background()
+
 	tests := []struct {
 		Name     string
 		Factory  backoff.GeneratorFactory
@@ -89,7 +94,7 @@ func TestDecorrelatedExponential(t *testing.T) {
 			}
 
 			for i, step := range test.Expected {
-				wait, err := g.Next()
+				wait, err := g.Next(ctx)
 				require.NoError(t, err)
 				assert.Equal(t, step, wait, "step #%d", i)
 			}

@@ -1,12 +1,15 @@
 package backoff
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type constantGenerator struct {
 	step time.Duration
 }
 
-func (cg *constantGenerator) Next() (time.Duration, error) {
+func (cg *constantGenerator) Next(ctx context.Context) (time.Duration, error) {
 	return cg.step, nil
 }
 

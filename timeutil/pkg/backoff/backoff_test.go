@@ -1,6 +1,7 @@
 package backoff_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -13,6 +14,8 @@ import (
 var randFactory = rand.NewPCGFactory(rand.OneSeeder)
 
 func TestBuild(t *testing.T) {
+	ctx := context.Background()
+
 	f := backoff.Build(
 		backoff.Linear(5*time.Second),
 		backoff.MinBound(7*time.Second),
@@ -35,7 +38,7 @@ func TestBuild(t *testing.T) {
 		30 * time.Second,
 	}
 	for i, step := range expected {
-		wait, err := b.Next()
+		wait, err := b.Next(ctx)
 		require.NoError(t, err)
 		assert.Equal(t, step, wait, "step #%d", i)
 	}

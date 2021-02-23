@@ -8,7 +8,9 @@
 // easy-to-use adapter in the package clock/k8sext.
 package clock
 
-import "time"
+import (
+	"time"
+)
 
 // PassiveClock is a clock that provides timing information but not the ability
 // to schedule events for the future.

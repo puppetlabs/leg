@@ -1,6 +1,7 @@
 package backoff_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -11,6 +12,8 @@ import (
 )
 
 func TestResetAfter(t *testing.T) {
+	ctx := context.Background()
+
 	type expected struct {
 		Duration  time.Duration
 		Error     error
@@ -73,7 +76,7 @@ func TestResetAfter(t *testing.T) {
 			require.NoError(t, err)
 
 			for i, step := range test.Expected {
-				next, err := g.Next()
+				next, err := g.Next(ctx)
 				assert.Equal(t, step.Error, err, "step #%d", i)
 				assert.Equal(t, step.Duration, next, "step #%d", i)
 

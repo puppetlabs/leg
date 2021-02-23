@@ -104,7 +104,6 @@ func TestRecoverySchedulerRetryCountReset(t *testing.T) {
 						backoff.MaxRetries(10),
 					),
 					successDuration-(500*time.Millisecond),
-					backoff.ResetAfterWithClock(dc),
 				),
 			),
 		),

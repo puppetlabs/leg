@@ -1,6 +1,9 @@
 package backoff
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 // Backoff is a combination of a generator of backoff durations and zero or more
 // rules that adjust the generated duration amounts.
@@ -13,7 +16,7 @@ type Backoff struct {
 }
 
 // Next provides a new backoff amount to delay work by.
-func (b *Backoff) Next() (next time.Duration, err error) {
+func (b *Backoff) Next(ctx context.Context) (next time.Duration, err error) {
 	generate := true
 	if b.r != nil {
 		generate, next, err = b.r.ApplyBefore()
@@ -23,7 +26,7 @@ func (b *Backoff) Next() (next time.Duration, err error) {
 	}
 
 	if generate {
-		next, err = b.g.Next()
+		next, err = b.g.Next(ctx)
 		if err != nil {
 			return 0, err
 		}

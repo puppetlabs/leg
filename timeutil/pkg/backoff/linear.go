@@ -1,6 +1,7 @@
 package backoff
 
 import (
+	"context"
 	"math"
 	"time"
 )
@@ -10,7 +11,7 @@ type linearGenerator struct {
 	step time.Duration
 }
 
-func (lg *linearGenerator) Next() (time.Duration, error) {
+func (lg *linearGenerator) Next(ctx context.Context) (time.Duration, error) {
 	if lg.n < math.MaxInt64 {
 		lg.n++
 	}
