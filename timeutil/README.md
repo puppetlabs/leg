@@ -27,3 +27,7 @@ The retry package builds on the backoff package, providing a utility to automati
 ### iso8601
 
 The iso8601 package contains types to work with ISO 8601 date/time formats not covered by the standard library: durations, intervals, and recurring intervals.
+
+### parseext
+
+The parseext package provides a highly customizable date/time parser that understands multiple format strings.

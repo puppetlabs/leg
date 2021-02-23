@@ -5,11 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/reflect/xparse/xtime"
+	"github.com/puppetlabs/leg/timeutil/pkg/parseext"
 )
 
 var (
-	timeTree = xtime.Compile([]string{
+	timeTree = parseext.Compile([]string{
 		"2006-01-02T15:04:05",
 		"2006-01-02T15:04:05Z0700",
 		"2006-01-02T15:04:05Z07:00",

@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 * Add clockctx package to enable a fake clock to be passed through a context.
+* Import the parseext library from Reflect's xparse/xtime package.
 
 ## [0.2.0] - 2021-01-06
 
