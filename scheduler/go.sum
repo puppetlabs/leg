@@ -319,12 +319,11 @@ github.com/puppetlabs/leg/netutil v0.1.0/go.mod h1:ycY6MSkOndHh5azh5z66HH9IS8F04
 github.com/puppetlabs/leg/request v0.1.0 h1:4Eb9Ssk/Surjxyevh5i7PZjqarrCblpLWavPBLnxEio=
 github.com/puppetlabs/leg/request v0.1.0/go.mod h1:rLKkF3VdNg//iXBSTs+6Eir05BQR15rx3JNWTKiWzLI=
 github.com/puppetlabs/leg/scheduler v0.1.4/go.mod h1:kC6I8SA/nRt4VOu18qJ+HwBW+IxmXHI2lKicdfj3ItI=
-github.com/puppetlabs/leg/timeutil v0.2.0 h1:f5Dbivofe8zoFu3GxMopNeCI2x0rlKq6dJqZ1t10/b8=
-github.com/puppetlabs/leg/timeutil v0.2.0/go.mod h1:0O728lh6OxaBE6bJVFuPTUpCrtAb33g0Ne8DwHgZOr8=
+github.com/puppetlabs/leg/timeutil v0.3.0 h1:7JUYWWW8bvSRU7EcEBVmkDv2gTb1uLE/F7hnEWljfQc=
+github.com/puppetlabs/leg/timeutil v0.3.0/go.mod h1:FHkZ9rYegF0STjS4az6hsjdvcBHcG+FB4CsY5mx1DfI=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=
-github.com/reflect/xparse v0.0.0-20171128034418-ab29bdc5e11c/go.mod h1:tqAg+37u8qXKZZ1QaXWnJ18evc8C6euGUAa4dQpC1gk=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=

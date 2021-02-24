@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-## [0.2.0] - 2020-01-06
+## [0.2.1] - 2021-02-24
+
+### Build
+
+* Update timeutil package to v0.3.0.
+
+## [0.2.0] - 2021-01-06
 
 ### Changed
 
@@ -49,7 +55,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.1...HEAD
+[0.2.1]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.0...scheduler/v0.2.1
 [0.2.0]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.5...scheduler/v0.2.0
 [0.1.5]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.4...scheduler/v0.1.5
 [0.1.4]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.3...scheduler/v0.1.4
