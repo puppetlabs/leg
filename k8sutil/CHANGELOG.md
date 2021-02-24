@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* The tunnel application now waits for the proxy connection to be established before invoking its callback.
+
 ## [0.2.0] - 2021-02-02
 
 ### Added

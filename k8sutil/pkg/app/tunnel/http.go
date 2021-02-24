@@ -118,6 +118,13 @@ func ConfigureHTTP(h *HTTP) *HTTP {
 						Protocol:      corev1.ProtocolTCP,
 					},
 				},
+				LivenessProbe: &corev1.Probe{
+					Handler: corev1.Handler{
+						TCPSocket: &corev1.TCPSocketAction{
+							Port: intstr.FromString("tunnel"),
+						},
+					},
+				},
 			},
 		},
 	}

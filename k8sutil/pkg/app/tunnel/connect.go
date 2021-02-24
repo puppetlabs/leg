@@ -87,7 +87,9 @@ func WithHTTPConnection(ctx context.Context, cfg *rest.Config, h *HTTP, targetUR
 		return errors.New("missing local port information")
 	}
 
-	go func() {
+	connCh := make(chan struct{})
+
+	go func(connCh chan struct{}) {
 		headers := make(http.Header)
 		headers.Set("x-inlets-id", uuid.New().String())
 		headers.Set("x-inlets-upstream", "="+targetURL)
@@ -105,10 +107,23 @@ func WithHTTPConnection(ctx context.Context, cfg *rest.Config, h *HTTP, targetUR
 				headers,
 				nil,
 				func(proto, address string) bool { return true },
-				nil,
+				func(ctx context.Context) error {
+					if connCh != nil {
+						close(connCh)
+						connCh = nil
+					}
+					return nil
+				},
 			)
 		}
-	}()
+	}(connCh)
+
+	// Wait for client connection.
+	select {
+	case <-connCh:
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 
 	// Wait for service.
 	if _, err := corev1obj.NewEndpointsBoundPoller(corev1obj.NewEndpoints(h.Service)).Load(ctx, cl); err != nil {
