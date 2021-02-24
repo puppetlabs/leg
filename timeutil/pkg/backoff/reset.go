@@ -1,9 +1,11 @@
 package backoff
 
 import (
+	"context"
 	"time"
 
 	"github.com/puppetlabs/leg/timeutil/pkg/clock"
+	"github.com/puppetlabs/leg/timeutil/pkg/clockctx"
 )
 
 type resetAfterGenerator struct {
@@ -14,20 +16,25 @@ type resetAfterGenerator struct {
 	clock    clock.PassiveClock
 }
 
-func (rag *resetAfterGenerator) Next() (d time.Duration, err error) {
-	called := rag.clock.Now()
+func (rag *resetAfterGenerator) Next(ctx context.Context) (d time.Duration, err error) {
+	c := rag.clock
+	if c == nil {
+		c = clockctx.Clock(ctx)
+	}
+
+	called := c.Now()
 	defer func() {
 		rag.called = called
 	}()
 
-	if rag.cur == nil || rag.clock.Since(rag.called) >= rag.d {
+	if rag.cur == nil || c.Since(rag.called) >= rag.d {
 		rag.cur, err = rag.delegate.New()
 		if err != nil {
 			return
 		}
 	}
 
-	return rag.cur.Next()
+	return rag.cur.Next(ctx)
 }
 
 type resetAfterGeneratorFactory struct {
@@ -86,9 +93,7 @@ func ResetAfterWithClock(c clock.PassiveClock) ResetAfterOption {
 // factory with a fresh instance (i.e., resets its internal state) after a
 // certain amount of time has elapsed between calls to Next().
 func ResetAfter(delegate *Factory, d time.Duration, opts ...ResetAfterOption) GeneratorFactory {
-	o := &ResetAfterOptions{
-		Clock: clock.RealClock,
-	}
+	o := &ResetAfterOptions{}
 	o.ApplyOptions(opts)
 
 	return &resetAfterGeneratorFactory{

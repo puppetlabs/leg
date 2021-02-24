@@ -6,6 +6,7 @@ import (
 
 	"github.com/puppetlabs/leg/timeutil/pkg/backoff"
 	"github.com/puppetlabs/leg/timeutil/pkg/clock"
+	"github.com/puppetlabs/leg/timeutil/pkg/clockctx"
 )
 
 // DefaultBackoffFactory is a networking-appropriate backoff that the wait
@@ -82,19 +83,21 @@ type WorkFunc func(ctx context.Context) (bool, error)
 func Wait(ctx context.Context, work WorkFunc, opts ...WaitOption) (err error) {
 	o := &WaitOptions{
 		BackoffFactory: DefaultBackoffFactory,
-		Clock:          clock.RealClock,
+		Clock:          clockctx.Clock(ctx),
 	}
 	o.ApplyOptions(opts)
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	ctx = clockctx.WithClock(ctx, o.Clock)
+
 	b, err := o.BackoffFactory.New()
 	if err != nil {
 		return
 	}
 
-	bv, err := b.Next()
+	bv, err := b.Next(ctx)
 	if err != nil {
 		return
 	}
@@ -129,7 +132,7 @@ func Wait(ctx context.Context, work WorkFunc, opts ...WaitOption) (err error) {
 			return
 		}
 
-		bv, berr := b.Next()
+		bv, berr := b.Next(ctx)
 		if berr != nil {
 			err = berr
 			return

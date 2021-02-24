@@ -1,6 +1,7 @@
 package backoff
 
 import (
+	"context"
 	"math"
 	"time"
 
@@ -13,7 +14,7 @@ type exponentialGenerator struct {
 	factor  float64
 }
 
-func (eg *exponentialGenerator) Next() (time.Duration, error) {
+func (eg *exponentialGenerator) Next(ctx context.Context) (time.Duration, error) {
 	var exp float64
 	switch eg.factor {
 	case 2.0:
@@ -63,7 +64,7 @@ type decorrelatedExponentialGenerator struct {
 
 var _ RuleInjector = &decorrelatedExponentialGenerator{}
 
-func (deg *decorrelatedExponentialGenerator) Next() (next time.Duration, err error) {
+func (deg *decorrelatedExponentialGenerator) Next(ctx context.Context) (next time.Duration, err error) {
 	generate := true
 	if deg.rule != nil {
 		generate, next, err = deg.rule.ApplyBefore()
