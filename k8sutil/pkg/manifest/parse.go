@@ -2,6 +2,7 @@ package manifest
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -15,7 +16,7 @@ import (
 //
 // For each object loaded, the specified list of patchers is run. FixupPatcher
 // is automatically run and does not need to be present in the list of patchers.
-func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]runtime.Object, error) {
+func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]Object, error) {
 	patchers = append(patchers, FixupPatcher)
 
 	decoder := yaml.NewDocumentDecoder(ioutil.NopCloser(r))
@@ -29,7 +30,7 @@ func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]runt
 	deserializer := serializer.NewCodecFactory(scheme).UniversalDeserializer()
 
 	// The objects to create.
-	var objs []runtime.Object
+	var objs []Object
 
 	var stop bool
 	for !stop {
@@ -65,9 +66,14 @@ func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]runt
 			continue
 		}
 
-		obj, gvk, err := deserializer.Decode(b, nil, nil)
+		robj, gvk, err := deserializer.Decode(b, nil, nil)
 		if err != nil {
 			return nil, err
+		}
+
+		obj, ok := robj.(Object)
+		if !ok {
+			return nil, fmt.Errorf("object of type %T is missing metadata", obj)
 		}
 
 		for _, patcher := range patchers {

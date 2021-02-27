@@ -24,6 +24,14 @@ type PanicHandler interface {
 	OnPanic(ctx context.Context, req reconcile.Request, rv interface{}) (reconcile.Result, error)
 }
 
+type PanicHandlerFunc func(ctx context.Context, req reconcile.Request, rv interface{}) (reconcile.Result, error)
+
+var _ PanicHandler = PanicHandlerFunc(nil)
+
+func (phf PanicHandlerFunc) OnPanic(ctx context.Context, req reconcile.Request, rv interface{}) (reconcile.Result, error) {
+	return phf(ctx, req, rv)
+}
+
 var (
 	LoggingErrorHandler ErrorHandler = ErrorHandlerFunc(func(ctx context.Context, req reconcile.Request, err error) (reconcile.Result, error) {
 		klog.ErrorDepth(2, err)
@@ -59,7 +67,7 @@ func (emb *ErrorMatchersBuilder) Prepend(rule errmark.Rule, hnd ErrorHandler) *E
 }
 
 func (emb *ErrorMatchersBuilder) Append(rule errmark.Rule, hnd ErrorHandler) *ErrorMatchersBuilder {
-	emb.last = append(emb.first, ErrorMatcher{
+	emb.last = append(emb.last, ErrorMatcher{
 		Rule:    rule,
 		Handler: hnd,
 	})
@@ -78,9 +86,7 @@ func (emb *ErrorMatchersBuilder) Build() (matchers []ErrorMatcher) {
 	}
 
 	// Appended matchers.
-	for _, matcher := range emb.last {
-		matchers = append(matchers, matcher)
-	}
+	matchers = append(matchers, emb.last...)
 
 	// Fallback matcher.
 	if emb.fallback != nil {
@@ -98,7 +104,11 @@ func NewErrorMatchersBuilder() *ErrorMatchersBuilder {
 }
 
 func NewDefaultErrorMatchersBuilder() *ErrorMatchersBuilder {
-	return NewDefaultErrorMatchersBuilder().
+	return NewErrorMatchersBuilder().
+		Append(
+			errmark.RuleMarkedUser,
+			MaskingErrorHandler,
+		).
 		Append(
 			errmark.RuleAny(
 				RuleIsConflict,
@@ -106,10 +116,6 @@ func NewDefaultErrorMatchersBuilder() *ErrorMatchersBuilder {
 				errmark.RuleMarkedTransient,
 			),
 			PropagatingErrorHandler,
-		).
-		Append(
-			errmark.RuleMarkedUser,
-			MaskingErrorHandler,
 		).
 		SetFallback(LoggingErrorHandler)
 }

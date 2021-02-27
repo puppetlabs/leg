@@ -37,6 +37,11 @@ func WithHTTPConnection(ctx context.Context, cfg *rest.Config, h *HTTP, targetUR
 		return err
 	}
 
+	// Wait for service.
+	if _, err := corev1obj.NewEndpointsBoundPoller(corev1obj.NewEndpoints(h.Service)).Load(ctx, cl); err != nil {
+		return err
+	}
+
 	// Forward port to get access to remote side.
 	req := kc.CoreV1().RESTClient().Post().
 		Resource("pods").
@@ -123,11 +128,6 @@ func WithHTTPConnection(ctx context.Context, cfg *rest.Config, h *HTTP, targetUR
 	case <-connCh:
 	case <-ctx.Done():
 		return ctx.Err()
-	}
-
-	// Wait for service.
-	if _, err := corev1obj.NewEndpointsBoundPoller(corev1obj.NewEndpoints(h.Service)).Load(ctx, cl); err != nil {
-		return err
 	}
 
 	fn(ctx)

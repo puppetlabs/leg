@@ -47,14 +47,58 @@ func (r *Reconciler) InjectFunc(f inject.Func) error {
 	return f(r.delegate)
 }
 
-func NewReconciler(delegate reconcile.Reconciler) *Reconciler {
-	return &Reconciler{
-		errorMatchers: DefaultErrorMatchers,
+type ReconcilerOptions struct {
+	ErrorMatchers []ErrorMatcher
+	PanicHandler  PanicHandler
+}
+
+type ReconcilerOption interface {
+	ApplyToReconcilerOptions(target *ReconcilerOptions)
+}
+
+func (o *ReconcilerOptions) ApplyOptions(opts []ReconcilerOption) {
+	for _, opt := range opts {
+		opt.ApplyToReconcilerOptions(o)
 	}
 }
 
-func ChainReconciler() filter.Chainable {
+type ReconcilerOptionFunc func(target *ReconcilerOptions)
+
+var _ ReconcilerOption = ReconcilerOptionFunc(nil)
+
+func (rof ReconcilerOptionFunc) ApplyToReconcilerOptions(target *ReconcilerOptions) {
+	rof(target)
+}
+
+type WithErrorMatchers []ErrorMatcher
+
+var _ ReconcilerOption = WithErrorMatchers(nil)
+
+func (wem WithErrorMatchers) ApplyToReconcilerOptions(target *ReconcilerOptions) {
+	target.ErrorMatchers = wem
+}
+
+func WithPanicHandler(ph PanicHandler) ReconcilerOption {
+	return ReconcilerOptionFunc(func(target *ReconcilerOptions) {
+		target.PanicHandler = ph
+	})
+}
+
+func NewReconciler(delegate reconcile.Reconciler, opts ...ReconcilerOption) *Reconciler {
+	o := &ReconcilerOptions{
+		ErrorMatchers: DefaultErrorMatchers,
+	}
+	o.ApplyOptions(opts)
+
+	return &Reconciler{
+		delegate:      delegate,
+		errorMatchers: o.ErrorMatchers,
+		panicHandler:  o.PanicHandler,
+	}
+}
+
+func ChainReconciler(opts ...ReconcilerOption) filter.Chainable {
 	return filter.ChainableFunc(func(delegate reconcile.Reconciler) reconcile.Reconciler {
-		return NewReconciler(delegate)
+		return NewReconciler(delegate, opts...)
 	})
 }
