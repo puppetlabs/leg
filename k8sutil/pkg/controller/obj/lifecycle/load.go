@@ -126,3 +126,33 @@ func NewRetryLoader(delegate Loader, mapper func(bool, error) (bool, error)) Ret
 		mapper:   mapper,
 	}
 }
+
+type predicateLoader struct {
+	delegate Loader
+	cond     func(ctx context.Context) bool
+}
+
+func (pl *predicateLoader) Load(ctx context.Context, cl client.Client) (bool, error) {
+	if !pl.cond(ctx) {
+		return false, nil
+	}
+
+	return pl.delegate.Load(ctx, cl)
+}
+
+// NewPredicateLoader creates a new loader that delegates to a given loader if a
+// condition, evaluated upon Load being called, returns true.
+func NewPredicateLoader(delegate Loader, cond func(ctx context.Context) bool) Loader {
+	return &predicateLoader{
+		delegate: delegate,
+		cond:     cond,
+	}
+}
+
+// NewPrereqLoader creates a loader that only delegates to another loader if the
+// given object exists at the time Load is called.
+func NewPrereqLoader(delegate Loader, obj client.Object) Loader {
+	return NewPredicateLoader(delegate, func(ctx context.Context) bool {
+		return obj.GetUID() != ""
+	})
+}

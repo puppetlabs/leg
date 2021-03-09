@@ -33,6 +33,13 @@ func (inlaf IgnoreNilLabelAnnotatableFrom) LabelAnnotateFrom(ctx context.Context
 
 var _ LabelAnnotatableFrom = &IgnoreNilLabelAnnotatableFrom{}
 
+// Annotate uses any LabelAnnotatableFrom object to assign the given annotation.
+func Annotate(ctx context.Context, target LabelAnnotatableFrom, key, value string) {
+	target.LabelAnnotateFrom(ctx, &metav1.ObjectMeta{
+		Annotations: map[string]string{key: value},
+	})
+}
+
 // Label uses any LabelAnnotatableFrom object to assign the given label.
 func Label(ctx context.Context, target LabelAnnotatableFrom, key, value string) {
 	target.LabelAnnotateFrom(ctx, &metav1.ObjectMeta{
