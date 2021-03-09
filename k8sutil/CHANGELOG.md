@@ -52,7 +52,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.2.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.0...HEAD
+[0.3.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.2.1...k8sutil/v0.3.0
 [0.2.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.2.0...k8sutil/v0.2.1
 [0.2.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.1.0...k8sutil/v0.2.0
 [0.1.0]: https://github.com/puppetlabs/leg/compare/c09b3cdca7104d5ea79152368de260f5d40316b6...k8sutil/v0.1.0
