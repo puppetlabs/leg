@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-03-09
+
+### Added
+
+* Add a configurable error handling reconciler.
+* Port reconciler chaining and a single namespace filtering reconciler from Relay Core.
+* Add support for conditionally loading Kubernetes objects based on boolean predicates or the existence of another object.
+
+### Fixed
+
+* Prevent the tunnel application from attempting to connect before the tunnel service endpoint is bound.
+
 ## [0.2.1] - 2021-02-24
 
 ### Fixed
