@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.3.1] - 2021-03-09
+
 ### Fixed
 
 * The `AllowAll()` method of a `NetworkPolicy` object now correctly allows both ingress and egress traffic.
@@ -56,7 +58,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.0...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.1...HEAD
+[0.3.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.0...k8sutil/v0.3.1
 [0.3.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.2.1...k8sutil/v0.3.0
 [0.2.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.2.0...k8sutil/v0.2.1
 [0.2.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.1.0...k8sutil/v0.2.0
