@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* The `AllowAll()` method of a `NetworkPolicy` object now correctly allows both ingress and egress traffic.
+
 ## [0.3.0] - 2021-03-09
 
 ### Added

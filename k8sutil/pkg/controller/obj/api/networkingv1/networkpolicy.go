@@ -58,7 +58,14 @@ func (np *NetworkPolicy) Copy() *NetworkPolicy {
 }
 
 func (np *NetworkPolicy) AllowAll() {
-	np.Object.Spec = networkingv1.NetworkPolicySpec{}
+	np.Object.Spec = networkingv1.NetworkPolicySpec{
+		Ingress: []networkingv1.NetworkPolicyIngressRule{{}},
+		Egress:  []networkingv1.NetworkPolicyEgressRule{{}},
+		PolicyTypes: []networkingv1.PolicyType{
+			networkingv1.PolicyTypeIngress,
+			networkingv1.PolicyTypeEgress,
+		},
+	}
 }
 
 func (np *NetworkPolicy) DenyAll() {
