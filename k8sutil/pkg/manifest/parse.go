@@ -46,7 +46,7 @@ func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]Obje
 				}
 			}
 
-			if err == io.ErrShortWrite {
+			if err == io.ErrShortBuffer {
 				// More document to read, keep going.
 			} else if err == io.EOF {
 				// End of the entire stream.

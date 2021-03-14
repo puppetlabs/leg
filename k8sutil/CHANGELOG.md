@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* An individual document in a parsed manifest can now be larger than 32kB.
+
 ## [0.3.1] - 2021-03-09
 
 ### Fixed
