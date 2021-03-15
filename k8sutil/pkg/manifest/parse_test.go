@@ -29,3 +29,16 @@ func TestParse(t *testing.T) {
 	assert.IsType(t, &rbacv1beta1.ClusterRoleBinding{}, objs[3])
 	assert.IsType(t, &appsv1.Deployment{}, objs[4])
 }
+
+func TestParseDocumentLargerThanBuffer(t *testing.T) {
+	f, err := os.Open("testdata/fixtures/configmap.yaml")
+	require.NoError(t, err)
+	defer func() {
+		require.NoError(t, f.Close())
+	}()
+
+	objs, err := manifest.Parse(scheme.Scheme, f)
+	require.NoError(t, err)
+	require.Len(t, objs, 1)
+	assert.IsType(t, &corev1.ConfigMap{}, objs[0])
+}
