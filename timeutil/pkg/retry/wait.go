@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/puppetlabs/leg/errmap/pkg/errmark"
 	"github.com/puppetlabs/leg/timeutil/pkg/backoff"
 	"github.com/puppetlabs/leg/timeutil/pkg/clock"
 	"github.com/puppetlabs/leg/timeutil/pkg/clockctx"
@@ -73,6 +74,36 @@ func WithClock(c clock.Clock) WaitOption {
 // WorkFunc is a function that performs an arbitrary operation. If the operation
 // needs to be retried for any reason, the function must return false.
 type WorkFunc func(ctx context.Context) (bool, error)
+
+// Repeat indicates that work should be retried.
+func Repeat(err error) (bool, error) {
+	return false, err
+}
+
+// Done indicates that work should not be retried.
+func Done(err error) (bool, error) {
+	return true, err
+}
+
+// RepeatUnlessMarkedUser indicates that work should be retried if an error is
+// provided and it is not marked as a user error.
+func RepeatUnlessMarkedUser(err error) (bool, error) {
+	if err == nil || errmark.MarkedUser(err) {
+		return true, err
+	}
+
+	return false, err
+}
+
+// DoneUnlessMarkedTransient indicates that work should not be retried unless
+// the given error is marked transient.
+func DoneUnlessMarkedTransient(err error) (bool, error) {
+	if errmark.MarkedTransient(err) {
+		return false, err
+	}
+
+	return true, err
+}
 
 // Wait runs a given work function under a context with a particular backoff
 // algorithm if the work needs to be retried.
