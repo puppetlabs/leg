@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Add helpers to indicate whether work should be retried more clearly.
+
 ## [0.3.0] - 2021-02-24
 
 ### Added
