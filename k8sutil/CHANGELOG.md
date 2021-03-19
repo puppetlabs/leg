@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-03-19
+
 ### Added
 
 * Add helpers to implement lifecycle methods for Kubernetes API objects.
@@ -72,7 +74,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.4.0...HEAD
+[0.4.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.2...k8sutil/v0.4.0
 [0.3.2]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.1...k8sutil/v0.3.2
 [0.3.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.0...k8sutil/v0.3.1
 [0.3.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.2.1...k8sutil/v0.3.0
