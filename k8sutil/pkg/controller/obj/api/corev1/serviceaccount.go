@@ -7,7 +7,6 @@ import (
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -20,60 +19,28 @@ var (
 )
 
 type ServiceAccount struct {
+	*helper.NamespaceScopedAPIObject
+
 	Key    client.ObjectKey
 	Object *corev1.ServiceAccount
 }
 
-var _ lifecycle.Deleter = &ServiceAccount{}
-var _ lifecycle.LabelAnnotatableFrom = &ServiceAccount{}
-var _ lifecycle.Loader = &ServiceAccount{}
-var _ lifecycle.Ownable = &ServiceAccount{}
-var _ lifecycle.Persister = &ServiceAccount{}
-
-func (sa *ServiceAccount) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, sa.Object, opts...)
-}
-
-func (sa *ServiceAccount) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
-	helper.CopyLabelsAndAnnotations(&sa.Object.ObjectMeta, from)
-}
-
-func (sa *ServiceAccount) Load(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.GetIgnoreNotFound(ctx, cl, sa.Key, sa.Object)
-}
-
-func (sa *ServiceAccount) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(sa.Object, owner)
-}
-
-func (sa *ServiceAccount) Persist(ctx context.Context, cl client.Client) error {
-	if err := helper.CreateOrUpdate(ctx, cl, sa.Object, helper.WithObjectKey(sa.Key)); err != nil {
-		return err
-	}
-
-	sa.Key = client.ObjectKeyFromObject(sa.Object)
-	return nil
+func makeServiceAccount(key client.ObjectKey, obj *corev1.ServiceAccount) *ServiceAccount {
+	sa := &ServiceAccount{Key: key, Object: obj}
+	sa.NamespaceScopedAPIObject = helper.ForNamespaceScopedAPIObject(&sa.Key, lifecycle.TypedObject{GVK: ServiceAccountKind, Object: sa.Object})
+	return sa
 }
 
 func (sa *ServiceAccount) Copy() *ServiceAccount {
-	return &ServiceAccount{
-		Key:    sa.Key,
-		Object: sa.Object.DeepCopy(),
-	}
+	return makeServiceAccount(sa.Key, sa.Object.DeepCopy())
 }
 
 func NewServiceAccount(key client.ObjectKey) *ServiceAccount {
-	return &ServiceAccount{
-		Key:    key,
-		Object: &corev1.ServiceAccount{},
-	}
+	return makeServiceAccount(key, &corev1.ServiceAccount{})
 }
 
 func NewServiceAccountFromObject(obj *corev1.ServiceAccount) *ServiceAccount {
-	return &ServiceAccount{
-		Key:    client.ObjectKeyFromObject(obj),
-		Object: obj,
-	}
+	return makeServiceAccount(client.ObjectKeyFromObject(obj), obj)
 }
 
 func NewServiceAccountPatcher(upd, orig *ServiceAccount) lifecycle.Persister {

@@ -9,6 +9,13 @@ import (
 )
 
 func Own(target client.Object, owner lifecycle.TypedObject) error {
+	if !Exists(owner.Object) {
+		return &OwnerNotPersistedError{
+			Owner:  owner,
+			Target: target,
+		}
+	}
+
 	if target.GetNamespace() != owner.Object.GetNamespace() {
 		return &OwnerInOtherNamespaceError{
 			Owner:  owner,
@@ -42,6 +49,13 @@ func Own(target client.Object, owner lifecycle.TypedObject) error {
 }
 
 func OwnUncontrolled(target client.Object, owner lifecycle.TypedObject) error {
+	if !Exists(owner.Object) {
+		return &OwnerNotPersistedError{
+			Owner:  owner,
+			Target: target,
+		}
+	}
+
 	if target.GetNamespace() != owner.Object.GetNamespace() {
 		return &OwnerInOtherNamespaceError{
 			Owner:  owner,

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Add helpers to implement lifecycle methods for Kubernetes API objects.
+
+### Changed
+
+* `helper.Own` and `helper.OwnUncontrolled` now return an error when the owner has not been persisted.
+
 ## [0.3.2] - 2021-03-15
 
 ### Fixed
