@@ -1,14 +1,12 @@
 package appsv1
 
 import (
-	"context"
 	"errors"
 
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -21,46 +19,20 @@ var (
 )
 
 type Deployment struct {
+	*helper.NamespaceScopedAPIObject
+
 	Key    client.ObjectKey
 	Object *appsv1.Deployment
 }
 
-var _ lifecycle.Deleter = &Deployment{}
-var _ lifecycle.LabelAnnotatableFrom = &Deployment{}
-var _ lifecycle.Loader = &Deployment{}
-var _ lifecycle.Ownable = &Deployment{}
-var _ lifecycle.Persister = &Deployment{}
-
-func (d *Deployment) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, d.Object, opts...)
-}
-
-func (d *Deployment) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
-	helper.CopyLabelsAndAnnotations(&d.Object.ObjectMeta, from)
-}
-
-func (d *Deployment) Load(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.GetIgnoreNotFound(ctx, cl, d.Key, d.Object)
-}
-
-func (d *Deployment) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(d.Object, owner)
-}
-
-func (d *Deployment) Persist(ctx context.Context, cl client.Client) error {
-	if err := helper.CreateOrUpdate(ctx, cl, d.Object, helper.WithObjectKey(d.Key)); err != nil {
-		return err
-	}
-
-	d.Key = client.ObjectKeyFromObject(d.Object)
-	return nil
+func makeDeployment(key client.ObjectKey, obj *appsv1.Deployment) *Deployment {
+	d := &Deployment{Key: key, Object: obj}
+	d.NamespaceScopedAPIObject = helper.ForNamespaceScopedAPIObject(&d.Key, lifecycle.TypedObject{GVK: DeploymentKind, Object: d.Object})
+	return d
 }
 
 func (d *Deployment) Copy() *Deployment {
-	return &Deployment{
-		Key:    d.Key,
-		Object: d.Object.DeepCopy(),
-	}
+	return makeDeployment(d.Key, d.Object.DeepCopy())
 }
 
 func (d *Deployment) Condition(typ appsv1.DeploymentConditionType) (appsv1.DeploymentCondition, bool) {
@@ -81,17 +53,11 @@ func (d *Deployment) ProgressingCondition() (appsv1.DeploymentCondition, bool) {
 }
 
 func NewDeployment(key client.ObjectKey) *Deployment {
-	return &Deployment{
-		Key:    key,
-		Object: &appsv1.Deployment{},
-	}
+	return makeDeployment(key, &appsv1.Deployment{})
 }
 
 func NewDeploymentFromObject(obj *appsv1.Deployment) *Deployment {
-	return &Deployment{
-		Key:    client.ObjectKeyFromObject(obj),
-		Object: obj,
-	}
+	return makeDeployment(client.ObjectKeyFromObject(obj), obj)
 }
 
 func NewDeploymentPatcher(upd, orig *Deployment) lifecycle.Persister {

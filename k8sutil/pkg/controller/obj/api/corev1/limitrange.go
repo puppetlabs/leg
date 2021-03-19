@@ -1,12 +1,9 @@
 package corev1
 
 import (
-	"context"
-
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -15,46 +12,20 @@ var (
 )
 
 type LimitRange struct {
+	*helper.NamespaceScopedAPIObject
+
 	Key    client.ObjectKey
 	Object *corev1.LimitRange
 }
 
-var _ lifecycle.Deleter = &LimitRange{}
-var _ lifecycle.LabelAnnotatableFrom = &LimitRange{}
-var _ lifecycle.Loader = &LimitRange{}
-var _ lifecycle.Ownable = &LimitRange{}
-var _ lifecycle.Persister = &LimitRange{}
-
-func (lr *LimitRange) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, lr.Object, opts...)
-}
-
-func (lr *LimitRange) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
-	helper.CopyLabelsAndAnnotations(&lr.Object.ObjectMeta, from)
-}
-
-func (lr *LimitRange) Load(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.GetIgnoreNotFound(ctx, cl, lr.Key, lr.Object)
-}
-
-func (lr *LimitRange) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(lr.Object, owner)
-}
-
-func (lr *LimitRange) Persist(ctx context.Context, cl client.Client) error {
-	if err := helper.CreateOrUpdate(ctx, cl, lr.Object, helper.WithObjectKey(lr.Key)); err != nil {
-		return err
-	}
-
-	lr.Key = client.ObjectKeyFromObject(lr.Object)
-	return nil
+func makeLimitRange(key client.ObjectKey, obj *corev1.LimitRange) *LimitRange {
+	lr := &LimitRange{Key: key, Object: obj}
+	lr.NamespaceScopedAPIObject = helper.ForNamespaceScopedAPIObject(&lr.Key, lifecycle.TypedObject{GVK: LimitRangeKind, Object: lr.Object})
+	return lr
 }
 
 func (lr *LimitRange) Copy() *LimitRange {
-	return &LimitRange{
-		Key:    lr.Key,
-		Object: lr.Object.DeepCopy(),
-	}
+	return makeLimitRange(lr.Key, lr.Object.DeepCopy())
 }
 
 func (lr *LimitRange) MergeItem(item corev1.LimitRangeItem) {
@@ -109,17 +80,11 @@ func (lr *LimitRange) SetContainerDefaultRequest(lim corev1.ResourceList) {
 }
 
 func NewLimitRange(key client.ObjectKey) *LimitRange {
-	return &LimitRange{
-		Key:    key,
-		Object: &corev1.LimitRange{},
-	}
+	return makeLimitRange(key, &corev1.LimitRange{})
 }
 
 func NewLimitRangeFromObject(obj *corev1.LimitRange) *LimitRange {
-	return &LimitRange{
-		Key:    client.ObjectKeyFromObject(obj),
-		Object: obj,
-	}
+	return makeLimitRange(client.ObjectKeyFromObject(obj), obj)
 }
 
 func NewLimitRangePatcher(upd, orig *LimitRange) lifecycle.Persister {

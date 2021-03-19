@@ -1,13 +1,11 @@
 package corev1
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -16,46 +14,20 @@ var (
 )
 
 type Service struct {
+	*helper.NamespaceScopedAPIObject
+
 	Key    client.ObjectKey
 	Object *corev1.Service
 }
 
-var _ lifecycle.Deleter = &Service{}
-var _ lifecycle.LabelAnnotatableFrom = &Service{}
-var _ lifecycle.Loader = &Service{}
-var _ lifecycle.Ownable = &Service{}
-var _ lifecycle.Persister = &Service{}
-
-func (s *Service) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, s.Object, opts...)
-}
-
-func (s *Service) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
-	helper.CopyLabelsAndAnnotations(&s.Object.ObjectMeta, from)
-}
-
-func (s *Service) Load(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.GetIgnoreNotFound(ctx, cl, s.Key, s.Object)
-}
-
-func (s *Service) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(s.Object, owner)
-}
-
-func (s *Service) Persist(ctx context.Context, cl client.Client) error {
-	if err := helper.CreateOrUpdate(ctx, cl, s.Object, helper.WithObjectKey(s.Key)); err != nil {
-		return err
-	}
-
-	s.Key = client.ObjectKeyFromObject(s.Object)
-	return nil
+func makeService(key client.ObjectKey, obj *corev1.Service) *Service {
+	s := &Service{Key: key, Object: obj}
+	s.NamespaceScopedAPIObject = helper.ForNamespaceScopedAPIObject(&s.Key, lifecycle.TypedObject{GVK: ServiceKind, Object: s.Object})
+	return s
 }
 
 func (s *Service) Copy() *Service {
-	return &Service{
-		Key:    s.Key,
-		Object: s.Object.DeepCopy(),
-	}
+	return makeService(s.Key, s.Object.DeepCopy())
 }
 
 func (s *Service) DNSName() string {
@@ -63,17 +35,11 @@ func (s *Service) DNSName() string {
 }
 
 func NewService(key client.ObjectKey) *Service {
-	return &Service{
-		Key:    key,
-		Object: &corev1.Service{},
-	}
+	return makeService(key, &corev1.Service{})
 }
 
 func NewServiceFromObject(obj *corev1.Service) *Service {
-	return &Service{
-		Key:    client.ObjectKeyFromObject(obj),
-		Object: obj,
-	}
+	return makeService(client.ObjectKeyFromObject(obj), obj)
 }
 
 func NewServicePatcher(upd, orig *Service) lifecycle.Persister {

@@ -10,7 +10,6 @@ import (
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/helper"
 	"github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/lifecycle"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -27,60 +26,28 @@ var (
 )
 
 type Secret struct {
+	*helper.NamespaceScopedAPIObject
+
 	Key    client.ObjectKey
 	Object *corev1.Secret
 }
 
-var _ lifecycle.Deleter = &Secret{}
-var _ lifecycle.LabelAnnotatableFrom = &Secret{}
-var _ lifecycle.Loader = &Secret{}
-var _ lifecycle.Ownable = &Secret{}
-var _ lifecycle.Persister = &Secret{}
-
-func (s *Secret) Delete(ctx context.Context, cl client.Client, opts ...lifecycle.DeleteOption) (bool, error) {
-	return helper.DeleteIgnoreNotFound(ctx, cl, s.Object, opts...)
-}
-
-func (s *Secret) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
-	helper.CopyLabelsAndAnnotations(&s.Object.ObjectMeta, from)
-}
-
-func (s *Secret) Load(ctx context.Context, cl client.Client) (bool, error) {
-	return helper.GetIgnoreNotFound(ctx, cl, s.Key, s.Object)
-}
-
-func (s *Secret) Owned(ctx context.Context, owner lifecycle.TypedObject) error {
-	return helper.Own(s.Object, owner)
-}
-
-func (s *Secret) Persist(ctx context.Context, cl client.Client) error {
-	if err := helper.CreateOrUpdate(ctx, cl, s.Object, helper.WithObjectKey(s.Key)); err != nil {
-		return err
-	}
-
-	s.Key = client.ObjectKeyFromObject(s.Object)
-	return nil
+func makeSecret(key client.ObjectKey, obj *corev1.Secret) *Secret {
+	s := &Secret{Key: key, Object: obj}
+	s.NamespaceScopedAPIObject = helper.ForNamespaceScopedAPIObject(&s.Key, lifecycle.TypedObject{GVK: SecretKind, Object: s.Object})
+	return s
 }
 
 func (s *Secret) Copy() *Secret {
-	return &Secret{
-		Key:    s.Key,
-		Object: s.Object.DeepCopy(),
-	}
+	return makeSecret(s.Key, s.Object.DeepCopy())
 }
 
 func NewSecret(key client.ObjectKey) *Secret {
-	return &Secret{
-		Key:    key,
-		Object: &corev1.Secret{},
-	}
+	return makeSecret(key, &corev1.Secret{})
 }
 
 func NewSecretFromObject(obj *corev1.Secret) *Secret {
-	return &Secret{
-		Key:    client.ObjectKeyFromObject(obj),
-		Object: obj,
-	}
+	return makeSecret(client.ObjectKeyFromObject(obj), obj)
 }
 
 func NewSecretPatcher(upd, orig *Secret) lifecycle.Persister {
