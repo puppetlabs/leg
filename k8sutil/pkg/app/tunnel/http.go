@@ -12,7 +12,7 @@ import (
 )
 
 // HTTPImage is the Inlets Docker image to use for tunneling.
-const HTTPImage = "inlets/inlets:2.7.3"
+const HTTPImage = "ghcr.io/inlets/inlets:latest"
 
 // HTTP represents the resources required to maintain a tunnel.
 type HTTP struct {
