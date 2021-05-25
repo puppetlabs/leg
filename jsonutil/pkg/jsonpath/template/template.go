@@ -19,6 +19,7 @@ import (
 	"text/scanner"
 
 	"github.com/PaesslerAG/gval"
+	"github.com/puppetlabs/leg/gvalutil/pkg/template"
 	"github.com/puppetlabs/leg/jsonutil/pkg/jsonpath"
 )
 
@@ -60,36 +61,6 @@ func WithFormatter(formatter FormatterFunc) TemplateOption {
 
 func TemplateLanguage(opts ...TemplateOption) gval.Language {
 	return newTemplateLanguage(opts).generate()
-}
-
-func eval(ctx context.Context, ev gval.Evaluable, parameter interface{}, ff FormatterFunc) (string, error) {
-	v, err := ev(ctx, parameter)
-	if err != nil {
-		return "", err
-	}
-
-	return ff(v)
-}
-
-func concat(ctx context.Context, p *gval.Parser, a gval.Evaluable, ff FormatterFunc) (gval.Evaluable, error) {
-	b, err := p.ParseExpression(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return func(ctx context.Context, parameter interface{}) (interface{}, error) {
-		ea, err := eval(ctx, a, parameter, ff)
-		if err != nil {
-			return nil, err
-		}
-
-		eb, err := eval(ctx, b, parameter, ff)
-		if err != nil {
-			return nil, err
-		}
-
-		return ea + eb, nil
-	}, nil
 }
 
 func parseRange(ctx context.Context, p *gval.Parser, lang gval.Language) (gval.Evaluable, error) {
@@ -169,28 +140,6 @@ var expressionLanguage = gval.NewLanguage(
 	gval.InfixOperator("!=", func(a, b interface{}) (interface{}, error) { return !eq(a, b), nil }),
 )
 
-// late is a helper to provide late-binding for a language; that is, the
-// completed language is passed back in as an argument.
-func late(fn func(complete gval.Language) gval.Language) (bound gval.Language) {
-	complete := gval.Init(func(ctx context.Context, p *gval.Parser) (gval.Evaluable, error) {
-		return p.ParseSublanguage(ctx, bound)
-	})
-	bound = fn(complete)
-	return
-}
-
-// prefixSublanguage is a helper that simply calls the given sublanguage as an extension.
-func prefixSublanguage(r rune, sub gval.Language, ext func(context.Context, *gval.Parser, gval.Evaluable) (gval.Evaluable, error)) gval.Language {
-	return gval.PrefixExtension(r, func(ctx context.Context, p *gval.Parser) (gval.Evaluable, error) {
-		eval, err := p.ParseSublanguage(ctx, sub)
-		if err != nil {
-			return nil, err
-		}
-
-		return ext(ctx, p, eval)
-	})
-}
-
 // templateLanguage is the total language, which includes literal handling outside of curly braces
 type templateLanguage struct {
 	tpl gval.Language
@@ -198,56 +147,61 @@ type templateLanguage struct {
 }
 
 func (tl *templateLanguage) generate() gval.Language {
-	return late(func(lang gval.Language) gval.Language {
-		tpl := gval.NewLanguage(
-			tl.tpl,
-			gval.PrefixMetaPrefix(scanner.Ident, func(ctx context.Context, p *gval.Parser) (call string, alternative func() (gval.Evaluable, error), err error) {
-				token := p.TokenText()
-				return token,
-					func() (gval.Evaluable, error) {
-						if token == "range" {
-							return parseRange(ctx, p, lang)
+	return template.Language(
+		template.WithJoiner{
+			Joiner: template.NewStringJoiner(
+				template.WithStringFormatter{
+					StringFormatter: template.StringFormatterFunc(tl.fmt),
+				},
+			),
+		},
+		template.WithDelimitedLanguageFactory{
+			DelimitedLanguageFactory: template.DelimitedLanguageFactoryFunc(func(outer gval.Language) *template.DelimitedLanguage {
+				tpl := gval.NewLanguage(
+					tl.tpl,
+					gval.PrefixMetaPrefix(scanner.Ident, func(ctx context.Context, p *gval.Parser) (call string, alternative func() (gval.Evaluable, error), err error) {
+						token := p.TokenText()
+						return token,
+							func() (gval.Evaluable, error) {
+								if token == "range" {
+									return parseRange(ctx, p, outer)
+								}
+
+								p.Camouflage("JSONPath template")
+								return p.Const(""), nil
+							},
+							nil
+					}),
+				)
+
+				return &template.DelimitedLanguage{
+					Start: "{",
+					Language: gval.Init(func(ctx context.Context, p *gval.Parser) (gval.Evaluable, error) {
+						eval, err := p.ParseSublanguage(ctx, tpl)
+						if err != nil {
+							return nil, err
 						}
 
-						p.Camouflage("JSONPath template")
-						return p.Const(""), nil
-					},
-					nil
-			}),
-		)
+						switch p.Scan() {
+						case '}':
+							return eval, nil
+						case scanner.Ident:
+							if p.TokenText() == "end" {
+								template.StopFlag.MustSet(ctx)
 
-		return gval.NewLanguage(
-			gval.Init(func(ctx context.Context, p *gval.Parser) (gval.Evaluable, error) {
-				p.SetWhitespace()
-				p.SetMode(scanner.ScanIdents)
-				p.SetIsIdentRuneFunc(func(ch rune, i int) bool { return ch > 0 && ch != '{' })
+								p.Camouflage("JSONPath template", '}')
+								return eval, nil
+							}
 
-				return p.ParseExpression(ctx)
-			}),
-			gval.PrefixExtension(scanner.Ident, func(ctx context.Context, p *gval.Parser) (gval.Evaluable, error) {
-				return concat(ctx, p, p.Const(p.TokenText()), tl.fmt)
-			}),
-			gval.PrefixExtension(scanner.EOF, func(ctx context.Context, p *gval.Parser) (gval.Evaluable, error) {
-				return p.Const(""), nil
-			}),
-			prefixSublanguage('{', tpl, func(ctx context.Context, p *gval.Parser, eval gval.Evaluable) (gval.Evaluable, error) {
-				switch p.Scan() {
-				case '}':
-				case scanner.Ident:
-					if p.TokenText() == "end" {
-						p.Camouflage("JSONPath template", '}')
-						return eval, nil
-					}
-
-					fallthrough
-				default:
-					return nil, p.Expected("JSONPath template", '}')
+							fallthrough
+						default:
+							return nil, p.Expected("JSONPath template", '}')
+						}
+					}),
 				}
-
-				return concat(ctx, p, eval, tl.fmt)
 			}),
-		)
-	})
+		},
+	)
 }
 
 func newTemplateLanguage(opts []TemplateOption) *templateLanguage {
