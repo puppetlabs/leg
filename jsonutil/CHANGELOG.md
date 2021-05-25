@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* Update internal implementation to use the new gvalutil module.
+
 ## [0.2.0] - 2021-02-10
 
 ### Added
