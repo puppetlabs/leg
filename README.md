@@ -19,6 +19,7 @@ configuration, and documentation (like this file) only.
   wrapping behavior to be customized. Support for semantic grouping of errors.
 * [`graph`](graph): Directed and undirected graph data structures and
   algorithms.
+* [`gvalutil`](gvalutil): Extra helpers for Gval.
 * [`hashutil`](hashutil): Standardized structures for working with the standard
   library's hashing algorithms.
 * [`httputil`](httputil): Standardized structures for HTTP requests and
