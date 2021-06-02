@@ -2,10 +2,10 @@ package jsonpath
 
 import (
 	"context"
-	"reflect"
 	"strconv"
 
 	"github.com/PaesslerAG/gval"
+	"github.com/puppetlabs/leg/gvalutil/pkg/eval"
 )
 
 type variableWildcard struct{}
@@ -161,63 +161,6 @@ func negmax(n, max int) int {
 	return n
 }
 
-func (vf VariableVisitorFuncs) visitChildSlice(c context.Context, v []interface{}, key interface{}, next func(context.Context, PathValue) error) error {
-	var i int
-	switch kt := key.(type) {
-	case string:
-		ki, err := strconv.ParseInt(kt, 10, 32)
-		if err != nil {
-			return &UnexpectedStringIndexError{RawIndex: kt, Cause: err}
-		}
-
-		i = int(ki)
-	case int, int8, int16, int32, int64:
-		i = int(reflect.ValueOf(kt).Int())
-	case uint, uint8, uint16, uint32, uint64:
-		i = int(reflect.ValueOf(kt).Uint())
-	case float32, float64:
-		i = int(reflect.ValueOf(kt).Float())
-	default:
-		return &UnexpectedIndexTypeError{RawIndex: kt}
-	}
-
-	if i < 0 && len(v)+i >= 0 {
-		i = len(v) + i
-	} else if i < 0 || i >= len(v) {
-		return &IndexOutOfBoundsError{Index: i}
-	}
-
-	return next(c, PathValue{
-		Path:  []string{strconv.Itoa(i)},
-		Value: v[i],
-	})
-}
-
-func (vf VariableVisitorFuncs) visitChildMap(c context.Context, v map[string]interface{}, key interface{}, next func(context.Context, PathValue) error) error {
-	var k string
-	switch kt := key.(type) {
-	case string:
-		k = kt
-	case int, int8, int16, int32, int64:
-		k = strconv.FormatInt(reflect.ValueOf(kt).Int(), 64)
-	case uint, uint8, uint16, uint32, uint64:
-		k = strconv.FormatUint(reflect.ValueOf(kt).Uint(), 64)
-	case float32, float64:
-		k = strconv.FormatFloat(reflect.ValueOf(kt).Float(), 'f', -1, 64)
-	default:
-		return &UnexpectedKeyTypeError{RawKey: kt}
-	}
-
-	r, ok := v[k]
-	if !ok {
-		return &UnknownKeyError{Key: k}
-	}
-
-	return next(c, PathValue{
-		Path:  []string{k},
-		Value: r,
-	})
-}
 func (vf VariableVisitorFuncs) VisitChild(c context.Context, v, key interface{}, next func(context.Context, PathValue) error) error {
 	if vf.VisitChildFunc != nil {
 		return vf.VisitChildFunc(c, v, key, next)
@@ -225,11 +168,27 @@ func (vf VariableVisitorFuncs) VisitChild(c context.Context, v, key interface{},
 
 	switch vt := v.(type) {
 	case []interface{}:
-		return vf.visitChildSlice(c, vt, key, next)
+		i, r, err := eval.SelectIndex(vt, key)
+		if err != nil {
+			return err
+		}
+
+		return next(c, PathValue{
+			Path:  []string{strconv.Itoa(i)},
+			Value: r,
+		})
 	case map[string]interface{}:
-		return vf.visitChildMap(c, vt, key, next)
+		k, r, err := eval.SelectKey(vt, key)
+		if err != nil {
+			return err
+		}
+
+		return next(c, PathValue{
+			Path:  []string{k},
+			Value: r,
+		})
 	default:
-		return &UnsupportedValueTypeError{Value: vt}
+		return &eval.UnsupportedValueTypeError{Value: vt}
 	}
 }
 
