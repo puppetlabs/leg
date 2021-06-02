@@ -5,6 +5,11 @@ This module provides some extra functionality for working with
 
 ## Packages
 
+### eval
+
+An alternate implementation of a variable selector that is more strict than
+Gval's default.
+
 ### langctx
 
 This package provides Go context helpers that can be passed through Gval's

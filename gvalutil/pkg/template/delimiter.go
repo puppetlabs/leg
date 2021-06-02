@@ -1,15 +1,12 @@
 package template
 
 import (
-	"context"
-
 	"github.com/PaesslerAG/gval"
 )
 
 type DelimitedLanguage struct {
 	Start, End string
 	Language   gval.Language
-	Extension  func(ctx context.Context, p *gval.Parser, a gval.Evaluable) (gval.Evaluable, error)
 }
 
 type DelimitedLanguageFactory interface {
