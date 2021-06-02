@@ -19,8 +19,8 @@ github.com/puppetlabs/leg/datastructure v0.1.0 h1:0703wQJ71etqsPOr+vfiTBHkq0+tVV
 github.com/puppetlabs/leg/datastructure v0.1.0/go.mod h1:4Kwk/83hkiR1smN1gRsi0LJDgVDbD672JpWjRPBVka8=
 github.com/puppetlabs/leg/graph v0.1.1 h1:S1KCLhbhNcOHpK523mKx+TVN9FdStKE1KDJSNlNOTuo=
 github.com/puppetlabs/leg/graph v0.1.1/go.mod h1:NzQn1eyixNpRC3jW8g7WRLyWeGVlTVZdOUxfU4nS0iI=
-github.com/puppetlabs/leg/gvalutil v0.1.0 h1:CIhM4YlTH0RYsVUS8buIFtLs0knEwh2hrNCMj/E8O8o=
-github.com/puppetlabs/leg/gvalutil v0.1.0/go.mod h1:ESTC0hP1vGr75QDVBkxBM/IBd0LziabiSfIvnWFchkA=
+github.com/puppetlabs/leg/gvalutil v0.2.0 h1:fwGciIthyuM1IhjNantSMn2qLWnLXbsA2mTQMIJ1qzY=
+github.com/puppetlabs/leg/gvalutil v0.2.0/go.mod h1:ESTC0hP1vGr75QDVBkxBM/IBd0LziabiSfIvnWFchkA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

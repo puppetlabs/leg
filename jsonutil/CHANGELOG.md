@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* Update internal implementation to use the gvalutil variable selector.
+
 ## [0.2.1] - 2021-05-25
 
 ### Changed
