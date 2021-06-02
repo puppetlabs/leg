@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.2.2] - 2021-06-02
+
 ### Changed
 
 * Update internal implementation to use the gvalutil variable selector.
@@ -33,7 +35,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/jsonutil/v0.2.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/jsonutil/v0.2.2...HEAD
+[0.2.2]: https://github.com/puppetlabs/leg/compare/jsonutil/v0.2.1...jsonutil/v0.2.2
 [0.2.1]: https://github.com/puppetlabs/leg/compare/jsonutil/v0.2.0...jsonutil/v0.2.1
 [0.2.0]: https://github.com/puppetlabs/leg/compare/jsonutil/v0.1.0...jsonutil/v0.2.0
 [0.1.0]: https://github.com/puppetlabs/leg/compare/d290e8e835c3fa3ea4e93073bfe19e1958493d47...jsonutil/v0.1.0
