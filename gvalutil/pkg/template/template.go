@@ -153,7 +153,17 @@ func delimLang(g graph.DirectedGraph, prefix string) gval.Language {
 					}
 				}
 
-				return eval, nil
+				return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+					v, err := eval(ctx, parameter)
+					if err != nil {
+						return nil, &EvaluationError{
+							Start: nt.Start,
+							Cause: err,
+						}
+					}
+
+					return v, nil
+				}, nil
 			})
 		case string:
 			r, _ := utf8.DecodeLastRuneInString(nt)

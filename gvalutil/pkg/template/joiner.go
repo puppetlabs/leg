@@ -43,7 +43,7 @@ func (dsf defaultStringFormatter) FormatString(v interface{}) (string, error) {
 	case []byte:
 		return string(vt), nil
 	default:
-		b, err := json.Marshal(v)
+		b, err := json.MarshalIndent(v, "", "\t")
 		if err != nil {
 			return "", err
 		}

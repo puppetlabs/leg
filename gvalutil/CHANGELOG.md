@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Add eval package.
+
+### Changed
+
+* Errors that occur in template evaluation now include a wrapper error to help disambiguate them.
+* The unused field `Extension` was removed from the template `DelimitedLanguage` type.
+* The default string formatter now pretty-prints JSON.
+
 ## [0.1.0] - 2021-05-25
 
 ### Added
