@@ -165,7 +165,9 @@ func Wait(ctx context.Context, work WorkFunc, opts ...WaitOption) (err error) {
 
 		bv, berr := b.Next(ctx)
 		if berr != nil {
-			err = berr
+			if err == nil {
+				err = berr
+			}
 			return
 		}
 
