@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 
 * `retry.Wait` no longer masks real errors when a backoff error forces the function to exit early.
+* Work around a bug in the Kubernetes fake clock implementation that causes a fake timer with zero duration not to fire until the clock is stepped.
 
 ## [0.4.0] - 2021-05-15
 
