@@ -106,6 +106,16 @@ type Descriptor interface {
 	Run(ctx context.Context, pc chan<- Process) error
 }
 
+// DescriptorFunc converts an arbitrary function to a descriptor.
+type DescriptorFunc func(ctx context.Context, pc chan<- Process) error
+
+var _ Descriptor = DescriptorFunc(nil)
+
+// Run calls the underlying fuction.
+func (d DescriptorFunc) Run(ctx context.Context, pc chan<- Process) error {
+	return d(ctx, pc)
+}
+
 func descriptorError(desc Descriptor, err error) error {
 	return &DescriptorError{
 		Descriptor: desc,
