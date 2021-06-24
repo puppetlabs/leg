@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-06-24
+
 ### Added
 
 * Add `RestartableDescriptor` that can be manually restarted externally to the scheduler lifecycle.
@@ -59,7 +61,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/scheduler/v0.3.0...HEAD
+[0.3.0]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.1...scheduler/v0.3.0
 [0.2.1]: https://github.com/puppetlabs/leg/compare/scheduler/v0.2.0...scheduler/v0.2.1
 [0.2.0]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.5...scheduler/v0.2.0
 [0.1.5]: https://github.com/puppetlabs/leg/compare/scheduler/v0.1.4...scheduler/v0.1.5

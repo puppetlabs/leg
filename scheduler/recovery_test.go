@@ -52,7 +52,7 @@ func TestRecoverySchedulerStops(t *testing.T) {
 	defer cancel()
 
 	err := descriptor.Run(ctx, pc)
-	assert.Equal(t, &backoff.MaxAttemptsReachedError{N: 6}, err)
+	assert.EqualError(t, err, "err count 0")
 	assert.Equal(t, -1, mock.errCount)
 }
 

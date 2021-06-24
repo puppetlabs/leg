@@ -308,6 +308,10 @@ github.com/puppetlabs/errawr-gen v1.0.1/go.mod h1:tv4cnckPnxd51XksuKix1KVFWvoYit
 github.com/puppetlabs/errawr-go/v2 v2.1.0/go.mod h1:TFKBrNpfPDG8ta8/NfaqpC+hMMsJqd9xKvBJDRgHFCQ=
 github.com/puppetlabs/errawr-go/v2 v2.2.0 h1:HiX2K0PoZCwe2F2ZPf4QF3xeNzNNuov3QCwZprsNcqI=
 github.com/puppetlabs/errawr-go/v2 v2.2.0/go.mod h1:SJ1lTqOW0HcfqVPS/F7kSrUAc4o/6DfjBatQ5TTS/JU=
+github.com/puppetlabs/leg/datastructure v0.1.0 h1:0703wQJ71etqsPOr+vfiTBHkq0+tVVT0kH7iluwH7GU=
+github.com/puppetlabs/leg/datastructure v0.1.0/go.mod h1:4Kwk/83hkiR1smN1gRsi0LJDgVDbD672JpWjRPBVka8=
+github.com/puppetlabs/leg/errmap v0.1.0 h1:1oH50d/sch1kB5JuIRrLf0hg9gSr5pfAmTUc6o8CtZQ=
+github.com/puppetlabs/leg/errmap v0.1.0/go.mod h1:8oVNaeaaprDjbMYWHj5lLHsD1nsnKZbv0Jw+SjoJ6hY=
 github.com/puppetlabs/leg/instrumentation v0.1.4 h1:uWRjhV/1ijL4T5uISgcWJXRb0Q9dbsCCE/rq//BhHek=
 github.com/puppetlabs/leg/instrumentation v0.1.4/go.mod h1:x6wQv38l6/tZRQHolqpL6mhnF+tjMYt4pu0MzoaM54s=
 github.com/puppetlabs/leg/logging v0.1.0 h1:G8M2w3izYEtoaH+d3rIJZ9iLX2oW2T/jO+J4l+T0Ieo=
@@ -319,8 +323,8 @@ github.com/puppetlabs/leg/netutil v0.1.0/go.mod h1:ycY6MSkOndHh5azh5z66HH9IS8F04
 github.com/puppetlabs/leg/request v0.1.0 h1:4Eb9Ssk/Surjxyevh5i7PZjqarrCblpLWavPBLnxEio=
 github.com/puppetlabs/leg/request v0.1.0/go.mod h1:rLKkF3VdNg//iXBSTs+6Eir05BQR15rx3JNWTKiWzLI=
 github.com/puppetlabs/leg/scheduler v0.1.4/go.mod h1:kC6I8SA/nRt4VOu18qJ+HwBW+IxmXHI2lKicdfj3ItI=
-github.com/puppetlabs/leg/timeutil v0.3.0 h1:7JUYWWW8bvSRU7EcEBVmkDv2gTb1uLE/F7hnEWljfQc=
-github.com/puppetlabs/leg/timeutil v0.3.0/go.mod h1:FHkZ9rYegF0STjS4az6hsjdvcBHcG+FB4CsY5mx1DfI=
+github.com/puppetlabs/leg/timeutil v0.4.1 h1:d5+o49sHAqTFjzew1G/dAEc38EXNVC3LUtFH60/yEyM=
+github.com/puppetlabs/leg/timeutil v0.4.1/go.mod h1:NFYu1scx8y6qIzMWVzlUAxQ7Hp+2mqIeRm0QO8X29jk=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50 h1:tQC2Xbytchkj88dqeRQeuvfG4mDSKU/r5ovo+16XJ2I=
 github.com/reflect/raymond v0.0.0-20190227215356-5fa3955f4a50/go.mod h1:Bmc/S4QVVTw9ZH5y5JLDKbgeykqJLnSiUqtQ9SaHjmQ=
