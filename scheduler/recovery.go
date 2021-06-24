@@ -111,7 +111,7 @@ func (rd *RecoveryDescriptor) Run(ctx context.Context, pc chan<- Process) error 
 		}
 
 		if err != nil {
-			log(ctx).Warn("restarting failing descriptor", "descriptor", reflect.TypeOf(rd.delegate).String(), "error", err)
+			log(ctx).Warn("recovering failing descriptor", "descriptor", reflect.TypeOf(rd.delegate).String(), "error", err)
 		}
 
 		return err == nil, err
