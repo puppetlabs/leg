@@ -6,12 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Add support for the `VolumeAttachment` resource.
+* Add optional cache bypassing Kubernetes client that remains compatible with the controller-runtime client.
+
 ## [0.4.1] - 2021-05-25
 
 ### Fixed
 
 * Updated inlets image to reflect external changes.
-
 
 ## [0.4.0] - 2021-03-19
 
