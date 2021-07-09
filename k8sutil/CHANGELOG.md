@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.5.0] - 2021-07-09
+
 ### Added
 
 * Add support for the `VolumeAttachment` resource.
@@ -85,7 +87,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.4.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.5.0...HEAD
+[0.5.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.4.1...k8sutil/v0.5.0
 [0.4.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.4.0...k8sutil/v0.4.1
 [0.4.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.2...k8sutil/v0.4.0
 [0.3.2]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.3.1...k8sutil/v0.3.2
