@@ -118,7 +118,7 @@ func TestReserveIdempotency(t *testing.T) {
 
 	require.Equal(t, 1, conn.Stats(reserve), "BF.RESERVE was not called exactly once")
 
-	reserve = conn.Command(
+	conn.Command(
 		"BF.RESERVE",
 		filterName,
 		fmt.Sprintf("%.1f", defaultErrorRate),
