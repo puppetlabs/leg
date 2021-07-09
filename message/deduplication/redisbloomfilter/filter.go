@@ -75,7 +75,7 @@ func (b *backend) Exists(key string) (bool, error) {
 	return b.c.Exists(b.filterName, key)
 }
 
-// Check and set checks if the key exists under the configured filter name and
+// CheckAndSet checks if the key exists under the configured filter name and
 // adds it if it isn't. This method returns whether or not the key already
 // existed.
 func (b *backend) CheckAndSet(key string) (bool, error) {

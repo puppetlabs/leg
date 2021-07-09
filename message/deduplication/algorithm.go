@@ -9,7 +9,7 @@ type bloomFilterBackend interface {
 }
 
 type bloomFilterOptions struct {
-	validators []KeyValidator
+	validators []KeyValidatorFunc
 }
 
 type bloomFilterOptionsFunc struct {
@@ -20,14 +20,18 @@ func (f bloomFilterOptionsFunc) apply(o *bloomFilterOptions) {
 	f.f(o)
 }
 
+// BloomFilterOption takes a pointer to bloomFilterOptions and apply's some
+// value to one or more fields.
 type BloomFilterOption interface {
 	apply(*bloomFilterOptions)
 }
 
-func WithBloomFilterKeyValidators(vs ...KeyValidator) BloomFilterOption {
+// WithBloomFilterKeyValidators sets one or more key validators that are used
+// to validate keys passed to BloomFilter methods.
+func WithBloomFilterKeyValidators(vs ...KeyValidatorFunc) BloomFilterOption {
 	return bloomFilterOptionsFunc{
 		f: func(o *bloomFilterOptions) {
-			o.validators = vs
+			o.validators = append(o.validators, vs...)
 		},
 	}
 }
@@ -45,7 +49,7 @@ func WithBloomFilterKeyValidators(vs ...KeyValidator) BloomFilterOption {
 // See https://en.wikipedia.org/wiki/Bloom_filter
 type BloomFilter struct {
 	delegate   bloomFilterBackend
-	validators []KeyValidator
+	validators []KeyValidatorFunc
 }
 
 // SetKeyAsSeen adds the key to the set of known keys. If you are doing an
@@ -78,8 +82,8 @@ func (bf *BloomFilter) CheckAndSetKey(key string) (bool, error) {
 }
 
 func (bf *BloomFilter) validate(key string) error {
-	for _, v := range bf.validators {
-		if err := v.Apply(key); err != nil {
+	for _, fn := range bf.validators {
+		if err := fn(key); err != nil {
 			return fmt.Errorf("bloom filter: failed to validate key: %w", err)
 		}
 	}

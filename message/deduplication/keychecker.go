@@ -29,17 +29,5 @@ type AtomicKeyCheckSetter interface {
 	CheckAndSetKey(key string) (bool, error)
 }
 
-// KeyValidator takes a key and validates it in some way. An example would be
-// that the key is a certain legth or contains some data.
-type KeyValidator interface {
-	Apply(key string) error
-}
-
-// KeyValidatorFunc provides a generic implementation of KeyValidator.
-type KeyValidatorFunc struct {
-	Fn func(key string) error
-}
-
-func (k *KeyValidatorFunc) Apply(key string) error {
-	return k.Fn(key)
-}
+// KeyValidatorFunc takes a key and checks it against a simple validation rule.
+type KeyValidatorFunc func(key string) error

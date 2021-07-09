@@ -1,6 +1,7 @@
 package deduplication
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/puppetlabs/leg/message/deduplication/ephemeralbloomfilter"
@@ -49,5 +50,25 @@ func TestKeySetterAndChecker(t *testing.T) {
 		exists, err = bf.CheckAndSetKey(key2)
 		require.NoError(t, err)
 		require.False(t, exists)
+	})
+
+	t.Run("using a validator properly checks the key", func(t *testing.T) {
+		bf := NewBloomFilter(ephemeralbloomfilter.New(), WithBloomFilterKeyValidators(
+			func(key string) error {
+				if key == "" {
+					return errors.New("key cannot be empty")
+				}
+
+				return nil
+			},
+		))
+
+		key := "test-key"
+
+		err := bf.SetKeyAsSeen(key)
+		require.NoError(t, err)
+
+		err = bf.SetKeyAsSeen("")
+		require.Error(t, err)
 	})
 }
