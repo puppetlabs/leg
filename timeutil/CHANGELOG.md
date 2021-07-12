@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* The clockctx timeout functions now correctly calculate the remaining duration of a timer against a clock's modeled time instead of the current wall time.
+
 ## [0.4.1] - 2021-06-23
 
 ### Fixed
