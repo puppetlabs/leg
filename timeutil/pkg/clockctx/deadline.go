@@ -57,7 +57,7 @@ func WithDeadlineOfClock(ctx context.Context, c clock.Clock, d time.Time) (conte
 		deadline: d,
 	}
 	propagateCancel(ctx, tctx)
-	dur := time.Until(d)
+	dur := d.Sub(c.Now())
 	if dur <= 0 {
 		tctx.cancel(context.DeadlineExceeded) // deadline has already passed
 		return tctx, func() { tctx.cancel(context.Canceled) }

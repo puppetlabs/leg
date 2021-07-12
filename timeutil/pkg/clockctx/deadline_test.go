@@ -19,6 +19,10 @@ func TestWithDeadlineOfClock(t *testing.T) {
 	uc := testclock.NewFakeClock(time.Now())
 	mc := k8sext.NewClock(uc)
 
+	// Forward clock initially to make sure calculations are correctly done
+	// against fake clock time.
+	uc.Step(30 * time.Minute)
+
 	tctx, _ := clockctx.WithDeadlineOfClock(context.Background(), mc, mc.Now().Add(10*time.Minute))
 
 	// Forward by 15 minutes.
