@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.2] - 2021-07-12
+
 ### Fixed
 
 * The clockctx timeout functions now correctly calculate the remaining duration of a timer against a clock's modeled time instead of the current wall time.
@@ -46,7 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.1...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.2...HEAD
+[0.4.2]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.1...timeutil/v0.4.2
 [0.4.1]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.0...timeutil/v0.4.1
 [0.4.0]: https://github.com/puppetlabs/leg/compare/timeutil/v0.3.0...timeutil/v0.4.0
 [0.3.0]: https://github.com/puppetlabs/leg/compare/timeutil/v0.2.0...timeutil/v0.3.0
