@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Build
+
+* Use a distribution of the inlets project managed internally because the upstream version is no longer open-source software.
+
 ## [0.5.0] - 2021-07-09
 
 ### Added
