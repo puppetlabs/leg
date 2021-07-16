@@ -4,7 +4,7 @@ package norm
 
 import "strings"
 
-func dnsMapper(allowDot bool) func(rune) rune {
+func mapper(ext string) func(rune) rune {
 	return func(r rune) rune {
 		switch {
 		case r >= '0' && r <= '9':
@@ -13,7 +13,7 @@ func dnsMapper(allowDot bool) func(rune) rune {
 			return r
 		case r >= 'A' && r <= 'Z':
 			return r | 0x20
-		case allowDot && r == '.':
+		case strings.ContainsRune(ext, r):
 			return r
 		default:
 			return '-'
@@ -22,32 +22,45 @@ func dnsMapper(allowDot bool) func(rune) rune {
 }
 
 var (
-	dnsSubdomainNameMapper = dnsMapper(true)
-	dnsLabelNameMapper     = dnsMapper(false)
+	dnsLabelNameMapper  = mapper("")
+	qualifiedNameMapper = mapper("._")
 )
 
-// AnyDNSSubdomainName normalizes a raw string so that it conforms to the
-// structure of a DNS domain: it must be all lowercase; contain only
-// alphanumeric characters, dashes, and dots; and the first and last characters
-// must be alphameric.
-func AnyDNSSubdomainName(raw string) string {
-	mapped := strings.Map(dnsSubdomainNameMapper, raw)
-	mapped = strings.Trim(mapped, ".-")
-	if len(mapped) > 253 {
-		mapped = mapped[:253]
+type AnyDNSLabelNameOptions struct {
+	DNSNameRFC DNSNameRFC
+}
+
+type AnyDNSLabelNameOption interface {
+	ApplyToAnyDNSLabelNameOptions(target *AnyDNSLabelNameOptions)
+}
+
+func (o *AnyDNSLabelNameOptions) ApplyOptions(opts []AnyDNSLabelNameOption) {
+	for _, opt := range opts {
+		opt.ApplyToAnyDNSLabelNameOptions(o)
 	}
-	return mapped
 }
 
 // AnyDNSLabelName normalizes a raw string so that it conforms to the structure
 // of a DNS label: it must be all lowercase, contain only alphanumeric
-// characters and dashes, and the first and last characters must be alphameric.
-func AnyDNSLabelName(raw string) string {
+// characters and dashes; and the last character must be alphanumeric. In the
+// case of RFC 1035, the first character must be alphabetical, while in the case
+// of RFC 1123, the first character must be alphanumeric.
+func AnyDNSLabelName(raw string, opts ...AnyDNSLabelNameOption) string {
+	o := &AnyDNSLabelNameOptions{
+		DNSNameRFC: DNSNameRFC1035,
+	}
+	o.ApplyOptions(opts)
+
 	mapped := strings.Map(dnsLabelNameMapper, raw)
-	mapped = strings.Trim(mapped, "-")
+	if o.DNSNameRFC == DNSNameRFC1123 {
+		mapped = strings.TrimLeft(mapped, "-")
+	} else {
+		mapped = strings.TrimLeft(mapped, "0123456789-")
+	}
 	if len(mapped) > 63 {
 		mapped = mapped[:63]
 	}
+	mapped = strings.TrimRight(mapped, "-")
 	return mapped
 }
 
@@ -62,6 +75,56 @@ func AnyDNSLabelNameSuffixed(prefix, suffix string) string {
 		prefix = prefix[:remaining]
 	}
 	return AnyDNSLabelName(prefix + suffix)
+}
+
+// AnyDNSSubdomainName normalizes a raw string so that it conforms to the
+// structure of a DNS domain (RFC 1123): it must be all lowercase; contain only
+// alphanumeric characters and dashes; and the first and last characters must be
+// alphanumeric.
+func AnyDNSSubdomainName(raw string) string {
+	parts := strings.Split(raw, ".")
+
+	var keep int
+	for _, part := range parts {
+		if part == "" {
+			continue
+		}
+
+		parts[keep] = AnyDNSLabelName(part, WithDNSNameRFC(DNSNameRFC1123))
+		keep++
+	}
+
+	mapped := strings.Join(parts[:keep], ".")
+	if len(mapped) > 253 {
+		mapped = mapped[:253]
+	}
+	mapped = strings.TrimRight(mapped, ".-")
+	return mapped
+}
+
+// AnyQualifiedName normalizes a raw string so that it conforms to the structure
+// of a Kubernetes qualified name.
+//
+// Qualified names optionally start with a DNS subdomain followed by a slash.
+// They always begin and end with an alphanumeric character, and internally may
+// contain alphanumeric characters, dashes, underscores, and dots up to 63
+// characters.
+func AnyQualifiedName(raw string) string {
+	parts := strings.SplitN(raw, "/", 2)
+	prefix, name := "", parts[0]
+	switch len(parts) {
+	case 2:
+		prefix, name = AnyDNSSubdomainName(parts[0])+"/", parts[1]
+		fallthrough
+	case 1:
+		name = strings.Map(qualifiedNameMapper, name)
+		name = strings.TrimLeft(name, "._-")
+		if len(name) > 63 {
+			name = name[:63]
+		}
+		name = strings.TrimRight(name, "._-")
+	}
+	return prefix + name
 }
 
 // MetaName normalizes a Kubernetes metadata name field.
