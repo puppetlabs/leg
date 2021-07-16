@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Add support for the `Node` resource.
+* Add support for handling Kubernetes qualified names (like `foo.example.com/bar`) in the norm package.
+
+### Changed
+
+* `norm.AnyDNSLabelName` can now make names conform to RFC 1035 or RFC 1123 depending on the application.
+
+### Fixed
+
+* The norm package now handles a variety of edge cases for DNS labels and subdomains correctly.
+
 ## [0.5.1] - 2021-07-12
 
 ### Build
