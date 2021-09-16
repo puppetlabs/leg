@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* Mapped errors now also implement the `MapApplicator` interface to support
+  recursive resolution.
+
 ## [0.1.0] - 2020-01-14
 
 ### Added

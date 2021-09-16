@@ -41,6 +41,8 @@ type mappedError struct {
 	after  []Mapper
 }
 
+var _ MapApplicator = &mappedError{}
+
 func (e *mappedError) Error() string {
 	return e.Apply().Error()
 }
@@ -61,14 +63,21 @@ func (e *mappedError) Apply() error {
 	err := e.base
 	for _, ms := range [][]Mapper{e.before, e.after} {
 		for _, m := range ms {
-			if mapper, ok := err.(MapApplicator); ok {
-				err = mapper.MapApply(m)
-			} else {
-				err = m.Map(err)
-			}
+			var fn Mapper
+			fn = MapperFunc(func(err error) error {
+				if appl, ok := err.(MapApplicator); ok {
+					return appl.MapApply(fn)
+				}
+				return m.Map(err)
+			})
+			err = fn.Map(err)
 		}
 	}
 	return err
+}
+
+func (e *mappedError) MapApply(m Mapper) error {
+	return m.Map(e.Apply())
 }
 
 func (e *mappedError) InsertBefore(m Mapper) {
