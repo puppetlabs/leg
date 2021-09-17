@@ -20,5 +20,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * Initial release.
 
 [Unreleased]: https://github.com/puppetlabs/leg/compare/errmap/v0.1.1...HEAD
-[0.1.1]: https://github.com/puppetlabs/leg/compare/errmap/v0.1.0...v0.1.1
+[0.1.1]: https://github.com/puppetlabs/leg/compare/errmap/v0.1.0...errmap/v0.1.1
 [0.1.0]: https://github.com/puppetlabs/leg/compare/ee413eca2bb98b87ebd4c0d68d1ba1f49093d6b7...errmap/v0.1.0
