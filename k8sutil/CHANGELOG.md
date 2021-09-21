@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* Improve the manifest parsing logic based on standard handling.
+
 ## [0.6.0] - 2021-07-16
 
 ### Added
