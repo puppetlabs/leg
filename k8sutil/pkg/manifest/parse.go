@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
@@ -19,12 +18,7 @@ import (
 func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]Object, error) {
 	patchers = append(patchers, FixupPatcher)
 
-	decoder := yaml.NewDocumentDecoder(ioutil.NopCloser(r))
-	defer decoder.Close()
-
-	// Copy buffer; we can't use io.Copy because of the weird semantics of the
-	// document decoder in how it returns ErrShortBuffer.
-	buf := make([]byte, 32*1024)
+	d := yaml.NewYAMLOrJSONDecoder(r, 4096)
 
 	// This lets us convert input documents.
 	deserializer := serializer.NewCodecFactory(scheme).UniversalDeserializer()
@@ -32,41 +26,21 @@ func Parse(scheme *runtime.Scheme, r io.Reader, patchers ...PatcherFunc) ([]Obje
 	// The objects to create.
 	var objs []Object
 
-	var stop bool
-	for !stop {
-		var doc bytes.Buffer
-
-		for {
-			nr, err := decoder.Read(buf)
-			if nr > 0 {
-				if nw, err := doc.Write(buf[:nr]); err != nil {
-					return nil, err
-				} else if nw != nr {
-					return nil, io.ErrShortWrite
-				}
-			}
-
-			if err == io.ErrShortBuffer {
-				// More document to read, keep going.
-			} else if err == io.EOF {
-				// End of the entire stream.
-				stop = true
-				break
-			} else if err != nil {
-				return nil, err
-			} else {
-				// End of this loop, but we have another document ahead.
+	for {
+		ext := runtime.RawExtension{}
+		if err := d.Decode(&ext); err != nil {
+			if err == io.EOF {
 				break
 			}
+			return nil, err
 		}
 
-		b := doc.Bytes()
-		if len(bytes.TrimSpace(b)) == 0 {
-			// Empty document.
+		ext.Raw = bytes.TrimSpace(ext.Raw)
+		if len(ext.Raw) == 0 || bytes.Equal(ext.Raw, []byte("null")) {
 			continue
 		}
 
-		robj, gvk, err := deserializer.Decode(b, nil, nil)
+		robj, gvk, err := deserializer.Decode(ext.Raw, nil, nil)
 		if err != nil {
 			return nil, err
 		}
