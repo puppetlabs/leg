@@ -111,6 +111,7 @@ func NewDefaultErrorMatchersBuilder() *ErrorMatchersBuilder {
 		).
 		Append(
 			errmark.RuleAny(
+				errmark.RuleIs(context.Canceled),
 				RuleIsConflict,
 				RuleIsTimeout,
 				errmark.RuleMarkedTransient,
