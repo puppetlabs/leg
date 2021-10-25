@@ -1,0 +1,114 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - id: detect-module-changes
+      name: Detect module changes
+      run: |
+        set -euo pipefail
+
+        base_ref="HEAD^"
+        if [[ -n "${GITHUB_BASE_REF}" ]]; then
+          git fetch --no-write-fetch-head origin "${GITHUB_BASE_REF}"
+          base_ref="origin/${GITHUB_BASE_REF}"
+        fi
+
+        # Get the list of modules under the root.
+        modules="$(find . -mindepth 2 -name go.mod -printf '%h\0' | xargs -0 realpath --relative-to=. | sort)"
+
+        # Get a list of changed files under the root, excluding Markdown.
+        changed_dirs="$(git diff --name-only "${base_ref}" -- . ':!*.md' | sed -e '/\/.*/!c\.' -e ';s///' | sort | uniq)"
+
+        # Compute module differences. If anything appears in the second column,
+        # it is outside of a module and we'll rebuild everything. Otherwise,
+        # we'll rebuild only what's in the third column. (The first column is
+        # just the list of available modules.)
+        read -r nr_unchanged_modules nr_changed_ext nr_changed_modules _ < <(comm -123 --total /dev/fd/3 /dev/fd/4 3<<<"$modules" 4<<<"$changed_dirs")
+
+        # Set the modules to process to the changes only.
+        if [[ "$nr_changed_ext" == 0 ]]; then
+          echo "Running CI for ${nr_changed_modules} changed module(s)."
+          modules="$changed_dirs"
+        else
+          echo "Detected ${nr_changed_ext} change(s) to non-module directories, so running CI for all modules."
+        fi
+
+        echo "::set-output name=modules::$(jq -cnR '[inputs]' <<<"${modules}")"
+    outputs:
+      modules: ${{ steps.detect-module-changes.outputs.modules }}
+  lint:
+    runs-on: ubuntu-latest
+    needs: init
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.init.outputs.modules) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.17'
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/go/pkg/sumdb
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Install golangci-lint
+      run: |
+        go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.1
+    - name: Check
+      run: |
+        golangci-lint run --timeout 10m --issues-exit-code 0
+  test:
+    runs-on: ubuntu-latest
+    needs: init
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ['1.16', '1.17']
+        module: ${{ fromJSON(needs.init.outputs.modules) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+    - uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go }}
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/go/pkg/sumdb
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - id: install-k3d
+      name: Install k3d
+      if: ${{ matrix.module == 'k8sutil' }}
+      run: |
+        curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+    - name: Set up Kubernetes cluster
+      if: ${{ steps.install-k3d.outcome == 'success' }}
+      env:
+        KUBECONFIG: /tmp/kubeconfig
+      run: |
+        k3d cluster create --no-rollback leg-test
+        echo LEG_K8SUTIL_TEST_E2E_KUBECONFIG="${KUBECONFIG}" >>"${GITHUB_ENV}"
+    - name: Install gotestsum
+      run: |
+        go install gotest.tools/gotestsum@v1.7.0
+    - name: Test
+      run: |
+        gotestsum -f testname --no-summary output --packages ./... -- -race
