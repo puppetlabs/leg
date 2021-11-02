@@ -28,7 +28,7 @@ jobs:
         # it is outside of a module and we'll rebuild everything. Otherwise,
         # we'll rebuild only what's in the third column. (The first column is
         # just the list of available modules.)
-        read -r nr_unchanged_modules nr_changed_ext nr_changed_modules _ < <(comm -123 --total /dev/fd/3 /dev/fd/4 3<<<"$modules" 4<<<"$changed_dirs")
+        read -r nr_unchanged_modules nr_changed_ext nr_changed_modules _ < <(comm -123 --total /dev/fd/3 /dev/fd/4 3< <(printf "%s" "$modules") 4< <(printf "%s" "$changed_dirs"))
 
         # Set the modules to process to the changes only.
         if [[ "$nr_changed_ext" == 0 ]]; then
@@ -104,7 +104,11 @@ jobs:
       env:
         KUBECONFIG: /tmp/kubeconfig
       run: |
-        k3d cluster create --no-rollback leg-test
+        # Container names are shared between jobs, so we need to generate
+        # unique ones.
+        cluster_name="leg-test-$(tr -dc 'a-z0-9' </dev/urandom 2>/dev/null | dd bs=1 count=12 status=none)"
+
+        k3d cluster create --no-rollback "$cluster_name"
         echo LEG_K8SUTIL_TEST_E2E_KUBECONFIG="${KUBECONFIG}" >>"${GITHUB_ENV}"
     - name: Install gotestsum
       run: |
