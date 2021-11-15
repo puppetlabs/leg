@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.3] - 2021-11-15
+
+### Added
+
+* Add ClusterRole and ClusterRoleBinding to lifecycle objects.
+
 ## [0.6.2] - 2021-11-01
 
 ### Changed
@@ -121,7 +127,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.3...HEAD
+[0.6.3]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.2...k8sutil/v0.6.3
 [0.6.2]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.1...k8sutil/v0.6.2
 [0.6.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.0...k8sutil/v0.6.1
 [0.6.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.5.1...k8sutil/v0.6.0
