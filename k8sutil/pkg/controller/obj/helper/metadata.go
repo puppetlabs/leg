@@ -1,6 +1,10 @@
 package helper
 
-import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+import (
+	"github.com/puppetlabs/leg/k8sutil/pkg/norm"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+)
 
 func Annotate(target metav1.Object, name, value string) bool {
 	annotations := target.GetAnnotations()
@@ -35,5 +39,12 @@ func CopyLabelsAndAnnotations(target, src metav1.Object) {
 
 	for name, value := range src.GetLabels() {
 		Label(target, name, value)
+	}
+}
+
+func SuffixObjectKey(key client.ObjectKey, suffix string) client.ObjectKey {
+	return client.ObjectKey{
+		Namespace: key.Namespace,
+		Name:      norm.MetaNameSuffixed(key.Name, "-"+suffix),
 	}
 }

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+* Add SuffixObjectKey helper function to easily add a suffix to a NamespacedName
+  object. Useful for controllers and operators that need to repeatedly prefix a
+  set of managed objects.
+
 ## [0.6.3] - 2021-11-15
 
 ### Added
