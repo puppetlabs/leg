@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.4] - 2021-12-02
+
 ### Added
 
 * Add SuffixObjectKey helper function to easily add a suffix to a NamespacedName
@@ -133,7 +135,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.3...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.4...HEAD
+[0.6.4]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.3...k8sutil/v0.6.4
 [0.6.3]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.2...k8sutil/v0.6.3
 [0.6.2]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.1...k8sutil/v0.6.2
 [0.6.1]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.0...k8sutil/v0.6.1
