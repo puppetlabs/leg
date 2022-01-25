@@ -326,21 +326,10 @@ func (vsm *VaultSystemManager) GetKubernetesAuthConfig(ctx context.Context) (*mo
 }
 
 func (vsm *VaultSystemManager) mapSecretEngineType(vse *model.VaultSecretEngine) map[string]interface{} {
-	switch vse.Type {
-	case model.VaultSecretEngineTypeKVV2:
-		return map[string]interface{}{
-			"type": "kv",
-			"config": map[string]interface{}{
-				"version": "2",
-			},
-		}
-	case model.VaultSecretEngineTypeTransit:
-		return map[string]interface{}{
-			"type": "transit",
-		}
+	return map[string]interface{}{
+		"type": vse.Type.String(),
 	}
 
-	return nil
 }
 
 func (vsm *VaultSystemManager) isAuthEnabled(mount string) (bool, error) {
