@@ -48,5 +48,6 @@ configuration, and documentation (like this file) only.
   package.
 * [`timeutil`](timeutil): Additions to the Go standard library's time package,
   including support for ISO 8601 interval types.
+* [`vaultutil`](vaultutil): Vault system management with Kubernetes integration.
 * [`workdir`](workdir): Utilities for managing ephemeral or permanent
   application state directories.
