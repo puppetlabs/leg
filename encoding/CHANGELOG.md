@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* `EncodeForTransfer` and `EncodeJSON` will now Base64 encode values containing NULL bytes.
+
 ## [0.1.0] - 2020-12-04
 
 ### Changed

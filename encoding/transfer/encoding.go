@@ -1,6 +1,7 @@
 package transfer
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
 	"strings"
@@ -122,6 +123,13 @@ func (e NoEncoding) DecodeFromTransfer(value string) ([]byte, error) {
 // value. Note that this function requires processing the value.
 func encodingTypeOf(value []byte) EncodingType {
 	if !utf8.Valid(value) {
+		return Base64EncodingType
+	}
+
+	// To avoid issues with null-terminated strings, encode any value containing
+	// a null byte using Base64. (Postgres, for example, has trouble storing
+	// null bytes in text type fields, including jsonb.)
+	if bytes.IndexByte(value, byte(0)) != -1 {
 		return Base64EncodingType
 	}
 
