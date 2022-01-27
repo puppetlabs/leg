@@ -120,6 +120,11 @@ func TestHelperFuncs(t *testing.T) {
 			value:       "Hello, \x90\xA2\x8A\x45",
 			expected:    "base64:SGVsbG8sIJCiikU=",
 		},
+		{
+			description: "null bytes are base64-encoded",
+			value:       "This contains a null byte here '\x00'",
+			expected:    "base64:VGhpcyBjb250YWlucyBhIG51bGwgYnl0ZSBoZXJlICcAJw==",
+		},
 	}
 
 	for _, c := range cases {
