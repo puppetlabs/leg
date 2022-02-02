@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.5] - 2022-02-02
+
+### Added
+
+* Add StatefulSet controller object.
+
 ## [0.6.4] - 2021-12-02
 
 ### Added
@@ -135,7 +141,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.4...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.5...HEAD
+[0.6.5]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.4...k8sutil/v0.6.5
 [0.6.4]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.3...k8sutil/v0.6.4
 [0.6.3]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.2...k8sutil/v0.6.3
 [0.6.2]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.1...k8sutil/v0.6.2
