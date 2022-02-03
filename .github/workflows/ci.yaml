@@ -38,12 +38,13 @@ jobs:
           echo "Detected ${nr_changed_ext} change(s) to non-module directories, so running CI for all modules."
         fi
 
-        echo "::set-output name=modules::$(jq -cnR '[inputs]' <<<"${modules}")"
+        echo "::set-output name=modules::$(jq -cnR '[inputs | select(length > 0)]' <<<"${modules}")"
     outputs:
       modules: ${{ steps.detect-module-changes.outputs.modules }}
   lint:
     runs-on: ubuntu-latest
     needs: init
+    if: fromJSON(needs.init.outputs.modules)[0] != null
     strategy:
       fail-fast: false
       matrix:
@@ -73,6 +74,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: init
+    if: fromJSON(needs.init.outputs.modules)[0] != null
     strategy:
       fail-fast: false
       matrix:
