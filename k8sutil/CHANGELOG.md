@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.6] - 2022-03-07
+
+### Fixed
+
+* The `IgnoreNilLabelAnnotatableFrom` `LabelAnnotateFrom` method will redirect to the underlying `LabelAnnotatableFrom` method instead of recursively calling itself.
+
 ## [0.6.5] - 2022-02-02
 
 ### Added
@@ -141,7 +147,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.5...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.6...HEAD
+[0.6.6]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.5...k8sutil/v0.6.6
 [0.6.5]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.4...k8sutil/v0.6.5
 [0.6.4]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.3...k8sutil/v0.6.4
 [0.6.3]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.2...k8sutil/v0.6.3
