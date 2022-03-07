@@ -22,13 +22,14 @@ type IgnoreNilLabelAnnotatableFrom struct {
 }
 
 // LabelAnnotateFrom copies the labels from the given object metadata to this
-// entity.
+// entity, or does nothing if the underlying entity is nil or is an interface
+// with a nil value.
 func (inlaf IgnoreNilLabelAnnotatableFrom) LabelAnnotateFrom(ctx context.Context, from metav1.Object) {
 	if inlaf.LabelAnnotatableFrom == nil || reflect.ValueOf(inlaf.LabelAnnotatableFrom).IsNil() {
 		return
 	}
 
-	inlaf.LabelAnnotateFrom(ctx, from)
+	inlaf.LabelAnnotatableFrom.LabelAnnotateFrom(ctx, from)
 }
 
 var _ LabelAnnotatableFrom = &IgnoreNilLabelAnnotatableFrom{}
