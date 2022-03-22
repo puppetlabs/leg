@@ -78,7 +78,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ['1.16', '1.17']
+        go: ['1.17', '1.18']
         module: ${{ fromJSON(needs.init.outputs.modules) }}
     defaults:
       run:
