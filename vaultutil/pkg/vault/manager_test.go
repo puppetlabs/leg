@@ -9,12 +9,12 @@ import (
 	"github.com/hashicorp/vault/http"
 	"github.com/hashicorp/vault/vault"
 	"github.com/puppetlabs/leg/vaultutil/pkg/model"
+	"github.com/puppetlabs/leg/vaultutil/pkg/test"
 	vaultutil "github.com/puppetlabs/leg/vaultutil/pkg/vault"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCoreInitialization(t *testing.T) {
-
 	tcs := []struct {
 		name string
 		init *model.VaultInitializationData
@@ -45,13 +45,13 @@ func TestCoreInitialization(t *testing.T) {
 
 	ctx := context.Background()
 
-	for _, test := range tcs {
-		t.Run(test.name, func(t *testing.T) {
+	for _, tc := range tcs {
+		t.Run(tc.name, func(t *testing.T) {
 			err := WithVaultCore(t, ctx, func(vaultCore *vault.Core) {
 				err := WithVaultServer(t, vaultCore, func(vaultClient *vaultapi.Client) {
 					err := WithVaultInitializationManager(ctx, cfg, vaultClient, func(vi *vaultutil.VaultInitializationManager) {
 						for i := 0; i < 3; i++ {
-							err := vi.InitializeVault(ctx, test.init)
+							err := vi.InitializeVault(ctx, tc.init)
 							require.NoError(t, err)
 						}
 					})
@@ -65,7 +65,7 @@ func TestCoreInitialization(t *testing.T) {
 }
 
 func WithVaultInitializationManager(ctx context.Context, cfg *vaultutil.VaultConfig, vaultClient *vaultapi.Client, fn func(vsm *vaultutil.VaultInitializationManager)) error {
-	vi, cleanup, err := vaultutil.NewTestVaultInitializationManager(ctx, cfg, vaultClient)
+	vi, cleanup, err := test.NewTestVaultInitializationManager(ctx, cfg, vaultClient)
 	if err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ func WithVaultInitializationManager(ctx context.Context, cfg *vaultutil.VaultCon
 }
 
 func WithVaultSystemManager(ctx context.Context, cfg *vaultutil.VaultConfig, vaultClient *vaultapi.Client, fn func(vsm *vaultutil.VaultSystemManager)) error {
-	vsm, cleanup, err := vaultutil.NewTestVaultSystemManager(ctx, cfg, vaultClient)
+	vsm, cleanup, err := test.NewTestVaultSystemManager(ctx, cfg, vaultClient)
 	if err != nil {
 		return err
 	}

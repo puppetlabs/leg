@@ -8,11 +8,10 @@ require (
 	github.com/hashicorp/vault v1.9.3
 	github.com/hashicorp/vault/api v1.3.0
 	github.com/puppetlabs/leg/encoding v0.2.0
+	github.com/puppetlabs/leg/k8sutil v0.6.7
 	github.com/stretchr/testify v1.7.0
 	k8s.io/api v0.23.0
-	k8s.io/apiextensions-apiserver v0.23.0
 	k8s.io/apimachinery v0.23.0
-	k8s.io/client-go v0.23.0
 	sigs.k8s.io/controller-runtime v0.11.0
 )
 
@@ -168,7 +167,7 @@ require (
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
-	golang.org/x/tools v0.1.5 // indirect
+	golang.org/x/tools v0.1.6-0.20210820212750-d4cc65f0b2ff // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/api v0.43.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
@@ -181,6 +180,8 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	k8s.io/apiextensions-apiserver v0.23.0 // indirect
+	k8s.io/client-go v0.23.0 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65 // indirect
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
