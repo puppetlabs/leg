@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path"
 
+	"github.com/google/wire"
 	vaultapi "github.com/hashicorp/vault/api"
 	"github.com/puppetlabs/leg/vaultutil/pkg/model"
 	corev1 "k8s.io/api/core/v1"
@@ -12,6 +13,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+)
+
+var VaultSystemManagerProviderSet = wire.NewSet(
+	NewVaultSystemManager,
 )
 
 type VaultSystemManager struct {
@@ -74,9 +79,9 @@ func (vsm *VaultSystemManager) CreateCredentials(ctx context.Context, vaultKeys 
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
-		StringData: map[string]string{
-			model.VaultRootToken: vaultKeys.RootToken,
-			model.VaultUnsealKey: vaultKeys.UnsealKeys[0],
+		Data: map[string][]byte{
+			model.VaultRootToken: []byte(vaultKeys.RootToken),
+			model.VaultUnsealKey: []byte(vaultKeys.UnsealKeys[0]),
 		},
 	}
 
@@ -161,13 +166,21 @@ func (vsm *VaultSystemManager) ConfigureKubernetesAuthRoles(roles []*model.Vault
 
 func (vsm *VaultSystemManager) EnableSecretEngines(secretEngines []*model.VaultSecretEngine) error {
 	for _, se := range secretEngines {
-		_, err := vsm.vaultClient.Logical().Write(
-			path.Join(model.VaultSysMounts, se.Name),
-			map[string]interface{}{
-				"type": se.Type.String(),
-			})
+		enabled, err := vsm.isSecretEngineEnabled(se.Path)
 		if err != nil {
 			return err
+		}
+
+		if !enabled {
+			_, err = vsm.vaultClient.Logical().Write(
+				path.Join(model.VaultSysMounts, se.Path),
+				map[string]interface{}{
+					"type":        se.Type,
+					"description": se.Description,
+				})
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -331,12 +344,20 @@ func (vsm *VaultSystemManager) GetKubernetesAuthConfig(ctx context.Context) (*mo
 }
 
 func (vsm *VaultSystemManager) isAuthEnabled(mount string) (bool, error) {
-	auths, err := vsm.vaultClient.Logical().Read(model.VaultSysAuth)
+	return vsm.readPath(model.VaultSysAuth, mount)
+}
+
+func (vsm *VaultSystemManager) isSecretEngineEnabled(mount string) (bool, error) {
+	return vsm.readPath(model.VaultSysMounts, mount)
+}
+
+func (vsm *VaultSystemManager) readPath(base, subpath string) (bool, error) {
+	data, err := vsm.vaultClient.Logical().Read(base)
 	if err != nil {
 		return false, err
 	}
 
-	if auth, ok := auths.Data[fmt.Sprintf("%s/", mount)]; auth != nil && ok {
+	if foundData, ok := data.Data[fmt.Sprintf("%s/", subpath)]; foundData != nil && ok {
 		return true, nil
 	}
 
