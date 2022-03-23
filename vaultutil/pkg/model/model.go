@@ -1,5 +1,9 @@
 package model
 
+import (
+	vaultapi "github.com/hashicorp/vault/api"
+)
+
 const (
 	DefaultVaultKubernetesHost = "https://kubernetes.default.svc"
 
@@ -73,8 +77,9 @@ type VaultPolicy struct {
 }
 
 type VaultSecretEngine struct {
-	Name string
-	Type VaultSecretEngineType
+	Path        string
+	Type        string
+	Description string
 }
 
 type VaultSecretEngineType string
@@ -87,3 +92,11 @@ const (
 	VaultSecretEngineTypeKVV2    VaultSecretEngineType = "kv-v2"
 	VaultSecretEngineTypeTransit VaultSecretEngineType = "transit"
 )
+
+type VaultInitializationData struct {
+	JWTRoles        []*VaultJWTRole
+	KubernetesRoles []*VaultKubernetesRole
+	Policies        []*VaultPolicy
+	Plugins         []*vaultapi.RegisterPluginInput
+	SecretEngines   []*VaultSecretEngine
+}

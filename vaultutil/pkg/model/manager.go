@@ -6,6 +6,10 @@ import (
 	vaultapi "github.com/hashicorp/vault/api"
 )
 
+type VaultInitializationManager interface {
+	InitializeVault(ctx context.Context, vaultInitializationData *VaultInitializationData) error
+}
+
 type VaultSystemManager interface {
 	ConfigureJWTAuth(ctx context.Context) error
 	ConfigureJWTAuthRoles(roles []*VaultJWTRole) error
