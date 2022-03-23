@@ -7,6 +7,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/hashicorp/vault v1.9.3
 	github.com/hashicorp/vault/api v1.3.0
+	github.com/puppetlabs/leg/encoding v0.2.0
 	github.com/stretchr/testify v1.7.0
 	k8s.io/api v0.23.0
 	k8s.io/apiextensions-apiserver v0.23.0
