@@ -2,15 +2,10 @@ package vault
 
 import (
 	"context"
-	"errors"
 	"path"
 
 	vaultapi "github.com/hashicorp/vault/api"
 	"github.com/puppetlabs/leg/encoding/transfer"
-)
-
-var (
-	ErrVaultDataNotFound = errors.New("Vault data not found")
 )
 
 type KVV2Client struct {
