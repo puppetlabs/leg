@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.1.5] - 2022-03-29
+
 ### Fixed
 
 * Adds logging parameters to the log function as an array instead of a map in
@@ -42,8 +44,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.4...HEAD
-[0.1.3]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.3...httputil/v0.1.4
+[Unreleased]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.5...HEAD
+[0.1.5]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.4...httputil/v0.1.5
+[0.1.4]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.3...httputil/v0.1.4
 [0.1.3]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.2...httputil/v0.1.3
 [0.1.2]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.1...httputil/v0.1.2
 [0.1.1]: https://github.com/puppetlabs/leg/compare/httputil/v0.1.0...httputil/v0.1.1
