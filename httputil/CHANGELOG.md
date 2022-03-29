@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* Adds logging parameters to the log function as an array instead of a map in
+  the logging middleware handler. This will address inconsistent parameter
+  ordering in the log output for HTTP handlers.
+
 ## [0.1.4] - 2021-01-06
 
 ### Build
