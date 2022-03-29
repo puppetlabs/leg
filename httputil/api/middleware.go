@@ -40,17 +40,17 @@ func LogMiddleware(next http.Handler) http.Handler {
 		if code, ok := trw.StatusCode(); !ok {
 			// Probably hijacked, ignore.
 		} else {
-			attrs := logging.Ctx{
-				"method":  r.Method,
-				"path":    r.RequestURI,
-				"status":  code,
-				"time_ms": durationMs(duration).Milliseconds(),
+			attrs := []interface{}{
+				"method", r.Method,
+				"status", code,
+				"time_ms", durationMs(duration).Milliseconds(),
+				"path", r.RequestURI,
 			}
 
 			if code >= 500 {
-				log(r.Context()).Warn("handled HTTP request with server error", attrs)
+				log(r.Context()).Warn("handled HTTP request with server error", attrs...)
 			} else {
-				log(r.Context()).Debug("handled HTTP request", attrs)
+				log(r.Context()).Debug("handled HTTP request", attrs...)
 			}
 		}
 	})
