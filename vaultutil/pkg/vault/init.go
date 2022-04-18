@@ -33,7 +33,7 @@ func (vim *VaultInitializationManager) initializeSystem(ctx context.Context) err
 	}
 
 	var err error
-	if credentials.RootToken == "" || credentials.UnsealKeys[0] == "" {
+	if credentials.RootToken == "" {
 		credentials, err = vim.vaultSystemManager.GetCredentials(ctx)
 		if err != nil {
 			return err
@@ -47,9 +47,11 @@ func (vim *VaultInitializationManager) initializeSystem(ctx context.Context) err
 		}
 	}
 
-	err = vim.vaultSystemManager.Unseal(credentials)
-	if err != nil {
-		return err
+	if len(credentials.UnsealKeys) > 0 && credentials.UnsealKeys[0] != "" {
+		err = vim.vaultSystemManager.Unseal(credentials)
+		if err != nil {
+			return err
+		}
 	}
 
 	vim.vaultSystemManager.SetToken(credentials)
