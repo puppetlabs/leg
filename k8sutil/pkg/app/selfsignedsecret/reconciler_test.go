@@ -29,7 +29,8 @@ func TestReconcilerSetsCertificateInSecret(t *testing.T) {
 			}
 
 			mgr, err := manager.New(eit.RESTConfig, manager.Options{
-				Namespace: ns.GetName(),
+				Namespace:          ns.GetName(),
+				MetricsBindAddress: "0",
 			})
 			require.NoError(t, err)
 
