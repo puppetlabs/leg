@@ -7,7 +7,7 @@ require (
 	github.com/puppetlabs/leg/errmap v0.1.0
 	github.com/puppetlabs/leg/lifecycle v0.2.0
 	github.com/puppetlabs/leg/stringutil v0.1.0
-	github.com/puppetlabs/leg/timeutil v0.3.0
+	github.com/puppetlabs/leg/timeutil v0.4.2
 	github.com/rancher/remotedialer v0.2.5
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0

@@ -6,12 +6,17 @@ applications.
 
 ## controller/app
 
-This package provides two useful applications:
+This package provides a few useful client and controller applications:
 
+* portforward: Programmatic support for port forwarding to a Kubernetes pod or
+  service à la `kubectl port-forward`.
+* selfsignedsecret: A reconciler loop that generates a self-signed TLS secret.
 * tlsproxy: A reverse proxy that wraps an HTTP server with TLS using an
   automatically configured certificate.
 * tunnel: A bidirectional stream that connects a locally accessible HTTP server
   to a Kubernetes service inside a cluster.
+* webhookcert: A reconciler loop that automatically manages the `caBundle` value
+  for a Kubernetes admission webhook.
 
 ## controller/eventhandler
 
