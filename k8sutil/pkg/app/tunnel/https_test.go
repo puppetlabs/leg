@@ -52,7 +52,7 @@ exec wget -qO- %s/foo/bar
 `, cert, tun.URL())
 				r, err := endtoend.Exec(ctx, eit.Environment, script, endtoend.ExecerWithNamespace(ns.GetName()))
 				require.NoError(t, err)
-				assert.Equal(t, 0, r.Code)
+				assert.Equal(t, 0, r.ExitCode)
 				assert.Equal(t, fmt.Sprintf("You asked for the resource at /foo/bar via %s!", tun.TLSProxy.Service.DNSName()), r.Stdout)
 				assert.Equal(t, "", r.Stderr)
 			}))

@@ -38,7 +38,7 @@ func TestHTTP(t *testing.T) {
 				script := fmt.Sprintf(`exec wget -qO- %s/foo/bar`, tun.URL())
 				r, err := endtoend.Exec(ctx, eit.Environment, script, endtoend.ExecerWithNamespace(ns.GetName()))
 				require.NoError(t, err)
-				assert.Equal(t, 0, r.Code)
+				assert.Equal(t, 0, r.ExitCode)
 				assert.Equal(t, "You asked for the resource at /foo/bar!", r.Stdout)
 				assert.Equal(t, "", r.Stderr)
 			}))
