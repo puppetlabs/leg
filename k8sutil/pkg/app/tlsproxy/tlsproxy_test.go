@@ -75,7 +75,7 @@ exec wget -qO- %s
 `, cert, tp.URL())
 			r, err := endtoend.Exec(ctx, eit.Environment, script, endtoend.ExecerWithNamespace(ns.GetName()))
 			require.NoError(t, err)
-			assert.Equal(t, 0, r.Code)
+			assert.Equal(t, 0, r.ExitCode)
 			assert.Equal(t, "Hello, world!\n", r.Stdout)
 			assert.Equal(t, "", r.Stderr)
 		})

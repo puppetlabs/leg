@@ -13,6 +13,9 @@ var (
 	ErrPodTerminated = errors.New("pod terminated")
 	ErrPodRunning    = errors.New("pod running")
 	ErrPodWaiting    = errors.New("pod waiting to start")
+
+	ErrPodContainerTerminated = errors.New("container terminated")
+	ErrPodContainerWaiting    = errors.New("container waiting to start")
 )
 
 var (
@@ -46,6 +49,26 @@ func (p *Pod) Terminated() bool {
 
 func (p *Pod) Running() bool {
 	return p.Phase() == corev1.PodRunning
+}
+
+func (p *Pod) ContainerStatus(name string) (corev1.ContainerStatus, bool) {
+	for _, cs := range p.Object.Status.ContainerStatuses {
+		if cs.Name == name {
+			return cs, true
+		}
+	}
+
+	return corev1.ContainerStatus{Name: name}, false
+}
+
+func (p *Pod) ContainerTerminated(name string) bool {
+	cs, found := p.ContainerStatus(name)
+	return found && cs.State.Terminated != nil
+}
+
+func (p *Pod) ContainerRunning(name string) bool {
+	cs, found := p.ContainerStatus(name)
+	return found && cs.State.Running != nil
 }
 
 func NewPod(key client.ObjectKey) *Pod {
@@ -90,6 +113,25 @@ func NewPodTerminatedPoller(pod *Pod) lifecycle.RetryLoader {
 			return false, ErrPodRunning
 		default:
 			return false, ErrPodWaiting
+		}
+	})
+}
+
+func NewPodContainerRunningPoller(pod *Pod, name string) lifecycle.RetryLoader {
+	return lifecycle.NewRetryLoader(pod, func(ok bool, err error) (bool, error) {
+		if !ok || err != nil {
+			return ok, err
+		}
+
+		switch {
+		case pod.ContainerRunning(name):
+			return true, nil
+		case pod.ContainerTerminated(name):
+			return true, ErrPodContainerTerminated
+		case pod.Terminated():
+			return true, ErrPodTerminated
+		default:
+			return false, ErrPodContainerWaiting
 		}
 	})
 }

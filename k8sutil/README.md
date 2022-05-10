@@ -8,6 +8,8 @@ applications.
 
 This package provides a few useful client and controller applications:
 
+* exec: Programmatic support for executing arbitrary commands in Kubernetes
+  pods.
 * portforward: Programmatic support for port forwarding to a Kubernetes pod or
   service à la `kubectl port-forward`.
 * selfsignedsecret: A reconciler loop that generates a self-signed TLS secret.

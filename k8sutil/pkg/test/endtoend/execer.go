@@ -1,33 +1,15 @@
 package endtoend
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 
+	"github.com/puppetlabs/leg/k8sutil/pkg/app/exec"
 	corev1obj "github.com/puppetlabs/leg/k8sutil/pkg/controller/obj/api/corev1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes/scheme"
-	"k8s.io/client-go/tools/remotecommand"
-	"k8s.io/client-go/util/exec"
 )
-
-// ExecResult provides access to some information after running a script.
-type ExecResult struct {
-	// Code is the exit code returned by the script.
-	Code int
-
-	// Stdout is the complete contents of the script's standard output file
-	// descriptor.
-	Stdout string
-
-	// Stderr is the complete contents of the script's standard error file
-	// descriptor.
-	Stderr string
-}
 
 // ExecerOptions allow for customization of a script executor.
 type ExecerOptions struct {
@@ -154,54 +136,12 @@ func (e *Execer) Close(ctx context.Context) (err error) {
 // the command fails, its exit status is reported in the result, but an error is
 // not returned. This method only returns an error if an infrastucture failure
 // occurs (like not being able to communicate with the execution pod).
-func (e *Execer) Exec(ctx context.Context, script string) (*ExecResult, error) {
-	// Create pod if it doesn't exist.
+func (e *Execer) Exec(ctx context.Context, script string) (*exec.Result, error) {
 	if err := e.pod.Persist(ctx, e.e.ControllerClient); err != nil {
 		return nil, err
 	}
 
-	// Wait for pod to start.
-	if _, err := corev1obj.NewPodRunningPoller(e.pod).Load(ctx, e.e.ControllerClient); err != nil {
-		return nil, err
-	}
-
-	// Exec into pod.
-	req := e.e.StaticClient.CoreV1().RESTClient().Post().
-		Resource("pods").
-		Namespace(e.pod.Key.Namespace).
-		Name(e.pod.Key.Name).
-		SubResource("exec").
-		Param("container", e.pod.Object.Spec.Containers[0].Name)
-	req.VersionedParams(&corev1.PodExecOptions{
-		Container: e.pod.Object.Spec.Containers[0].Name,
-		Command:   []string{e.shell, "-c", script},
-		Stdout:    true,
-		Stderr:    true,
-	}, scheme.ParameterCodec)
-
-	execer, err := remotecommand.NewSPDYExecutor(e.e.RESTConfig, http.MethodPost, req.URL())
-	if err != nil {
-		return nil, err
-	}
-
-	var stdout, stderr bytes.Buffer
-	err = execer.Stream(remotecommand.StreamOptions{
-		Stdout: &stdout,
-		Stderr: &stderr,
-	})
-
-	var code int
-	if cerr, ok := err.(exec.CodeExitError); ok {
-		code = cerr.ExitStatus()
-	} else if err != nil {
-		return nil, err
-	}
-
-	return &ExecResult{
-		Code:   code,
-		Stdout: stdout.String(),
-		Stderr: stderr.String(),
-	}, nil
+	return exec.ShellScript(ctx, e.e.RESTConfig, e.pod, script, exec.WithShell(e.shell))
 }
 
 // NewExecer creates a new script executor for the given environment and
@@ -243,7 +183,7 @@ func NewExecer(e *Environment, opts ...ExecerOption) *Execer {
 
 // Exec creates a one-time-use Execer, runs the given script, and then tears
 // down the backing pod.
-func Exec(ctx context.Context, e *Environment, script string, opts ...ExecerOption) (res *ExecResult, err error) {
+func Exec(ctx context.Context, e *Environment, script string, opts ...ExecerOption) (res *exec.Result, err error) {
 	execer := NewExecer(e, opts...)
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

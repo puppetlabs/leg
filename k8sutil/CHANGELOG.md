@@ -8,8 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-* A new application, portforward, supports programmatic port forwarding to
-  arbitrary Kubernetes pods and services.
+* A new application, portforward, supports programmatic port forwarding to arbitrary Kubernetes pods and services.
+* A new application, exec, supports programmatic command execution in a pod.
+
+### Changed
+
+* To reduce code duplication, the `Execer` `Exec` method in the end-to-end testing package now returns a `*exec.Result` instead of its own result type.
 
 ## [0.6.7] - 2022-03-23
 

@@ -27,7 +27,7 @@ exit 42
 			r, err := endtoend.Exec(ctx, eit.Environment, script, endtoend.ExecerWithNamespace(ns.GetName()))
 			require.NoError(t, err)
 
-			assert.Equal(t, 42, r.Code)
+			assert.Equal(t, 42, r.ExitCode)
 			assert.Equal(t, "foo\n", r.Stdout)
 			assert.Equal(t, "bar\n", r.Stderr)
 		})
