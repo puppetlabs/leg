@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.7.0] - 2022-05-10
+
 ### Added
 
 * A new application, portforward, supports programmatic port forwarding to arbitrary Kubernetes pods and services.
@@ -162,7 +164,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Initial release.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.7...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.7.0...HEAD
+[0.7.0]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.7...k8sutil/v0.7.0
 [0.6.7]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.6...k8sutil/v0.6.7
 [0.6.6]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.5...k8sutil/v0.6.6
 [0.6.5]: https://github.com/puppetlabs/leg/compare/k8sutil/v0.6.4...k8sutil/v0.6.5
