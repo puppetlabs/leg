@@ -9,32 +9,32 @@ import (
 )
 
 type Joiner interface {
-	Join(ctx context.Context, a, b gval.Evaluable, parameter interface{}) (interface{}, error)
+	Join(ctx context.Context, a, b gval.Evaluable, parameter any) (any, error)
 }
 
-type JoinerFunc func(ctx context.Context, a, b gval.Evaluable, parameter interface{}) (interface{}, error)
+type JoinerFunc func(ctx context.Context, a, b gval.Evaluable, parameter any) (any, error)
 
 var _ Joiner = JoinerFunc(nil)
 
-func (jf JoinerFunc) Join(ctx context.Context, a, b gval.Evaluable, parameter interface{}) (interface{}, error) {
+func (jf JoinerFunc) Join(ctx context.Context, a, b gval.Evaluable, parameter any) (any, error) {
 	return jf(ctx, a, b, parameter)
 }
 
 type StringFormatter interface {
-	FormatString(v interface{}) (string, error)
+	FormatString(ctx context.Context, v any) (string, error)
 }
 
-type StringFormatterFunc func(v interface{}) (string, error)
+type StringFormatterFunc func(ctx context.Context, v any) (string, error)
 
 var _ StringFormatter = StringFormatterFunc(nil)
 
-func (sff StringFormatterFunc) FormatString(v interface{}) (string, error) {
-	return sff(v)
+func (sff StringFormatterFunc) FormatString(ctx context.Context, v any) (string, error) {
+	return sff(ctx, v)
 }
 
 type defaultStringFormatter struct{}
 
-func (dsf defaultStringFormatter) FormatString(v interface{}) (string, error) {
+func (dsf defaultStringFormatter) FormatString(ctx context.Context, v any) (string, error) {
 	switch vt := v.(type) {
 	case fmt.Stringer:
 		return vt.String(), nil
@@ -61,7 +61,7 @@ type StringJoiner struct {
 
 var _ Joiner = &StringJoiner{}
 
-func (sj *StringJoiner) Join(ctx context.Context, a, b gval.Evaluable, parameter interface{}) (interface{}, error) {
+func (sj *StringJoiner) Join(ctx context.Context, a, b gval.Evaluable, parameter any) (any, error) {
 	ea, err := a(ctx, parameter)
 	if err != nil {
 		return nil, err
@@ -81,12 +81,12 @@ func (sj *StringJoiner) Join(ctx context.Context, a, b gval.Evaluable, parameter
 		}
 	}
 
-	fa, err := sj.formatter.FormatString(ea)
+	fa, err := sj.formatter.FormatString(ctx, ea)
 	if err != nil {
 		return nil, err
 	}
 
-	fb, err := sj.formatter.FormatString(eb)
+	fb, err := sj.formatter.FormatString(ctx, eb)
 	if err != nil {
 		return nil, err
 	}

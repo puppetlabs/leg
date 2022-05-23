@@ -16,8 +16,8 @@ func TestLanguage(t *testing.T) {
 		Name     string
 		Language gval.Language
 		Template string
-		Input    interface{}
-		Expected interface{}
+		Input    any
+		Expected any
 	}{
 		{
 			Name: "simple",
@@ -31,7 +31,7 @@ func TestLanguage(t *testing.T) {
 				},
 			),
 			Template: "hello ${foo}, friend",
-			Input:    map[string]interface{}{"foo": "there"},
+			Input:    map[string]any{"foo": "there"},
 			Expected: "hello there, friend",
 		},
 		{
@@ -86,7 +86,7 @@ func TestLanguage(t *testing.T) {
 										return nil, p.Expected("template identifier", '}')
 									}
 
-									return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+									return func(ctx context.Context, parameter any) (any, error) {
 										v, err := eval(ctx, parameter)
 										if err != nil {
 											return nil, err
@@ -125,8 +125,37 @@ func TestLanguage(t *testing.T) {
 				},
 			),
 			Template: "${a + b}",
-			Input:    map[string]interface{}{"a": 1, "b": 2},
+			Input:    map[string]any{"a": 1, "b": 2},
 			Expected: float64(3),
+		},
+		{
+			Name: "custom formatter",
+			Language: template.Language(
+				template.WithJoiner{
+					Joiner: template.NewStringJoiner(
+						template.WithStringFormatter{
+							StringFormatter: template.StringFormatterFunc(func(ctx context.Context, v any) (string, error) {
+								inner, err := template.DefaultStringFormatter.FormatString(ctx, v)
+								if err != nil || inner == "" {
+									return inner, err
+								}
+
+								return fmt.Sprintf("->%s<-", inner), nil
+							}),
+						},
+					),
+				},
+				template.WithDelimitedLanguage{
+					DelimitedLanguage: &template.DelimitedLanguage{
+						Start:    "${",
+						End:      "}",
+						Language: gval.Full(),
+					},
+				},
+			),
+			Template: "${a + b}",
+			Input:    map[string]any{"a": 1, "b": 2},
+			Expected: "->3<-",
 		},
 	}
 	for _, test := range tests {
