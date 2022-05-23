@@ -18,7 +18,7 @@ func (e *UnexpectedStringIndexError) Error() string {
 }
 
 type UnexpectedIndexTypeError struct {
-	RawIndex interface{}
+	RawIndex any
 }
 
 func (e *UnexpectedIndexTypeError) Error() string {
@@ -34,7 +34,7 @@ func (e *IndexOutOfBoundsError) Error() string {
 }
 
 type UnexpectedKeyTypeError struct {
-	RawKey interface{}
+	RawKey any
 }
 
 func (e *UnexpectedKeyTypeError) Error() string {
@@ -58,8 +58,8 @@ func (e *UnknownFieldError) Error() string {
 }
 
 type UnsupportedValueTypeError struct {
-	Value interface{}
-	Field interface{}
+	Value any
+	Field any
 }
 
 func (e *UnsupportedValueTypeError) Error() string {

@@ -89,7 +89,7 @@ func Language(opts ...Option) gval.Language {
 						return nil, err
 					}
 
-					return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+					return func(ctx context.Context, parameter any) (any, error) {
 						return o.Joiner.Join(ctx, a, b, parameter)
 					}, nil
 				}))
@@ -116,7 +116,7 @@ func Language(opts ...Option) gval.Language {
 					return nil, err
 				}
 
-				return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+				return func(ctx context.Context, parameter any) (any, error) {
 					return o.Joiner.Join(ctx, a, b, parameter)
 				}, nil
 			}),
@@ -153,7 +153,7 @@ func delimLang(g graph.DirectedGraph, prefix string) gval.Language {
 					}
 				}
 
-				return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+				return func(ctx context.Context, parameter any) (any, error) {
 					v, err := eval(ctx, parameter)
 					if err != nil {
 						return nil, &EvaluationError{

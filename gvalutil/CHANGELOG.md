@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+* `eval.StringValue` uses the correct base when formatting numbers as a string.
+
+### Changed
+
+* Template string formatters now accept a context in addition to the value to be printed.
+
+### Build
+
+* The minimum Go version compatible with this release is 1.18.
+
 ## [0.2.0] - 2021-06-02
 
 ### Added
