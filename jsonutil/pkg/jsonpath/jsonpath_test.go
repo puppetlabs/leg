@@ -29,13 +29,13 @@ type jsonpathTest struct {
 	data         string
 	lang         gval.Language
 	reorder      bool
-	want         interface{}
+	want         any
 	wantErr      bool
 	wantParseErr bool
 }
 
-type obj = map[string]interface{}
-type arr = []interface{}
+type obj = map[string]any
+type arr = []any
 
 func TestJsonPath(t *testing.T) {
 
@@ -490,7 +490,7 @@ func (tt jsonpathTest) test(t *testing.T) {
 	if tt.wantParseErr {
 		return
 	}
-	var v interface{}
+	var v any
 	err = json.Unmarshal([]byte(tt.data), &v)
 	if err != nil {
 		t.Fatalf("could not parse json input: %v", err)
@@ -521,7 +521,7 @@ func (tt jsonpathTest) test(t *testing.T) {
 	}
 }
 
-func reorder(sl []interface{}) {
+func reorder(sl []any) {
 	sort.Slice(sl, func(i, j int) bool {
 		a := sl[i]
 		b := sl[j]
@@ -546,7 +546,7 @@ func reorder(sl []interface{}) {
 	})
 }
 
-func typeOrder(o interface{}) int {
+func typeOrder(o any) int {
 	switch o.(type) {
 	case bool:
 		return 0
@@ -565,19 +565,19 @@ func typeOrder(o interface{}) int {
 }
 
 type customVariable interface {
-	Select(c context.Context, key int, parameter interface{}) (interface{}, error)
+	Select(c context.Context, key int, parameter any) (any, error)
 }
 
 type multiplier int
 
-func (m multiplier) Select(c context.Context, key int, parameter interface{}) (interface{}, error) {
+func (m multiplier) Select(c context.Context, key int, parameter any) (any, error) {
 	return int(m) * key, nil
 }
 
 func TestCustomVariableSelector(t *testing.T) {
 	lang := gval.NewLanguage(
 		jsonpath.Language(),
-		gval.VariableSelector(jsonpath.ChildVariableSelector(func(ctx context.Context, parameter interface{}, key interface{}, next func(context.Context, jsonpath.PathValue) error) error {
+		gval.VariableSelector(jsonpath.ChildVariableSelector(func(ctx context.Context, parameter any, key any, next func(context.Context, jsonpath.PathValue) error) error {
 			switch o := parameter.(type) {
 			case customVariable:
 				var i int
@@ -601,7 +601,7 @@ func TestCustomVariableSelector(t *testing.T) {
 		})),
 	)
 
-	m := map[string]interface{}{
+	m := map[string]any{
 		"a": 100,
 		"b": multiplier(100),
 	}
@@ -609,7 +609,7 @@ func TestCustomVariableSelector(t *testing.T) {
 	tests := []struct {
 		name string
 		path string
-		want interface{}
+		want any
 	}{
 		{
 			name: "fallback",

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* For added flexibility, the JSONPath template language now passes through the string formatter type from gvalutil.
+
+### Build
+
+* The minimum Go version compatible with this release is 1.18.
+
 ## [0.2.2] - 2021-06-02
 
 ### Changed

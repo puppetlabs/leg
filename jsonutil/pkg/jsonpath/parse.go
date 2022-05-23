@@ -221,7 +221,7 @@ func (p *parser) variableRecursiveDescent() gval.Evaluable {
 }
 
 func (p *parser) variableRange(min, max, step gval.Evaluable) gval.Evaluable {
-	return p.Var(func(c context.Context, v interface{}) (interface{}, error) {
+	return p.Var(func(c context.Context, v any) (any, error) {
 		min, err := min.EvalInt(c, v)
 		if err != nil {
 			return nil, err
@@ -242,7 +242,7 @@ func (p *parser) variableRange(min, max, step gval.Evaluable) gval.Evaluable {
 }
 
 func (p *parser) variableChild(key gval.Evaluable) gval.Evaluable {
-	return p.Var(func(c context.Context, v interface{}) (interface{}, error) {
+	return p.Var(func(c context.Context, v any) (any, error) {
 		key, err := key(c, v)
 		if err != nil {
 			return nil, err

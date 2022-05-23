@@ -26,7 +26,7 @@ func New(path string) (gval.Evaluable, error) {
 }
 
 // Get executes given JSONPath on given value
-func Get(path string, value interface{}) (interface{}, error) {
+func Get(path string, value any) (any, error) {
 	eval, err := New(path)
 	if err != nil {
 		return nil, err
@@ -126,7 +126,7 @@ func Language(opts ...LanguageOption) gval.Language {
 				return nil, err
 			}
 
-			return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+			return func(ctx context.Context, parameter any) (any, error) {
 				return eval(currentContext(ctx, parameter), parameter)
 			}, nil
 		}),

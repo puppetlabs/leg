@@ -35,13 +35,11 @@ func WithExpressionLanguageVariableVisitor(visitor jsonpath.VariableVisitor) Tem
 	}
 }
 
-type FormatterFunc func(value interface{}) (string, error)
-
-func DefaultFormatter(v interface{}) (string, error) {
+var DefaultFormatter = template.StringFormatterFunc(func(ctx context.Context, v any) (string, error) {
 	switch vt := v.(type) {
 	case nil:
 		return "", nil
-	case []interface{}:
+	case []any:
 		vs := make([]string, len(vt))
 		for i, vi := range vt {
 			vs[i] = fmt.Sprintf("%v", vi)
@@ -51,9 +49,9 @@ func DefaultFormatter(v interface{}) (string, error) {
 	default:
 		return fmt.Sprintf("%v", vt), nil
 	}
-}
+})
 
-func WithFormatter(formatter FormatterFunc) TemplateOption {
+func WithFormatter(formatter template.StringFormatter) TemplateOption {
 	return func(tl *templateLanguage) {
 		tl.fmt = formatter
 	}
@@ -91,14 +89,14 @@ func parseRange(ctx context.Context, p *gval.Parser, lang gval.Language) (gval.E
 		return nil, p.Expected("JSONPath template range end")
 	}
 
-	return func(ctx context.Context, parameter interface{}) (interface{}, error) {
+	return func(ctx context.Context, parameter any) (any, error) {
 		candidate, err := query(ctx, parameter)
 		if err != nil {
 			return nil, err
 		}
 
 		var s string
-		if els, ok := candidate.([]interface{}); ok {
+		if els, ok := candidate.([]any); ok {
 			for _, el := range els {
 				v, err := sub.EvalString(ctx, el)
 				if err != nil {
@@ -113,15 +111,15 @@ func parseRange(ctx context.Context, p *gval.Parser, lang gval.Language) (gval.E
 	}, nil
 }
 
-func eq(a, b interface{}) bool {
+func eq(a, b any) bool {
 	// Support matrix-y == against scalar values.
-	if as, ok := a.([]interface{}); ok {
+	if as, ok := a.([]any); ok {
 		for _, av := range as {
 			if reflect.DeepEqual(av, b) {
 				return true
 			}
 		}
-	} else if bs, ok := b.([]interface{}); ok {
+	} else if bs, ok := b.([]any); ok {
 		for _, bv := range bs {
 			if reflect.DeepEqual(a, bv) {
 				return true
@@ -136,14 +134,14 @@ func eq(a, b interface{}) bool {
 // support matrix equality comparison.
 var expressionLanguage = gval.NewLanguage(
 	jsonpath.Language(jsonpath.WithInitialPath{}, jsonpath.WithMissingKeysAllowed{}),
-	gval.InfixOperator("==", func(a, b interface{}) (interface{}, error) { return eq(a, b), nil }),
-	gval.InfixOperator("!=", func(a, b interface{}) (interface{}, error) { return !eq(a, b), nil }),
+	gval.InfixOperator("==", func(a, b any) (any, error) { return eq(a, b), nil }),
+	gval.InfixOperator("!=", func(a, b any) (any, error) { return !eq(a, b), nil }),
 )
 
 // templateLanguage is the total language, which includes literal handling outside of curly braces
 type templateLanguage struct {
 	tpl gval.Language
-	fmt FormatterFunc
+	fmt template.StringFormatter
 }
 
 func (tl *templateLanguage) generate() gval.Language {
@@ -151,7 +149,7 @@ func (tl *templateLanguage) generate() gval.Language {
 		template.WithJoiner{
 			Joiner: template.NewStringJoiner(
 				template.WithStringFormatter{
-					StringFormatter: template.StringFormatterFunc(tl.fmt),
+					StringFormatter: tl.fmt,
 				},
 			),
 		},

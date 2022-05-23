@@ -34,7 +34,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	var doc interface{}
+	var doc any
 	if err := json.NewDecoder(os.Stdin).Decode(&doc); err != nil {
 		fmt.Fprintf(os.Stderr, "document parse error: %+v\n", err)
 		os.Exit(2)

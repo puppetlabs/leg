@@ -11,11 +11,11 @@ import (
 )
 
 type regressionQuery struct {
-	ID       string                 `yaml:"id"`
-	Selector string                 `yaml:"selector"`
-	Document interface{}            `yaml:"document"`
-	Ordered  *bool                  `yaml:"ordered,omitempty"`
-	Results  map[string]interface{} `yaml:",inline"`
+	ID       string         `yaml:"id"`
+	Selector string         `yaml:"selector"`
+	Document any            `yaml:"document"`
+	Ordered  *bool          `yaml:"ordered,omitempty"`
+	Results  map[string]any `yaml:",inline"`
 }
 
 type regressionSuite struct {

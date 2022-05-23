@@ -23,7 +23,7 @@ import (
 )
 
 func ExampleGet() {
-	v := interface{}(nil)
+	v := any(nil)
 
 	_ = json.Unmarshal([]byte(`{
 		"welcome":{
@@ -44,7 +44,7 @@ func ExampleGet() {
 }
 
 func ExampleGet_wildcard() {
-	v := interface{}(nil)
+	v := any(nil)
 
 	_ = json.Unmarshal([]byte(`{
 		"welcome":{
@@ -58,7 +58,7 @@ func ExampleGet_wildcard() {
 		os.Exit(1)
 	}
 
-	for _, value := range welcome.([]interface{}) {
+	for _, value := range welcome.([]any) {
 		fmt.Printf("%v\n", value)
 	}
 
@@ -68,7 +68,7 @@ func ExampleGet_wildcard() {
 }
 
 func ExampleGet_filter() {
-	v := interface{}(nil)
+	v := any(nil)
 
 	_ = json.Unmarshal([]byte(`[
 		{"key":"a","value" : "I"},
@@ -82,7 +82,7 @@ func ExampleGet_filter() {
 		os.Exit(1)
 	}
 
-	for _, value := range values.([]interface{}) {
+	for _, value := range values.([]any) {
 		fmt.Println(value)
 	}
 
@@ -99,7 +99,7 @@ func Example_gval() {
 		os.Exit(1)
 	}
 
-	v := interface{}(nil)
+	v := any(nil)
 	err = json.Unmarshal([]byte(`{
 		"device 1":{
 			"name": "fancy device",
@@ -138,7 +138,7 @@ func Example_gval() {
 		os.Exit(1)
 	}
 
-	for device, name := range devices.(map[string]interface{}) {
+	for device, name := range devices.(map[string]any) {
 		fmt.Printf("%s -> %v\n", device, name)
 	}
 
@@ -150,7 +150,7 @@ func Example_gval() {
 func Example_variableSelector() {
 	builder := gval.NewLanguage(
 		jsonpath.Language(),
-		gval.VariableSelector(jsonpath.ChildVariableSelector(func(ctx context.Context, v interface{}, key interface{}, next func(context.Context, jsonpath.PathValue) error) error {
+		gval.VariableSelector(jsonpath.ChildVariableSelector(func(ctx context.Context, v any, key any, next func(context.Context, jsonpath.PathValue) error) error {
 			return jsonpath.DefaultVariableVisitor().VisitChild(ctx, v, key, func(ctx context.Context, pv jsonpath.PathValue) error {
 				if s, ok := pv.Value.(string); ok && strings.HasPrefix(s, "base64:") {
 					b, err := base64.StdEncoding.DecodeString(s[len("base64:"):])
@@ -172,7 +172,7 @@ func Example_variableSelector() {
 		os.Exit(1)
 	}
 
-	var v interface{}
+	var v any
 	err = json.Unmarshal([]byte(`{
 		"encoded": "base64:SGVsbG8sIHdvcmxkIQ=="
 	}`), &v)

@@ -19,10 +19,10 @@ import (
 	"github.com/PaesslerAG/gval"
 )
 
-type keyValueVisitor func(key string, value interface{})
+type keyValueVisitor func(key string, value any)
 
 type jsonObject interface {
-	visitElements(c context.Context, v interface{}, visit keyValueVisitor) error
+	visitElements(c context.Context, v any, visit keyValueVisitor) error
 }
 
 type jsonObjectSlice []jsonObject
@@ -92,7 +92,7 @@ func parseJSONObjectElement(ctx context.Context, gParser *gval.Parser, selectorM
 	return keyValuePair{key, value}, nil
 }
 
-func (kv keyValuePair) visitElements(c context.Context, v interface{}, visit keyValueVisitor) error {
+func (kv keyValuePair) visitElements(c context.Context, v any, visit keyValueVisitor) error {
 	value, err := kv.value(c, v)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (kv keyValuePair) visitElements(c context.Context, v interface{}, visit key
 	return nil
 }
 
-func (kv keyValueMatcher) visitElements(c context.Context, v interface{}, visit keyValueVisitor) error {
+func (kv keyValueMatcher) visitElements(c context.Context, v any, visit keyValueVisitor) error {
 	vs, err := kv.path.reduce(c, v)
 	if err != nil {
 		return err
@@ -128,17 +128,17 @@ func (j *jsonObjectSlice) addElements(e jsonObject) {
 	*j = append(*j, e)
 }
 
-func (j jsonObjectSlice) evaluable(c context.Context, v interface{}) (interface{}, error) {
-	vs := map[string]interface{}{}
+func (j jsonObjectSlice) evaluable(c context.Context, v any) (any, error) {
+	vs := map[string]any{}
 
-	err := j.visitElements(c, v, func(key string, value interface{}) { vs[key] = value })
+	err := j.visitElements(c, v, func(key string, value any) { vs[key] = value })
 	if err != nil {
 		return nil, err
 	}
 	return vs, nil
 }
 
-func (j jsonObjectSlice) visitElements(ctx context.Context, v interface{}, visit keyValueVisitor) (err error) {
+func (j jsonObjectSlice) visitElements(ctx context.Context, v any, visit keyValueVisitor) (err error) {
 	for _, e := range j {
 		if err := e.visitElements(ctx, v, visit); err != nil {
 			return err
@@ -174,7 +174,7 @@ type placeholder int
 
 const allPlaceholders = placeholder(-1)
 
-func (key placeholder) evaluable(c context.Context, v interface{}) (interface{}, error) {
+func (key placeholder) evaluable(c context.Context, v any) (any, error) {
 	wildcards, ok := c.Value(placeholdersContextKey{}).([][]string)
 	if !ok || len(wildcards) <= int(key) {
 		return nil, fmt.Errorf("JSONPath placeholder #%d is not available", key)
@@ -193,9 +193,7 @@ func (key placeholder) evaluable(c context.Context, v interface{}) (interface{},
 func quoteWildcardValues(sb *bytes.Buffer, wildcards [][]string) {
 	for _, w := range wildcards {
 		for _, k := range w {
-			sb.WriteString(fmt.Sprintf("[%v]",
-				strconv.Quote(fmt.Sprint(k)),
-			))
+			sb.WriteString(fmt.Sprintf("[%q]", k))
 		}
 	}
 }
