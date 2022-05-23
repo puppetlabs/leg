@@ -30,7 +30,7 @@ import (
 
 type test struct {
 	Name       string
-	Data       interface{}
+	Data       any
 	Expr       string
 	NeedsSort  bool
 	Expected   string
@@ -88,22 +88,22 @@ func TestBasic(t *testing.T) {
 		},
 		{
 			Name:     "embedded using $",
-			Data:     map[string]interface{}{"foo": "world"},
+			Data:     map[string]any{"foo": "world"},
 			Expr:     "hello { $.foo }",
 			Expected: "hello world",
 		},
 		{
 			Name:     "range",
-			Data:     map[string]interface{}{"foo": []interface{}{"bar", "baz", "quux"}},
+			Data:     map[string]any{"foo": []any{"bar", "baz", "quux"}},
 			Expr:     `start{range .foo} -> {$} <-{end} end`,
 			Expected: "start -> bar <- -> baz <- -> quux <- end",
 		},
 		{
 			Name: "nested range",
-			Data: map[string]interface{}{
-				"foo": []interface{}{
-					[]interface{}{"a", "b"},
-					[]interface{}{"c", "d"},
+			Data: map[string]any{
+				"foo": []any{
+					[]any{"a", "b"},
+					[]any{"c", "d"},
 				},
 			},
 			Expr:     `{range .foo}{range @}{@}{end}{end}`,
@@ -128,7 +128,7 @@ func TestBasic(t *testing.T) {
 }
 
 func TestJSONObject(t *testing.T) {
-	var storeData interface{}
+	var storeData any
 	err := json.Unmarshal([]byte(`{
 		"Name": "jsonpath",
 		"Book": [
@@ -161,13 +161,13 @@ func TestJSONObject(t *testing.T) {
 		},
 		{
 			Name:     "recursive",
-			Data:     []interface{}{1, 2, 3},
+			Data:     []any{1, 2, 3},
 			Expr:     "{..}",
 			Expected: "[1 2 3] 1 2 3",
 		},
 		{
 			Name:     "filter",
-			Data:     []interface{}{2, 6, 3, 7},
+			Data:     []any{2, 6, 3, 7},
 			Expr:     "{[?(@<5)]}",
 			Expected: "2 3",
 		},
@@ -179,13 +179,13 @@ func TestJSONObject(t *testing.T) {
 		},
 		{
 			Name:     "union",
-			Data:     []interface{}{0, 1, 2, 3, 4},
+			Data:     []any{0, 1, 2, 3, 4},
 			Expr:     "{[1,3,4]}",
 			Expected: "1 3 4",
 		},
 		{
 			Name:     "array",
-			Data:     []interface{}{"Monday", "Tuesday"},
+			Data:     []any{"Monday", "Tuesday"},
 			Expr:     "{[0:2]}",
 			Expected: "Monday Tuesday",
 		},
@@ -272,7 +272,7 @@ func TestJSONObject(t *testing.T) {
 }
 
 func TestJSONArray(t *testing.T) {
-	var points interface{}
+	var points any
 	err := json.Unmarshal([]byte(`[
 		{"id": "i1", "x":4, "y":-5},
 		{"id": "i2", "x":-2, "y":-5, "z":1},
@@ -300,7 +300,7 @@ func TestJSONArray(t *testing.T) {
 }
 
 func TestKubernetes(t *testing.T) {
-	var nodes interface{}
+	var nodes any
 	err := json.Unmarshal([]byte(`{
 		"kind": "List",
 		"items":[

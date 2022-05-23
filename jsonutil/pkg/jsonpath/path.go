@@ -8,14 +8,14 @@ import (
 
 type PathValue struct {
 	Path  []string
-	Value interface{}
+	Value any
 }
 
 // values allows us to represent a single value or multiple values under a
 // common interface.
 type values interface {
 	// get retrieves the value(s) as an interface.
-	get() interface{}
+	get() any
 
 	// concat appends this value to the given destination, creating it if
 	// necessary.
@@ -28,12 +28,12 @@ type values interface {
 
 type value struct {
 	wildcards [][]string
-	value     interface{}
+	value     any
 }
 
 var _ values = value{}
 
-func (v value) get() interface{} { return v.value }
+func (v value) get() any { return v.value }
 
 func (v value) concat(dest *values) {
 	if *dest == nil {
@@ -70,7 +70,7 @@ type empty struct{}
 
 var _ values = empty{}
 
-func (empty) get() interface{} {
+func (empty) get() any {
 	return nil
 }
 
@@ -84,8 +84,8 @@ type valueSlice []value
 
 var _ values = valueSlice{}
 
-func (vs valueSlice) get() interface{} {
-	r := make([]interface{}, len(vs))
+func (vs valueSlice) get() any {
+	r := make([]any, len(vs))
 	for i, v := range vs {
 		r[i] = v.get()
 	}
@@ -158,7 +158,7 @@ func (p *path) appendSelector(fn selector, mode selectorMode) {
 	p.selectors = append(p.selectors, pathSelector{fn, mode})
 }
 
-func (p *path) reduce(c context.Context, parameter interface{}) (values, error) {
+func (p *path) reduce(c context.Context, parameter any) (values, error) {
 	rv, err := p.root(c, parameter)
 	if err != nil {
 		return nil, err
@@ -194,7 +194,7 @@ func (p *path) reduce(c context.Context, parameter interface{}) (values, error) 
 	return apply(root, p.mode, p.selectors)
 }
 
-func (p *path) evaluate(c context.Context, parameter interface{}) (interface{}, error) {
+func (p *path) evaluate(c context.Context, parameter any) (any, error) {
 	pvs, err := p.reduce(c, parameter)
 	if err != nil {
 		return nil, err

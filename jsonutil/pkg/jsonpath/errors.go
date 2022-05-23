@@ -63,7 +63,7 @@ func (e *PathResolutionError) Error() string {
 }
 
 type UnknownVariableTypeError struct {
-	Variable interface{}
+	Variable any
 }
 
 var _ PropagatableError = &UnknownVariableTypeError{}
@@ -77,7 +77,7 @@ func (e *UnknownVariableTypeError) Propagate() bool {
 }
 
 type VarSelectorTypeError struct {
-	Variable interface{}
+	Variable any
 }
 
 var _ PropagatableError = &VarSelectorTypeError{}

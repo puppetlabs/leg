@@ -17,26 +17,26 @@ type variableRange struct {
 }
 
 type variableChild struct {
-	Key interface{}
+	Key any
 }
 
 type VariableVisitor interface {
-	VisitWildcard(ctx context.Context, parameter interface{}, next func(context.Context, []PathValue) error) error
-	VisitRecursiveDescent(ctx context.Context, parameter interface{}, next func(context.Context, []PathValue) error) error
-	VisitRange(ctx context.Context, parameter interface{}, min, max, step int, next func(context.Context, []PathValue) error) error
-	VisitChild(ctx context.Context, parameter interface{}, key interface{}, next func(context.Context, PathValue) error) error
+	VisitWildcard(ctx context.Context, parameter any, next func(context.Context, []PathValue) error) error
+	VisitRecursiveDescent(ctx context.Context, parameter any, next func(context.Context, []PathValue) error) error
+	VisitRange(ctx context.Context, parameter any, min, max, step int, next func(context.Context, []PathValue) error) error
+	VisitChild(ctx context.Context, parameter any, key any, next func(context.Context, PathValue) error) error
 }
 
 type VariableVisitorFuncs struct {
-	VisitWildcardFunc         func(ctx context.Context, parameter interface{}, next func(context.Context, []PathValue) error) error
-	VisitRecursiveDescentFunc func(ctx context.Context, parameter interface{}, next func(context.Context, []PathValue) error) error
-	VisitRangeFunc            func(ctx context.Context, parameter interface{}, min, max, step int, next func(context.Context, []PathValue) error) error
-	VisitChildFunc            func(ctx context.Context, parameter interface{}, key interface{}, next func(context.Context, PathValue) error) error
+	VisitWildcardFunc         func(ctx context.Context, parameter any, next func(context.Context, []PathValue) error) error
+	VisitRecursiveDescentFunc func(ctx context.Context, parameter any, next func(context.Context, []PathValue) error) error
+	VisitRangeFunc            func(ctx context.Context, parameter any, min, max, step int, next func(context.Context, []PathValue) error) error
+	VisitChildFunc            func(ctx context.Context, parameter any, key any, next func(context.Context, PathValue) error) error
 }
 
 var _ VariableVisitor = VariableVisitorFuncs{}
 
-func (vf VariableVisitorFuncs) VisitWildcard(c context.Context, v interface{}, next func(context.Context, []PathValue) error) error {
+func (vf VariableVisitorFuncs) VisitWildcard(c context.Context, v any, next func(context.Context, []PathValue) error) error {
 	if vf.VisitWildcardFunc != nil {
 		return vf.VisitWildcardFunc(c, v, next)
 	}
@@ -49,13 +49,13 @@ func (vf VariableVisitorFuncs) VisitWildcard(c context.Context, v interface{}, n
 	}
 
 	switch vt := v.(type) {
-	case []interface{}:
+	case []any:
 		for i := range vt {
 			if err := vf.VisitChild(c, v, i, appender); err != nil {
 				return &IndexParseError{Index: i, Cause: err}
 			}
 		}
-	case map[string]interface{}:
+	case map[string]any:
 		for k := range vt {
 			if err := vf.VisitChild(c, v, k, appender); err != nil {
 				return &KeyParseError{Key: k, Cause: err}
@@ -66,7 +66,7 @@ func (vf VariableVisitorFuncs) VisitWildcard(c context.Context, v interface{}, n
 	return next(c, items)
 }
 
-func (vf VariableVisitorFuncs) VisitRecursiveDescent(c context.Context, v interface{}, next func(context.Context, []PathValue) error) error {
+func (vf VariableVisitorFuncs) VisitRecursiveDescent(c context.Context, v any, next func(context.Context, []PathValue) error) error {
 	if vf.VisitRecursiveDescentFunc != nil {
 		return vf.VisitRecursiveDescentFunc(c, v, next)
 	}
@@ -100,7 +100,7 @@ func (vf VariableVisitorFuncs) VisitRecursiveDescent(c context.Context, v interf
 	return next(c, items)
 }
 
-func (vf VariableVisitorFuncs) VisitRange(c context.Context, v interface{}, min, max, step int, next func(context.Context, []PathValue) error) error {
+func (vf VariableVisitorFuncs) VisitRange(c context.Context, v any, min, max, step int, next func(context.Context, []PathValue) error) error {
 	if vf.VisitRangeFunc != nil {
 		return vf.VisitRangeFunc(c, v, min, max, step, next)
 	}
@@ -108,11 +108,11 @@ func (vf VariableVisitorFuncs) VisitRange(c context.Context, v interface{}, min,
 	var items []PathValue
 
 	switch vt := v.(type) {
-	case []interface{}:
+	case []any:
 		n := len(vt)
 		min = negmax(min, n)
 		max = negmax(max, n)
-	case map[string]interface{}:
+	case map[string]any:
 		// Ranging over a map is explicitly not supported.
 		return next(c, items)
 	default:
@@ -161,13 +161,13 @@ func negmax(n, max int) int {
 	return n
 }
 
-func (vf VariableVisitorFuncs) VisitChild(c context.Context, v, key interface{}, next func(context.Context, PathValue) error) error {
+func (vf VariableVisitorFuncs) VisitChild(c context.Context, v, key any, next func(context.Context, PathValue) error) error {
 	if vf.VisitChildFunc != nil {
 		return vf.VisitChildFunc(c, v, key, next)
 	}
 
 	switch vt := v.(type) {
-	case []interface{}:
+	case []any:
 		i, r, err := eval.SelectIndex(vt, key)
 		if err != nil {
 			return err
@@ -177,7 +177,7 @@ func (vf VariableVisitorFuncs) VisitChild(c context.Context, v, key interface{},
 			Path:  []string{strconv.Itoa(i)},
 			Value: r,
 		})
-	case map[string]interface{}:
+	case map[string]any:
 		k, r, err := eval.SelectKey(vt, key)
 		if err != nil {
 			return err
@@ -194,9 +194,9 @@ func (vf VariableVisitorFuncs) VisitChild(c context.Context, v, key interface{},
 
 func VariableSelector(visitor VariableVisitor) func(path gval.Evaluables) gval.Evaluable {
 	return func(path gval.Evaluables) gval.Evaluable {
-		return func(c context.Context, v interface{}) (r interface{}, err error) {
-			var next func(c context.Context, rest gval.Evaluables, v interface{}) (values, bool, error)
-			next = func(c context.Context, rest gval.Evaluables, v interface{}) (values, bool, error) {
+		return func(c context.Context, v any) (r any, err error) {
+			var next func(c context.Context, rest gval.Evaluables, v any) (values, bool, error)
+			next = func(c context.Context, rest gval.Evaluables, v any) (values, bool, error) {
 				if len(rest) == 0 {
 					return nil, false, nil
 				}
@@ -262,7 +262,7 @@ func pathValueSlice(pvs []PathValue) valueSlice {
 	return vs
 }
 
-func ChildVariableSelector(fn func(ctx context.Context, parameter interface{}, key interface{}, next func(context.Context, PathValue) error) error) func(path gval.Evaluables) gval.Evaluable {
+func ChildVariableSelector(fn func(ctx context.Context, parameter any, key any, next func(context.Context, PathValue) error) error) func(path gval.Evaluables) gval.Evaluable {
 	return VariableSelector(VariableVisitorFuncs{
 		VisitChildFunc: fn,
 	})
