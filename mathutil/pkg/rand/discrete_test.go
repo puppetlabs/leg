@@ -187,11 +187,6 @@ func prepareMinimumDistance() (dists []float64, points []point) {
 }
 
 func TestUint64N(t *testing.T) {
-	rng, err := rand.DefaultFactory.New()
-	require.NoError(t, err)
-
-	dists, points := prepareMinimumDistance()
-
 	tests := []uint64{
 		100_000,
 		1_000_000,
@@ -202,6 +197,13 @@ func TestUint64N(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(strconv.FormatUint(test, 10), func(t *testing.T) {
+			t.Parallel()
+
+			rng, err := rand.DefaultFactory.New()
+			require.NoError(t, err)
+
+			dists, points := prepareMinimumDistance()
+
 			gen := func() float64 {
 				rv, err := rand.Uint64N(rng, test)
 				require.NoError(t, err)
@@ -215,6 +217,8 @@ func TestUint64N(t *testing.T) {
 }
 
 func TestFloat64(t *testing.T) {
+	t.Parallel()
+
 	rng, err := rand.DefaultFactory.New()
 	require.NoError(t, err)
 
