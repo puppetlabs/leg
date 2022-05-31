@@ -18,6 +18,17 @@ linters-settings:
     # This test is also disabled because it's frequently used with loop control
     # flow.
     - typeAssertChain
+    # This test is disabled because developers sometimes use single-case
+    # switches to express intentional handling of a subset of potential values.
+    - singleCaseSwitch
+    # The following checks are, as of this writing, incompatible with Go 1.18
+    # when using generics, so we have disabled them. Follow
+    # https://github.com/go-critic/go-critic/issues/1193 and re-enable when
+    # upstream is ready.
+    - externalErrorReassign
+    - hugeParam
+    - rangeValCopy
+    - typeDefFirst
     settings:
       hugeParam:
         sizeThreshold: 512
@@ -32,7 +43,10 @@ linters-settings:
 linters:
   disable-all: true
   enable:
-  - bodyclose
+  # The commented checks below are incompatible with Go 1.18 when using
+  # generics. See https://github.com/golangci/golangci-lint/issues/2649 for
+  # updates.
+  # - bodyclose
   - deadcode
   - errcheck
   - exportloopref
@@ -43,10 +57,10 @@ linters:
   - gosimple
   - govet
   - ineffassign
-  - noctx
+  # - noctx
   - nolintlint
   - staticcheck
-  - structcheck
+  # - structcheck
   - typecheck
   - unused
   - varcheck
