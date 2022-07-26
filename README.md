@@ -38,6 +38,7 @@ configuration, and documentation (like this file) only.
 * [`mathutil`](mathutil): Additions to the Go standard library's math packages.
 * [`netutil`](netutil): Additions to the Go standard library's networking
   packages.
+* [`relspec`](relspec): A JSON templating language.
 * [`request`](request): Standardized support for passing rudimentary tracing
   information through a context.
 * [`scheduler`](scheduler): Advanced management of Goroutines in process pools.
