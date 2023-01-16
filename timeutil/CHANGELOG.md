@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.5.0] - 2022-01-16
+
 ### Changed
 
 * The clock/k8sext package now integrates with clock instances from the k8s.io/utils/clock package instead of the deprecated k8s.io/apimachinery/pkg/util/clock package.
@@ -56,7 +58,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Renamed project to Leg.
 
-[Unreleased]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.2...HEAD
+[Unreleased]: https://github.com/puppetlabs/leg/compare/timeutil/v0.5.0...HEAD
+[0.5.0]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.2...timeutil/v0.5.0
 [0.4.2]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.1...timeutil/v0.4.2
 [0.4.1]: https://github.com/puppetlabs/leg/compare/timeutil/v0.4.0...timeutil/v0.4.1
 [0.4.0]: https://github.com/puppetlabs/leg/compare/timeutil/v0.3.0...timeutil/v0.4.0
