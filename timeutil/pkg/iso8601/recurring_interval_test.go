@@ -87,7 +87,7 @@ func TestRecurringIntervalCalculatesNextSimple(t *testing.T) {
 
 	now = now.Add(25 * time.Minute)
 
-	ivn, ok = iv.Next(now)
+	_, ok = iv.Next(now)
 	assert.False(t, ok)
 }
 

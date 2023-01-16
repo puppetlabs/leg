@@ -126,40 +126,40 @@ func (d Duration) String() string {
 
 	if d.weeks != nil {
 		buf.WriteString(d.weeks.FloatString(-1))
-		buf.WriteRune('W')
+		buf.WriteByte('W')
 	} else {
 		if d.years != nil {
 			buf.WriteString(d.years.FloatString(-1))
-			buf.WriteRune('Y')
+			buf.WriteByte('Y')
 		}
 
 		if d.months != nil {
 			buf.WriteString(d.months.FloatString(-1))
-			buf.WriteRune('M')
+			buf.WriteByte('M')
 		}
 
 		if d.days != nil {
 			buf.WriteString(d.days.FloatString(-1))
-			buf.WriteRune('D')
+			buf.WriteByte('D')
 		}
 
 		if d.hours != nil || d.minutes != nil || d.seconds != nil {
-			buf.WriteRune('T')
+			buf.WriteByte('T')
 		}
 
 		if d.hours != nil {
 			buf.WriteString(d.hours.FloatString(-1))
-			buf.WriteRune('H')
+			buf.WriteByte('H')
 		}
 
 		if d.minutes != nil {
 			buf.WriteString(d.minutes.FloatString(-1))
-			buf.WriteRune('M')
+			buf.WriteByte('M')
 		}
 
 		if d.seconds != nil {
 			buf.WriteString(d.seconds.FloatString(-1))
-			buf.WriteRune('S')
+			buf.WriteByte('S')
 		}
 	}
 
