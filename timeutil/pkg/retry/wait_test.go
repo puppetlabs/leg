@@ -12,7 +12,7 @@ import (
 	"github.com/puppetlabs/leg/timeutil/pkg/retry"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	testclock "k8s.io/apimachinery/pkg/util/clock"
+	testclock "k8s.io/utils/clock/testing"
 )
 
 func TestWait(t *testing.T) {

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+* The clock/k8sext package now integrates with clock instances from the k8s.io/utils/clock package instead of the deprecated k8s.io/apimachinery/pkg/util/clock package.
+
+### Build
+
+* The minimum Go version compatible with this release is 1.18.
+
 ## [0.4.2] - 2021-07-12
 
 ### Fixed
