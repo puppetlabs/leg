@@ -8,7 +8,7 @@ import (
 	"github.com/puppetlabs/leg/timeutil/pkg/clock/k8sext"
 	"github.com/puppetlabs/leg/timeutil/pkg/clockctx"
 	"github.com/stretchr/testify/assert"
-	testclock "k8s.io/apimachinery/pkg/util/clock"
+	testclock "k8s.io/utils/clock/testing"
 )
 
 func TestWithDeadlineOfClock(t *testing.T) {

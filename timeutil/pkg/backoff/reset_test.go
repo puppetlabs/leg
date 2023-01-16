@@ -8,7 +8,7 @@ import (
 	"github.com/puppetlabs/leg/timeutil/pkg/backoff"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"k8s.io/apimachinery/pkg/util/clock"
+	testclock "k8s.io/utils/clock/testing"
 )
 
 func TestResetAfter(t *testing.T) {
@@ -22,12 +22,12 @@ func TestResetAfter(t *testing.T) {
 
 	tests := []struct {
 		Name     string
-		Factory  func(c clock.PassiveClock) backoff.GeneratorFactory
+		Factory  func(c *testclock.FakeClock) backoff.GeneratorFactory
 		Expected []expected
 	}{
 		{
 			Name: "Maximum attempts",
-			Factory: func(c clock.PassiveClock) backoff.GeneratorFactory {
+			Factory: func(c *testclock.FakeClock) backoff.GeneratorFactory {
 				return backoff.ResetAfter(
 					backoff.Build(
 						backoff.Linear(5*time.Second),
@@ -70,7 +70,7 @@ func TestResetAfter(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
-			fc := clock.NewFakeClock(time.Now())
+			fc := testclock.NewFakeClock(time.Now())
 
 			g, err := test.Factory(fc).New()
 			require.NoError(t, err)
